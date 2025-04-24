@@ -1,5 +1,5 @@
 <template>
-    <footer class="bg-[#4b3b36] text-white py-10 mt-20 px-6">
+    <footer class="text-white py-10 mt-20 px-6">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div>
           <h4 class="font-bold text-lg mb-2">La Libre</h4>
@@ -41,13 +41,14 @@
   
   <script>
   export default {
-    name: "FooterSection",
+    name: "Footer_Section",
   };
   </script>
   
   <style scoped>
   footer {
     font-family: 'Instrument Sans Variable', sans-serif;
+    background-color: rgb(54, 46, 46);
   }
   </style>
   
