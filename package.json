@@ -2,5 +2,13 @@
   "dependencies": {
     "@fontsource-variable/instrument-sans": "^5.2.5",
     "@fontsource/ibm-plex-sans-condensed": "^5.2.5"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "watch": "vite"
+  },
+  "devDependencies": {
+    "vite": "^6.3.3"
   }
 }

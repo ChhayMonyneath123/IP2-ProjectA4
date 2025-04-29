@@ -15,8 +15,8 @@ const routes = [
     component: () => import("@/vueCode/views/user/Contact.vue"),
   },
   {
-    path: "/about",
-    name: "about",
+    path: '/about',
+    name: 'about',
     component: () => import("@/vueCode/views/user/About_Us.vue"),
   },
   // {

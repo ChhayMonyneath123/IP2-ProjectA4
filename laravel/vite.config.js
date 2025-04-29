@@ -14,5 +14,13 @@ export default defineConfig({
         alias: {
           '@': path.resolve(__dirname, 'resources/js'),
         }
+    },
+    server: {
+        host: '0.0.0.0',  // Add this to make Vite listen on all network interfaces
+        port: 5173,       // Explicitly set the port
+        hmr: {
+            host: 'localhost'  // For Hot Module Replacement
+        }
     }
+    
 });
