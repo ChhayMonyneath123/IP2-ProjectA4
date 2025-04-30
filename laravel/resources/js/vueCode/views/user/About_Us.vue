@@ -3,7 +3,6 @@
         <NavbarComponent/>
         <div class="content-container">
             <div class="pic1">
-                <div class="hero-text">About us</div>
             </div>
             <h1 class="title">We invite you to visit our restaurant</h1>
             <h2 class="title1">We invite you to visit La Libre, where our exceptional food and drink create
@@ -127,19 +126,19 @@ welcoming atmosphere that will keep you coming back.</h2>
     }
 
     .pic1 {
-        background-image: url('/resources/js/assets/images/aboutUs.png');
-        background-size: cover; 
-        background-position: center;
-        width: 100%;
-        height: 50vh; 
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
+    background-image: url('/resources/js/assets/images/aboutUs.png');
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    padding-bottom: 40%; 
+    position: relative;
     }
 
-    .hero-text {
-        display: none; 
+    @media (max-width: 480px) {
+        .pic1 {
+            padding-bottom: 70%; /* Even taller aspect ratio on mobile */
+        }
     }
     
     .title {
