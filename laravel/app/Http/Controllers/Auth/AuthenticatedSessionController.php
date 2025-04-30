@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -24,11 +23,16 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        // Attempt to authenticate the user
+        if (Auth::attempt($request->only('email', 'password'), $request->filled('remember'))) {
+            // Redirect to the home page for all users
+            return redirect()->route('welcome');
+        }
 
-        $request->session()->regenerate();
-
-        return redirect()->intended(route('dashboard', absolute: false));
+        // If authentication fails, redirect back with error message
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ]);
     }
 
     /**
@@ -36,12 +40,14 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // Log out the user and invalidate the session
         Auth::guard('web')->logout();
 
+        // Invalidate and regenerate the session token for security
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
+        // Redirect to the home page after logging out
         return redirect('/');
     }
 }

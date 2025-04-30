@@ -1,12 +1,16 @@
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:opsz,wght@12..72,400..700&family=Kaushan+Script&family=IBM+Plex+Sans+Condensed&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed&display=swap');
 
-  @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  @layer base {
-    body {
-      font-family: 'Instrument Sans Variable', sans-serif;
-    }
+@layer base {
+  body {
+    font-family: 'Instrument Sans Variable', sans-serif;
   }
+
+  .font-ibm {
+    font-family: 'IBM Plex Sans Condensed', sans-serif;
+  }
+}
