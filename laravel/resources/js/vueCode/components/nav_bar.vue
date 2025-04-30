@@ -24,6 +24,11 @@
     </div>
   </nav>
 </template>
+<script>
+export default{
+  name: 'Nav_Bar',
+}
+</script>
 
 <style scoped>
 .navbar {
