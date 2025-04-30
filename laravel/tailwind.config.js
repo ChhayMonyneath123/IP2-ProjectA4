@@ -12,7 +12,12 @@ export default {
     theme: {
         extend: {
             fontFamily: {
+<<<<<<< HEAD
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+=======
+                ibm: ['"IBM Plex Sans Condensed"', 'sans-serif'],
+                sans: ['"Instrument Sans"', 'sans-serif'],
+>>>>>>> PolliX
             },
         },
     },

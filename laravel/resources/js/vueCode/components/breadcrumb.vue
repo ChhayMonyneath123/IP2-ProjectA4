@@ -13,5 +13,6 @@
   <style scoped>
   nav {
     font-family: 'Instrument Sans Variable', sans-serif;
+    font-size: 16px;
   }
   </style>

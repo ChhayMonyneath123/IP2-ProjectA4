@@ -3,118 +3,93 @@
     <Nav_Bar/>
 
     <div class="container">
-      <Breadcrumb />
-        <!-- Title & Image -->
-      <p>Pasta</p>
-      <div class="wrapper">
-      <h1>
-        Chef’s spaghetti with cauliflower and carrots
-      </h1>
-      <img
-        src="@/assets/images/spagetti.png"
-        alt="Spaghetti with cauliflower and carrots"
-      />
-
-      <FoodInfo />
-      <Rating />
-      </div>
-      
-
-      <!-- Reviews -->
-      <div class="mb-10">
-        <CardReview
-      name="Jochido Nitacha"
-      date="March 1, 2025"
-      :rating="5"
-      :avatar="'profile.png'"
-      message="The foods are very delicious and well-cook. The delivery is accurate and fast."
-    />
-    <CardReview
-      name="Jochido Nitacha"
-      date="March 1, 2025"
-      :rating="5"
-      :avatar="'profile.png'"
-      message="The foods are very delicious and well-cook. The delivery is accurate and fast."
-    />
-
-      </div>
-
-      <!-- Comment Form -->
-      <div class="mb-10">
-        <h3 class="text-xl font-semibold mb-2">Leave a Comment</h3>
-        <p class="text-sm text-gray-600 mb-4">Please feel free to give us a feedback!</p>
-        <div class="flex items-center gap-4 mb-4">
-          <img class="w-10 h-10 rounded-full" src="@/assets/logo/profile.png" alt="Ella Mondre" />
-          <div>
-            <p class="font-semibold">Ella Mondre</p>
-            <p class="text-xs text-gray-500">March 14, 2025 · Your Rating: ☆☆☆☆☆</p>
-          </div>
-        </div>
-        <textarea
-          class="w-full border rounded-md p-4 h-32 resize-none placeholder-gray-400"
-          placeholder="Your Message"
-        ></textarea>
-        <button class="mt-4 px-6 py-2 bg-[#4b3b36] text-white rounded-md hover:bg-[#3a2e29]">
-          Submit Comment
-        </button>
-      </div>
+    <NavbarComponent/>
+    <div class="breadcrumb">
+      <Breadcrumb/>
     </div>
+    
+      <div class="wrapper">
+        <div class="title">Enjoy Your day with Fresh Strawberry Soda</div>
+        <img :src="'/assets/images/spagetti.png'" alt="">
+      </div>
+      <FoodInfo/>
+      <Rating />
+      <Footer/>
+    </div>
+    
+  </template>
+  
+  <script>
+  import NavbarComponent from '@/vueCode/components/nav_bar.vue';
+  import Rating from '../../../components/rating.vue';
+  import Footer from '../../../components/footer.vue';
+  import FoodInfo from '../../../components/food-info.vue';
+import Breadcrumb from '../../../components/breadcrumb.vue';
 
-    <Footer_Section/>
-  </div>
-</template>
-
-<script>
-import Nav_Bar from '@/vueCode/components/nav_bar.vue';
-import Breadcrumb from '@/vueCode/components/breadcrumb.vue';
-import FoodInfo from '@/vueCode/components/food-info.vue';
-import Rating from '@/vueCode/components/rating.vue';
-import Footer_Section from '@/vueCode/components/footer_section.vue';
-import CardReview from '@/vueCode/components/review_card.vue'
-export default {
-  name: 'FoodDetailPage',
+  export default {
   components: {
-    Nav_Bar,
-    Breadcrumb,
-    FoodInfo,
+    NavbarComponent,
     Rating,
-    Footer_Section,
-    CardReview,
-  },
-};
-</script>
+    Footer,
+    FoodInfo,
+    Breadcrumb,
+    }
+  }
+  // export default {
+  //   data() {
+  //     return {
+  //       product: {
+  //         name: 'Classic Cargo Pants',
+  //         description: 'Comfortable, durable, and made for adventure.',
+  //         price: 45.99,
+  //         stock: 'In Stock',
+  //         image: 'Cargo_pant1.png',
+  //       },
+  //       quantity: 1,
+  //     };
+  //   },
+  //   methods: {
+  //     increment() {
+  //       this.quantity++;
+  //     },
+  //     decrement() {
+  //       if (this.quantity > 1) this.quantity--;
+  //     },
+  //     addToCart() {
+  //       alert(`Added ${this.quantity} item(s) to cart!`);
+  //     },
+  //   },
 
-<style scoped>
-.container{
-  padding: 2rem;
-  max-width: 100%;
-  background-color: aqua;
 
-}
-.container p{
-  margin-left: 2rem;
-  font-family: 'Kaushan Script', cursive;
-}
-.wrapper{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
+  // };
+  </script>
+  
+  <style scoped>
+  .container {
+    background-color: #F8F7F3;
+    max-width: 120rem;
+    height: 100%;
+  }
+  .breadcrumb{
+    margin: 2%;
+  }
+  .wrapper{
+    padding: 2%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+  .title{
+    font-size: 48px;
+    margin-bottom: 2%;
+    font-family: 'Instrument Sans Variable', sans-serif;
+    font-weight: 700;
+  }
+  img{
+    width: 1000px;
+    height: auto;
 
-.wrapper h1{
-  font-family: 'IBM Plex Sans Condensed'; 
-  font-size: 54px; 
-  font-weight: 700;
-  display: flex;
-  justify-content: center;
-  text-align: wrap;
-  padding-bottom: 1.5rem;
-}
-.wrapper img{
-  width: 70%;
-  height: 70%;
-  display: flex;
-  align-items: center;
-}
-</style>
+  }
+
+  </style>
+  
