@@ -1,20 +1,35 @@
 <template>
     <div class="container">
     <NavbarComponent/>
+    <div class="breadcrumb">
+      <Breadcrumb/>
+    </div>
+    
       <div class="wrapper">
         <div class="title">Enjoy Your day with Fresh Strawberry Soda</div>
-        <img src="@/assets/images/spagetti.png" alt="">
+        <img :src="'/assets/images/spagetti.png'" alt="">
       </div>
-        
+      <FoodInfo/>
+      <Rating />
+      <Footer/>
     </div>
+    
   </template>
   
   <script>
   import NavbarComponent from '@/vueCode/components/nav_bar.vue';
+  import Rating from '../../../components/rating.vue';
+  import Footer from '../../../components/footer.vue';
+  import FoodInfo from '../../../components/food-info.vue';
+import Breadcrumb from '../../../components/breadcrumb.vue';
 
   export default {
   components: {
     NavbarComponent,
+    Rating,
+    Footer,
+    FoodInfo,
+    Breadcrumb,
     }
   }
   // export default {
@@ -48,9 +63,12 @@
   
   <style scoped>
   .container {
-    background-color: rgb(46, 67, 229);
+    background-color: #F8F7F3;
     max-width: 120rem;
-    height: 1440px;
+    height: 100%;
+  }
+  .breadcrumb{
+    margin: 2%;
   }
   .wrapper{
     padding: 2%;
@@ -59,12 +77,13 @@
     flex-direction: column;
   }
   .title{
-    font-size: 36px;
+    font-size: 48px;
     margin-bottom: 2%;
-    margin-top: 5%;
+    font-family: 'Instrument Sans Variable', sans-serif;
+    font-weight: 700;
   }
   img{
-    width: 800px;
+    width: 1000px;
     height: auto;
 
   }

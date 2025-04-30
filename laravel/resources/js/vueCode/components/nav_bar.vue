@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar">
     <div class="logo-section">
-      <img src="@/assets/logo/logofood_station.png" alt="La Libre Logo" class="logo" />
+      <img :src="'/assets/logo/logofood_station.png'" alt="La Libre Logo" class="logo" />
       <span class="brand-name">La Libre</span>
     </div>
 
@@ -14,13 +14,13 @@
 
     <div class="search-section">
       <input type="text" placeholder="Searching...." />
-      <img src="@/assets/icons/search.png" alt="Search" class="search-icon" />
+      <img :src="'/assets/icons/search.png'" alt="Search" class="search-icon" />
     </div>
 
     <div class="icon-buttons">
-      <img src="@/assets/icons/cart.png" alt="Cart" class="icon" />
-      <img src="@/assets/icons/wishlist.png" alt="Wishlist" class="icon" />
-      <img src="@/assets/icons/menu.png" alt="Menu" class="menu-icon" />
+      <img :src="'/assets/icons/cart.png'" alt="Cart" class="icon" />
+      <img :src="'/assets/icons/wishlist.png' " alt="Wishlist" class="icon" />
+      <img :src="'/assets/icons/menu.png' " alt="Menu" class="menu-icon" />
     </div>
   </nav>
 </template>
@@ -30,6 +30,8 @@
   width: 100%;
   max-width: 100%;
   background-color: #F8F7F3;
+  box-shadow: 4px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;

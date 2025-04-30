@@ -6,6 +6,8 @@ import router from './router'
 
 import '@fontsource/ibm-plex-sans-condensed';
 import '@fontsource-variable/instrument-sans';
+
+
 import "../css/app.css"
 window.Alpine = Alpine;       
 Alpine.start();                     
