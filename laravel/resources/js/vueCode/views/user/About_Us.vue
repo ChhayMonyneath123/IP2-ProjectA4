@@ -42,16 +42,19 @@ welcoming atmosphere that will keep you coming back.</h1>
         </div>
         
     </div>
+    <footerSection/>
 </template>
 
 
 
 <script>
     import NavbarComponent from '@/vueCode/components/nav_bar.vue';
+    import footerSection from '@/vueCode/components/footer.vue';
 
   export default {
   components: {
     NavbarComponent,
+    footerSection,
     },
     data() {
     return {
@@ -91,11 +94,23 @@ welcoming atmosphere that will keep you coming back.</h1>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Kavoon&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+    /* Reset defaults to ensure full-screen behavior */
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+    }
+
     .container {
-        max-width: 120rem;
-        height: 2000px;
-        
-        
+        width: 100%;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        overflow-x: hidden;
     }
 
     .pic1 {
@@ -106,25 +121,29 @@ welcoming atmosphere that will keep you coming back.</h1>
         align-items: center;
         flex-direction: column;
         width: 100%;
-        height: 15%;
+        height: 50vh; /* Increased height for better full-screen appearance */
     }
     .title {
         font-family: 'Kavoon';
-        font-size: 25px; 
+        font-size: 2.5rem; /* Responsive font size */
         color: black;
         text-align: center;
         margin-top: 2rem;
         margin-bottom: 1rem;
+        width: 100%;
+        padding: 0 1rem;
+        box-sizing: border-box;
     }
     .title1 {
         font-family: 'Inter';
-        font-size: 20px; 
+        font-size: 1.25rem; /* Responsive font size */
         color: gray;
         text-align: center;
         margin-top: 0rem;
         margin-bottom: 2rem;
-        margin-left: 10%;
-        margin-right: 10%;
+        padding: 0 10%;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .pic2 {
@@ -143,19 +162,24 @@ welcoming atmosphere that will keep you coming back.</h1>
     .features-container {
         display: flex;
         justify-content: space-between;
-        gap: 4rem;
+        gap: 2rem;
         align-items: center;
         margin-top: 2rem;
         margin-bottom: 1rem;
         width: 90%;
-        height: 15%;
+        padding: 0 1rem;
+        box-sizing: border-box;
         margin-left: auto;
         margin-right: auto;
+        flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    }
+    .features-container > div {
+        flex: 1 1 20%; /* Flex grow/shrink/basis for responsive layout */
+        min-width: 200px; /* Minimum width before wrapping */
     }
     .features-container img {
         width: 100%;
-        height: 20%;
-        /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
+        height: auto;
         transition: transform 0.3s;
     }
     .features-container img:hover {
@@ -181,10 +205,10 @@ welcoming atmosphere that will keep you coming back.</h1>
         margin-top: 0rem;
         margin-bottom: 5rem;
         width: 90%;
-        
         margin-left: auto;
         margin-right: auto;
         gap: 1%;
+        flex-wrap: wrap; /* Allow wrapping on smaller screens */
     }
     .question-img {
         background-image: url('/resources/js/assets/images/question.png');
@@ -195,95 +219,124 @@ welcoming atmosphere that will keep you coming back.</h1>
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        
-        width: 90%;
+        width: 45%;
         aspect-ratio: 12/9;
         margin-left: 2rem;
         margin-right: auto;
         margin-top: 5%;
     }
     
+    .question-text {
+        width: 45%;
+        flex-grow: 1;
+    }
 
-
-
-
-
-        .faq-section {
-    padding: 10px;
-    font-family: 'Inter';
-    width: 100%;
+    /* FAQ styles */
+    .faq-section {
+        padding: 10px;
+        font-family: 'Inter';
+        width: 100%;
     }
 
     .faq-heading {
-    text-align: center;
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 20px;
+        text-align: center;
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 20px;
     }
 
     .faq-container {
-    max-width: 700px;
-    margin: 0 auto;
+        max-width: 700px;
+        margin: 0 auto;
+        width: 100%;
     }
 
     .faq-item {
-    background-color: rgba(217, 217, 217, 1);
-    border-radius: 12px;
-    margin-bottom: 20px;
-    overflow: hidden;
+        background-color: rgba(217, 217, 217, 1);
+        border-radius: 12px;
+        margin-bottom: 20px;
+        overflow: hidden;
     }
 
     .faq-question {
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
     }
 
     .toggle-button {
-    width: 40px;
-    height: 40px;
-    background-color: #c2c2b4;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 15px;
-    position: relative;
-    flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        background-color: #c2c2b4;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        position: relative;
+        flex-shrink: 0;
     }
 
     .toggle-button::after {
-    content: "+";
-    font-size: 24px;
-    color: #333;
+        content: "+";
+        font-size: 24px;
+        color: #333;
     }
 
     .faq-item.active .toggle-button::after {
-    content: "−";
+        content: "−";
     }
 
     .question-text {
-    font-size: 20px;
-    color: #666;
-    text-align: center;
-    flex-grow: 1;
+        font-size: 20px;
+        color: #666;
+        text-align: center;
+        flex-grow: 1;
     }
 
     .faq-answer {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
     }
 
     .faq-item.active .faq-answer {
-    max-height: 200px;
-    padding: 0 20px 20px 20px;
+        max-height: 200px;
+        padding: 0 20px 20px 20px;
     }
 
     .faq-answer p {
-    margin: 0;
-    color: #333;
-    line-height: 1.5;
+        margin: 0;
+        color: #333;
+        line-height: 1.5;
+    }
+
+    /* Media queries for responsive design */
+    @media (max-width: 768px) {
+        .question-container {
+            flex-direction: column;
+        }
+        
+        .question-img, .question-text {
+            width: 100%;
+            margin-left: 0;
+        }
+        
+        .features-container {
+            gap: 1rem;
+        }
+        
+        .features-container > div {
+            flex: 1 1 45%;
+        }
+        
+        .title {
+            font-size: 2rem;
+        }
+        
+        .title1 {
+            font-size: 1rem;
+        }
     }
 </style>
