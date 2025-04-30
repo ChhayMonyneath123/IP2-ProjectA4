@@ -1,51 +1,50 @@
-<template lang="">
-    <div class="container">
+<template>
+    <div class="page-container">
         <NavbarComponent/>
-        <div class="pic1"></div>
-        <h1 class="title">We invite you to visit our restaurant</h1>
-        <h1 class="title1">We invite you to visit La Libre, where our exceptional food and drink create
+        <div class="content-container">
+            <div class="pic1">
+                <div class="hero-text">About us</div>
+            </div>
+            <h1 class="title">We invite you to visit our restaurant</h1>
+            <h2 class="title1">We invite you to visit La Libre, where our exceptional food and drink create
  an unforgettable dining experience. Come savor our carefully crafted menu in a warm, 
-welcoming atmosphere that will keep you coming back.</h1>
-        <div class="pic2"></div>
-        <div class ="features-container">
-            <div><img src="/resources/js/assets/images/feature1.png" alt="Feature 1"></div>
-            <div><img src="/resources/js/assets/images/feature2.png" alt="Feature 2"></div>
-            <div><img src="/resources/js/assets/images/feature3.png" alt="Feature 3"></div>
-            <div><img src="/resources/js/assets/images/feature4.png" alt="Feature 4"></div>
-        </div>
-        <div class="chef"></div>
-        <div class="question-container">
-            <div class="question-img"></div>
-            <div class="question-text">
-                
-                <div class="faq-section">
-                    <h1 class="faq-heading">Frequence Questions</h1>
-                    <div class="faq-container">
-                    <div 
-                        v-for="(item, index) in faqItems" 
-                        :key="index" 
-                        class="faq-item"
-                        :class="{ active: activeItem === index }"
-                    >
-                        <div class="faq-question" @click="toggleItem(index)">
-                        <div class="toggle-button"></div>
-                        <div class="question-text">{{ item.question }}</div>
+welcoming atmosphere that will keep you coming back.</h2>
+            <div class="pic2"></div>
+            <div class="features-container">
+                <div><img src="/resources/js/assets/images/feature1.png" alt="Feature 1"></div>
+                <div><img src="/resources/js/assets/images/feature2.png" alt="Feature 2"></div>
+                <div><img src="/resources/js/assets/images/feature3.png" alt="Feature 3"></div>
+                <div><img src="/resources/js/assets/images/feature4.png" alt="Feature 4"></div>
+            </div>
+            <div class="chef"></div>
+            <div class="question-container">
+                <div class="question-img"></div>
+                <div class="question-text">
+                    <div class="faq-section">
+                        <h1 class="faq-heading">Frequence Questions</h1>
+                        <div class="faq-container">
+                        <div 
+                            v-for="(item, index) in faqItems" 
+                            :key="index" 
+                            class="faq-item"
+                            :class="{ active: activeItem === index }"
+                        >
+                            <div class="faq-question" @click="toggleItem(index)">
+                            <div class="toggle-button"></div>
+                            <div class="question-text">{{ item.question }}</div>
+                            </div>
+                            <div class="faq-answer">
+                            <p>{{ item.answer }}</p>
+                            </div>
                         </div>
-                        <div class="faq-answer">
-                        <p>{{ item.answer }}</p>
                         </div>
-                    </div>
                     </div>
                 </div>
-
             </div>
         </div>
-        
+        <footerSection/>
     </div>
-    <footerSection/>
 </template>
-
-
 
 <script>
     import NavbarComponent from '@/vueCode/components/nav_bar.vue';
@@ -81,7 +80,6 @@ welcoming atmosphere that will keep you coming back.</h1>
   },
   methods: {
     toggleItem(index) {
-      // If clicking on already open item, close it. Otherwise, open clicked item
       this.activeItem = this.activeItem === index ? null : index;
     }
   }
@@ -89,60 +87,84 @@ welcoming atmosphere that will keep you coming back.</h1>
   
 </script>
 
-
-
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Kavoon&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
-    /* Reset defaults to ensure full-screen behavior */
+    /* Reset defaults to ensure full-screen  */
     html, body {
         margin: 0;
         padding: 0;
         width: 100%;
         height: 100%;
         overflow-x: hidden;
+        box-sizing: border-box;
     }
 
-    .container {
-        width: 100%;
+    body {
+        width: 100vw;
+        max-width: 100%;
+    }
+
+    /* Full screen container */
+    .page-container {
+        width: 100vw;
+        max-width: 100%;
         min-height: 100vh;
         margin: 0;
         padding: 0;
         box-sizing: border-box;
         overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .content-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .pic1 {
         background-image: url('/resources/js/assets/images/aboutUs.png');
         background-size: cover; 
         background-position: center;
+        width: 100%;
+        height: 50vh; 
         display: flex;
         align-items: center;
-        flex-direction: column;
-        width: 100%;
-        height: 50vh; /* Increased height for better full-screen appearance */
+        justify-content: center;
+        position: relative;
     }
+
+    .hero-text {
+        display: none; 
+    }
+    
     .title {
         font-family: 'Kavoon';
-        font-size: 2.5rem; /* Responsive font size */
+        font-size: 3rem;
         color: black;
         text-align: center;
-        margin-top: 2rem;
-        margin-bottom: 1rem;
+        margin-top: 3rem;
+        margin-bottom: 1.5rem;
         width: 100%;
-        padding: 0 1rem;
+        max-width: 1400px;
+        padding: 0 2rem;
         box-sizing: border-box;
     }
+    
     .title1 {
         font-family: 'Inter';
-        font-size: 1.25rem; /* Responsive font size */
+        font-size: 1.5rem;
         color: gray;
         text-align: center;
-        margin-top: 0rem;
-        margin-bottom: 2rem;
-        padding: 0 10%;
+        margin-top: 0;
+        margin-bottom: 3rem;
         width: 100%;
+        max-width: 1200px;
+        padding: 0 2rem;
         box-sizing: border-box;
     }
 
@@ -150,85 +172,78 @@ welcoming atmosphere that will keep you coming back.</h1>
         background-image: url('/resources/js/assets/images/aboutUs2.png');
         background-size: cover; 
         background-position: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        width: 90%;
+        width: 100%;
+        max-width: 1600px;
         aspect-ratio: 21/9;
-        margin-left: auto;
-        margin-right: auto;
+        margin: 0 0 3rem 0;
     }
+    
     .features-container {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         gap: 2rem;
         align-items: center;
-        margin-top: 2rem;
-        margin-bottom: 1rem;
-        width: 90%;
-        padding: 0 1rem;
+        margin: 3rem 0;
+        width: 100%;
+        max-width: 1600px;
+        padding: 0 2rem;
         box-sizing: border-box;
-        margin-left: auto;
-        margin-right: auto;
-        flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        flex-wrap: wrap;
     }
+    
     .features-container > div {
-        flex: 1 1 20%; /* Flex grow/shrink/basis for responsive layout */
-        min-width: 200px; /* Minimum width before wrapping */
+        flex: 1 1 20%;
+        min-width: 220px;
+        max-width: 300px;
     }
+    
     .features-container img {
         width: 100%;
         height: auto;
         transition: transform 0.3s;
     }
+    
     .features-container img:hover {
         transform: scale(1.05);
     }
+    
     .chef {
         background-image: url('/resources/js/assets/images/chef.png');
         background-size: contain; 
         background-repeat: no-repeat;
         background-position: center;
-        display: flex;
-        align-items: center;
-        flex-direction: column;
-        width: 90%;
+        width: 100%;
+        max-width: 1600px;
         aspect-ratio: 16/9;
-        margin-left: auto;
-        margin-right: auto;
+        margin: 2rem 0;
     }
+    
     .question-container {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-top: 0rem;
-        margin-bottom: 5rem;
-        width: 90%;
-        margin-left: auto;
-        margin-right: auto;
-        gap: 1%;
-        flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        margin: 3rem 0 5rem 0;
+        width: 100%;
+        max-width: 1600px;
+        padding: 0 2rem;
+        box-sizing: border-box;
+        gap: 5%;
+        flex-wrap: wrap;
     }
+    
     .question-img {
         background-image: url('/resources/js/assets/images/question.png');
         background-size: contain; 
         background-position: center;
         background-repeat: no-repeat;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        width: 45%;
+        flex: 1;
+        min-width: 300px;
         aspect-ratio: 12/9;
-        margin-left: 2rem;
-        margin-right: auto;
-        margin-top: 5%;
     }
     
     .question-text {
-        width: 45%;
-        flex-grow: 1;
+        flex: 1;
+        min-width: 300px;
     }
 
     /* FAQ styles */
@@ -240,14 +255,13 @@ welcoming atmosphere that will keep you coming back.</h1>
 
     .faq-heading {
         text-align: center;
-        font-size: 28px;
+        font-size: 2.5rem;
         font-weight: bold;
-        margin-bottom: 20px;
+        margin-bottom: 2rem;
     }
 
     .faq-container {
-        max-width: 700px;
-        margin: 0 auto;
+        max-width: 800px;
         width: 100%;
     }
 
@@ -291,7 +305,6 @@ welcoming atmosphere that will keep you coming back.</h1>
     .question-text {
         font-size: 20px;
         color: #666;
-        text-align: center;
         flex-grow: 1;
     }
 
@@ -302,25 +315,41 @@ welcoming atmosphere that will keep you coming back.</h1>
     }
 
     .faq-item.active .faq-answer {
-        max-height: 200px;
+        max-height: 300px;
         padding: 0 20px 20px 20px;
     }
 
     .faq-answer p {
         margin: 0;
         color: #333;
-        line-height: 1.5;
+        line-height: 1.6;
+        font-size: 1.1rem;
     }
 
     /* Media queries for responsive design */
+    @media (max-width: 1200px) {
+        .title {
+            font-size: 2.5rem;
+        }
+        
+        .title1 {
+            font-size: 1.3rem;
+        }
+        
+        .hero-text {
+            font-size: 3.5rem;
+        }
+    }
+
     @media (max-width: 768px) {
         .question-container {
             flex-direction: column;
+            gap: 2rem;
         }
         
         .question-img, .question-text {
             width: 100%;
-            margin-left: 0;
+            min-width: 100%;
         }
         
         .features-container {
@@ -329,6 +358,7 @@ welcoming atmosphere that will keep you coming back.</h1>
         
         .features-container > div {
             flex: 1 1 45%;
+            min-width: 150px;
         }
         
         .title {
@@ -336,7 +366,34 @@ welcoming atmosphere that will keep you coming back.</h1>
         }
         
         .title1 {
+            font-size: 1.1rem;
+        }
+        
+        .hero-text {
+            font-size: 3rem;
+        }
+        
+        .faq-heading {
+            font-size: 2rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .features-container > div {
+            flex: 1 1 100%;
+            min-width: 100%;
+        }
+        
+        .title {
+            font-size: 1.8rem;
+        }
+        
+        .title1 {
             font-size: 1rem;
+        }
+        
+        .hero-text {
+            font-size: 2.5rem;
         }
     }
 </style>
