@@ -1,16 +1,4 @@
 <template>
-<<<<<<< HEAD:laravel/resources/js/vueCode/components/footer_section.vue
-    <footer class="text-white py-10 mt-20 px-6">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div>
-          <h4 class="font-bold text-lg mb-2">La Libre</h4>
-          <p>Enjoy your meal with pleasure!</p>
-          <div class="flex space-x-4 mt-4">
-            <i class="fab fa-facebook"></i>
-            <i class="fab fa-instagram"></i>
-            <i class="fab fa-twitter"></i>
-          </div>
-=======
   <footer class="footer">
     <div class="footer-content">
       <!-- Left: Brand & Social -->
@@ -18,7 +6,6 @@
         <div class="logo-wrapper">
           <img :src="'/assets/logo/logofood_station.png'" alt="La Libre Logo" class="logo" />
            <h2>La Libre</h2>
->>>>>>> PolliX:laravel/resources/js/vueCode/components/footer.vue
         </div>
         
         <p>Enjoy your meal with pleasure!</p>
@@ -104,18 +91,6 @@
   font-family: 'IBM Plex Sans Condensed', sans-serif;
   margin: 10px 0 5px;
   
-<<<<<<< HEAD:laravel/resources/js/vueCode/components/footer_section.vue
-  <script>
-  export default {
-    name: "Footer_Section",
-  };
-  </script>
-  
-  <style scoped>
-  footer {
-    font-family: 'Instrument Sans Variable', sans-serif;
-    background-color: rgb(54, 46, 46);
-=======
 }
 
 .footer-brand p {
@@ -199,7 +174,6 @@ a:hover {
     flex-direction: column;
     align-items: flex-start;
     gap: 30px;
->>>>>>> PolliX:laravel/resources/js/vueCode/components/footer.vue
   }
 
   .footer-links {
