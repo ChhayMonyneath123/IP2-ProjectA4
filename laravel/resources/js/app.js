@@ -1,15 +1,7 @@
-import './bootstrap';                
-import { createApp } from 'vue';    
-import Alpine from 'alpinejs';    
-import MainApp from './vueCode/mainApp.vue'; 
-import router from './router'
+import './bootstrap';
 
-import '@fontsource/ibm-plex-sans-condensed';
-import '@fontsource-variable/instrument-sans';
-import "../css/app.css"
-window.Alpine = Alpine;       
-Alpine.start();                     
+import Alpine from 'alpinejs';
 
-const app = createApp(MainApp);     
-app.use(router)
-app.mount('#app')               
+window.Alpine = Alpine;
+
+Alpine.start();

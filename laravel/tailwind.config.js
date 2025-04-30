@@ -12,8 +12,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                ibm: ['"IBM Plex Sans Condensed"', 'sans-serif'],
-                instrument: ['"Instrument Sans Variable"', 'sans-serif'],
+                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
         },
     },
