@@ -38,5 +38,6 @@ Route::get('/welcome', function () {
     return view('welcome');  // if you ever use route('welcome')
 })->name('welcome');
 
+
 // ✅ Auth scaffolding (password reset, etc.)
 require __DIR__.'/auth.php';
