@@ -1,15 +1,4 @@
 <template>
-<<<<<<< HEAD
-  <div class="bg-white p-4 border rounded-lg mb-4">
-    <div class="flex items-center gap-4 mb-2">
-      <img class="w-10 h-10 rounded-full" :src="avatarUrl" :alt="name" />
-      <div>
-        <p class="font-semibold">{{ name }}</p>
-        <p class="text-xs text-gray-500">{{ date }} · Rating: {{ stars }}</p>
-      </div>
-    </div>
-    <p class="text-sm">{{ message }}</p>
-=======
   <div class="review-card">
     <div class="review-header">
       <img :src="review.avatar" class="avatar" alt="Avatar" />
@@ -24,48 +13,22 @@
       </div>
     </div>
     <p class="comment">{{ review.comment }}</p>
->>>>>>> PolliX
   </div>
 </template>
 
 <script>
 export default {
-<<<<<<< HEAD
-  name: "CardReview",
-  props: {
-    name: String,
-    date: String,
-    rating: Number,
-    avatar: {
-      type: String,
-      required: true
-    },
-    message: String,
-  },
-  computed: {
-    stars() {
-      return '★★★★★'.slice(0, this.rating) + '☆☆☆☆☆'.slice(this.rating);
-    },
-    avatarUrl() {
-      return new URL(`../../assets/logo/${this.avatar}`, import.meta.url).href;
-=======
   name: 'Review_card',
   props: {
     review: {
       type: Object,
       required: true
->>>>>>> PolliX
     }
   }
 };
 </script>
 
 <style scoped>
-<<<<<<< HEAD
-img {
-  object-fit: cover;
-}
-=======
 .review-card {
   border: 1px solid #4e3e2e;
   padding: 16px;
@@ -109,5 +72,4 @@ img {
   margin-top: 12px;
   font-size: 14px;
 }
->>>>>>> PolliX
 </style>
