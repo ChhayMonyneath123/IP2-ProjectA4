@@ -1,7 +1,5 @@
 <template>
   <div>
-    <Nav_Bar/>
-
     <div class="container">
     <NavbarComponent/>
     <div class="breadcrumb">
@@ -16,7 +14,7 @@
       <Rating />
       <Footer/>
     </div>
-    
+  </div>
   </template>
   
   <script>
