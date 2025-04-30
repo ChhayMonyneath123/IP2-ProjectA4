@@ -2,12 +2,8 @@ import './bootstrap';
 
 import Alpine from 'alpinejs';
 
-import '@fontsource/ibm-plex-sans-condensed';
-import '@fontsource-variable/instrument-sans';
-import "../css/app.css"
-window.Alpine = Alpine;       
-Alpine.start();                     
+import Alpine from 'alpinejs';
 
-const app = createApp(MainApp);     
-app.use(router)
-app.mount('#app')               
+window.Alpine = Alpine;
+
+Alpine.start();
