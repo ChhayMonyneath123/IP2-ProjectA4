@@ -37,6 +37,10 @@ export default {
 </script>
 
 <style scoped>
+body {
+  font-family: 'Instrument Sans', sans-serif;
+
+}
 .product-card {
     background-color: #f8f8f8;
     border-radius: 2rem;
@@ -48,6 +52,7 @@ export default {
     margin-top: 2rem;
     padding: 16px;
     margin: 2rem;
+    font-family: 'Instrument Sans', sans-serif;
 }
 .product-image {
     width: 100%;

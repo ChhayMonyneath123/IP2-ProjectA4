@@ -107,6 +107,7 @@ import all_product_menu from '@/components/all_product_menu.vue';
 }
 </script>
 <style scoped>
+
 .menu{
     width: 100%;
     height: auto;
@@ -118,6 +119,7 @@ import all_product_menu from '@/components/all_product_menu.vue';
     justify-content: space-around;
     padding: 4rem 2rem;
     margin: 0 auto;
+    /* font-family: 'Instrument Sans', sans-serif; */
 }
 .viewMore{
     display: flex;

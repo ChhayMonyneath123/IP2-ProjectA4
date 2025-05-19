@@ -10,6 +10,8 @@
     "test:unit": "vitest"
   },
   "dependencies": {
+    "@fontsource/ibm-plex-sans-condensed": "^5.2.5",
+    "@fontsource/instrument-sans": "^5.2.5",
     "@fortawesome/fontawesome-free": "^6.7.2",
     "pinia": "^3.0.1",
     "vue": "^3.5.13",
