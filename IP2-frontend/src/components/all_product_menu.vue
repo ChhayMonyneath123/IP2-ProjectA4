@@ -16,36 +16,29 @@
                 </option>
             </select>
             <select class="filter-box" v-model="filters.price" @mousedown="hasClickedCategory = true">
-                <option :disabled="!hasClickedCategory" value="">Price </option>
+                <option disabled selected hidden value="">Price </option>
                 <option v-for="item in filterValue.prices"
                     :key="item.value"
                     :value="item.value"
                 >{{ item.price }}
                 </option>
             </select>
-
-
-        <!-- Serving Filter -->
-        <select class="filter-box" v-model="filters.serving">
-            <option value="">Serving</option>
-            <option value="10">More than 10</option>
-            <option value="9">Serving 9</option>
-            <option value="8">Serving 8</option>
-            <option value="7">Serving 7</option>
-            <option value="6">Serving 6</option>
-        </select>
-
-        <!-- Cooking Filter -->
-        <select class="filter-box" v-model="filters.cooking">
-            <option value="">Cooking</option>
-            <option value="1">1 hour</option>
-            <option value="50">50 hours</option>
-            <option value="40">40 hours</option>
-            <option value="30">30 hours</option>
-            <option value="20">20 hours</option>
-            <option value="10">10 hours</option>
-        </select>
-
+            <select class="filter-box" v-model="filters.serving" @mousedown="hasClickedCategory = true">
+                    <option disabled selected hidden value="">Serving</option>
+                    <option v-for="item in filterValue.services"
+                        :key="item.value"
+                        :value="item.value"
+                    >{{ item.service }}
+                    </option>
+                </select>
+            <select class="filter-box" v-model="filters.cooking" @mousedown="hasClickedCategory = true">
+                <option disabled selected hidden value="">Cooking</option>
+                <option v-for="item in filterValue.cook"
+                    :key="item.value"
+                    :value="item.value"
+                >{{ item.time }}
+                </option>
+            </select>
         <button class="search-btn" @click="handleSearch">🔍</button>
         </div>
     </div>
@@ -55,54 +48,67 @@
 import { reactive, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
+    export default {
+    name: 'all_product_menu',
+    setup() {
+        const router = useRouter();
 
-export default {
-name: 'all_product_menu',
-setup() {
-    const router = useRouter();
+        const filters = reactive({
+            category: '',
+            price: '',
+            serving: '',
+            cooking: ''
+        });
 
-    const filters = reactive({
-    category: '',
-    price: '',
-    serving: '',
-    cooking: ''
-    });
+        const filterValue = {
+            categories: [
+                { name: 'Foods', value: 'foods', route: '/food' },
+                { name: 'Drinks', value: 'drinks', route: '/drink' },
+                { name: 'Desserts', value: 'desserts', route: '/dessert' }
+            ],
+            prices:[
+                {price: 'From 1$-5$', route:'/food'},
+                {price: 'From 5$-10$', route:'/food'},
+                {price: 'From 10$-15$', route:'/food'},
+            ],
+            services:[
+                {service:'serving 6', value:'6'},
+                {service:'serving 7', value:'7'},
+                {service:'serving 8', value:'8'},
+                {service:'serving 9', value:'9'},
+                {service:'serving 10', value:'10'},
+            ],
+            cook:[
+                {time:'1 hours', value:'1'},
+                {time:'50 minutes', value:'50'},
+                {time:'40 minutes ', value:'40'},
+                {time:'30 minutes ', value:'30'},
+                {time:'20 minutes', value:'20'},
+            ]
+        };
 
-    const filterValue = {
-    categories: [
-        { name: 'Foods', value: 'foods', route: '/food' },
-        { name: 'Drinks', value: 'drinks', route: '/drink' },
-        { name: 'Desserts', value: 'desserts', route: '/dessert' }
-    ],
-    prices:[
-        {price: 'From 1$-5$', route:'/food'},
-        {price: 'From 5$-10$', route:'/food'},
-        {price: 'From 10$-15$', route:'/food'},
-    ]
-    };
+        const handleSearch = () => {
+        console.log('Filters:', filters);
+        };
 
-    const handleSearch = () => {
-    console.log('Filters:', filters);
-    };
-
-    watch(
-    () => filters.category,
-    (value) => {
-        if (!value) return; // Don't redirect if placeholder is selected
-        const match = filterValue.categories.find(item => item.value === value);
-        if (match) {
-        router.push(match.route);
+        watch(
+        () => filters.category,
+        (value) => {
+            if (!value) return; // Don't redirect if placeholder is selected
+            const match = filterValue.categories.find(item => item.value === value);
+            if (match) {
+            router.push(match.route);
+            }
         }
-    }
-    );
+        );
 
-    return {
-    filters,
-    handleSearch,
-    filterValue
+        return {
+        filters,
+        handleSearch,
+        filterValue
+        };
+    }
     };
-}
-};
 </script>
 
 <style scoped>

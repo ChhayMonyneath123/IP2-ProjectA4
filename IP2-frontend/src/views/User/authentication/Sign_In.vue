@@ -1,8 +1,8 @@
 <template>
-    <div class="forget-password">
+    <div class="Sign-In">
         <Nav_bar/>
-        <div class="">
-            <h1>welcome to </h1>
+        <div class="center">
+            <h1>welcome to Sign-In</h1>
         </div>
         <FooterBar/>
     </div>
@@ -12,7 +12,7 @@ import Nav_bar from '@/components/nav_bar.vue';
 import FooterBar from '@/components/FooterBar.vue';
 
     export default {
-        name: "Drink",
+        name: "sign_in",
         components:{
             FooterBar,
             Nav_bar
@@ -20,8 +20,13 @@ import FooterBar from '@/components/FooterBar.vue';
     }
 </script>
 <style scoped>
-.forget-password{
+.Sign-In{
     width: 100%;
     height: 20rem;
+}
+.center{
+    display: flex;
+    justify-content: center;
+    align-content: center;
 }
 </style>
