@@ -1,0 +1,53 @@
+
+services:
+  laravel:
+    build:
+      context: ./IP2-backend
+    container_name: laravel-app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./IP2-backend:/var/www
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=laravel
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+
+  vue:
+    build:
+      context: ./IP2-frontend
+    container_name: vue-app
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./IP2-frontend:/app
+    working_dir: /app
+    command: npm run dev
+    networks:
+      - app-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
