@@ -1,11 +1,12 @@
 <template>
-  <div>
-    <router-view></router-view>
-  </div>
+
+    <router-view />
+
 </template>
 
-<script>
-
+<script setup> 
+import Footer from './components/Footer.vue'
+import Header from './components/Header.vue'
 </script>
 
 <style scoped>

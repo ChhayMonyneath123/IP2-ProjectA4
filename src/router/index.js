@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import manage from '@/views/admin/manage.vue'
-import cartview from '@/views/User/cartview.vue'
+import cartview from '@/views/User/cartview.vue' 
+import Paymentview from '@/views/User/paymentview.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,7 +30,15 @@ const router = createRouter({
       name: 'cartview',
       component: cartview,
     },
+
+    {
+      path: '/payment',
+      name: 'payment',
+      component: Paymentview,
+    },
   ],
 })
+
+
 
 export default router
