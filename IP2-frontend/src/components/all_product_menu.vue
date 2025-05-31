@@ -149,7 +149,6 @@ background-color: #f9f6f0;
   color: rgb(255, 255, 255);
 }
 
-
 .header-title {
 background-color: #6f665d;
 text-align: center;

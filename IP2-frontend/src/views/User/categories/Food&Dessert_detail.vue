@@ -3,7 +3,7 @@
     <Nav_bar />
     <Breadcrumb />
     <div class="wrapper">
-      <div class="title">Enjoy Your day with Fresh Strawberry Soda</div>
+      <div class="title">Chef’s spaghetti with cauliflower and carrots</div>
       <img :src="product.image" alt="Spaghetti">
 
     </div>
@@ -31,7 +31,7 @@ export default {
   data() {
     return {
       product: {
-        name: 'Classic Cargo Pants',
+        name: 'Spagetti',
         description: 'Comfortable, durable, and made for adventure.',
         price: 45.99,
         stock: 'In Stock',

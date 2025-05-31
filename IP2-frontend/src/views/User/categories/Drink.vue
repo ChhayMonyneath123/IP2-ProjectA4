@@ -11,7 +11,6 @@
         <div class="drink-menu">
             <h2>picture of Drink</h2>
         </div>
-        
     </div>
     <Footer_bar/>
 </template>

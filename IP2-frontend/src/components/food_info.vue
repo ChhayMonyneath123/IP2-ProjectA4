@@ -43,28 +43,30 @@ export default {
 <style scoped>
 /* Outer background */
 .page-bg {
-  background-color: #F8F7F3;
-  padding: 24px 16px;
+  background-color: #f8f7f3;
+  padding: 32px 16px;
   display: flex;
   justify-content: center;
 }
 
-/* Inner beige box */
+/* Inner container */
 .info-box {
   display: flex;
   flex-direction: column;
-  background-color: #e0ddcd9c;
-  border-radius: 8px;
-  padding: 22px 24px;
-  width: 70%;
-  gap: 100px;
-  justify-content: center;
-
+  background-color: #eae7db;
+  border-radius: 12px;
+  padding: 40px 32px;
+  width: 100%;
+  max-width: 1200px;
+  gap: 40px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
+/* Row layout on wider screens */
 @media (min-width: 768px) {
   .info-box {
     flex-direction: row;
+    justify-content: space-between;
     align-items: center;
   }
 }
@@ -72,56 +74,63 @@ export default {
 /* Info section */
 .info-section {
   display: flex;
-  flex-direction: row;
-  gap: 100px;
+  flex-direction: column;
+  gap: 24px;
   color: #2c2c2c;
-  font-size: 16px;
-
-
 }
 
+@media (min-width: 768px) {
+  .info-section {
+    flex-direction: row;
+    gap: 60px;
+  }
+}
 
 .info-item {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
 }
+
 .info-item i {
-  font-size: 54px;
+  font-size: 36px;
+  color: #2c2c2c;
 }
 
 .label {
-  font-size: 14px;
+  font-size: 16px;
+  color: #555;
 }
 
 .value {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
 }
 
 /* Button section */
 .button-section {
   display: flex;
+  flex-wrap: wrap;
   gap: 20px;
-  margin-top: 20px;
+  justify-content: flex-start;
 }
 
 @media (min-width: 768px) {
   .button-section {
-    margin-top: 0;
+    justify-content: flex-end;
   }
 }
 
 .action-button {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 10px 16px;
-  border: 1px solid #2c2c2c;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 20px;
+  border: 2px solid #2c2c2c;
   color: #2c2c2c;
-  border-radius: 6px;
+  border-radius: 8px;
   background-color: transparent;
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -135,9 +144,9 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #2c2c2c;
-  padding: 10px 12px;
-  border-radius: 6px;
+  border: 2px solid #2c2c2c;
+  padding: 12px 16px;
+  border-radius: 8px;
   background-color: transparent;
   color: #2c2c2c;
   cursor: pointer;
@@ -147,4 +156,6 @@ export default {
 .icon-button:hover {
   background-color: #eceae5;
 }
+
+
 </style>
