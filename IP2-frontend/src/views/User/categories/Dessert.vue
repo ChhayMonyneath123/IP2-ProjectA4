@@ -3,11 +3,7 @@
         <Nav_bar />
         <Breadcrumb/>
         <div class="dessert-content">
-            <div class="dessert-nav-link">
-                <span><router-link to="/" class="disable">Home &gt;</router-link></span>
-                <span><router-link to="/menu" class="disable">Menu &gt;</router-link></span>
-                <a href="#">dessert</a>
-            </div>
+            
             <div class="dessert-nav-button">
                 <button type="button">View more</button>
             </div>
