@@ -1,6 +1,10 @@
 <template>
     <div class="dessert">
         <Nav_bar />
+<<<<<<< HEAD
+=======
+        <Breadcrumb/>
+>>>>>>> Neath
         <div class="dessert-content">
             <div class="dessert-nav-link">
                 <span><router-link to="/" class="disable">Home &gt;</router-link></span>
@@ -14,19 +18,34 @@
         <div class="dessert-menu">
             <h2>picture of dessert</h2>
         </div>
+<<<<<<< HEAD
         <FooterBar />
     </div>
+=======
+    </div>
+    <Footer_bar />
+>>>>>>> Neath
 </template>
 
 <script>
 import Nav_bar from '@/components/nav_bar.vue';
+<<<<<<< HEAD
 import FooterBar from '@/components/FooterBar.vue';
 
+=======
+import Footer_bar from '@/components/footer_bar.vue';
+import Breadcrumb from '@/components/breadcrumb.vue';
+>>>>>>> Neath
 export default {
 name: "dessert",
 components: {
     Nav_bar,
+<<<<<<< HEAD
     FooterBar
+=======
+    Footer_bar,
+    Breadcrumb
+>>>>>>> Neath
 }
 }
 </script>

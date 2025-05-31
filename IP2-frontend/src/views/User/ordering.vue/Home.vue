@@ -4,19 +4,31 @@
         <div class="ourmenu">
             <h1>welcome to ourmenu</h1>
         </div>
+<<<<<<< HEAD
         <FooterBar/>
+=======
+        <Footer_bar/>
+>>>>>>> Neath
     </div>
 </template>
 
 <script>
+<<<<<<< HEAD
     import FooterBar from '@/components/FooterBar.vue';
+=======
+import Footer_bar from '@/components/footer_bar.vue';
+>>>>>>> Neath
     import Nav_bar from '@/components/nav_bar.vue';
     
     export default {
     name: 'Home',
     components: {
         Nav_bar,
+<<<<<<< HEAD
         FooterBar
+=======
+        Footer_bar
+>>>>>>> Neath
     }
     }
 </script>
