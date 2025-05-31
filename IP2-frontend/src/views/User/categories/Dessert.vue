@@ -40,7 +40,7 @@ background-color: #f9f9f9;
 
 .dessert-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
 padding: 1rem;
 }
 
