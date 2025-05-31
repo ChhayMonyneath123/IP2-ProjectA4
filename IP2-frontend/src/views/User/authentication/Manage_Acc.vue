@@ -1,8 +1,8 @@
 <template>
-    <div class="Sign-In">
+    <div class="Manage-Account">
         <Nav_bar/>
-        <div class="center">
-            <h1>welcome to Sign-In</h1>
+        <div class="">
+            <h1>welcome to Manage-Account</h1>
         </div>
 <<<<<<< HEAD
         <FooterBar/>
@@ -17,10 +17,11 @@ import Nav_bar from '@/components/nav_bar.vue';
 import FooterBar from '@/components/FooterBar.vue';
 =======
 import Footer_bar from '@/components/footer_bar.vue';
+
 >>>>>>> Neath
 
     export default {
-        name: "sign_in",
+        name: "manage_account",
         components:{
 <<<<<<< HEAD
             FooterBar,
@@ -32,13 +33,8 @@ import Footer_bar from '@/components/footer_bar.vue';
     }
 </script>
 <style scoped>
-.Sign-In{
+.Manage-Account{
     width: 100%;
     height: 20rem;
-}
-.center{
-    display: flex;
-    justify-content: center;
-    align-content: center;
 }
 </style>

@@ -3,7 +3,6 @@
         <Nav_bar />
         <Breadcrumb/>
         <div class="food-content">
-            
             <div class="food-nav-button">
                 <button type="button">View more</button>
             </div>
