@@ -1,9 +1,5 @@
 <template>
-<<<<<<< HEAD
     <router-view/>
-=======
-    <router-view />
->>>>>>> Neath
 </template>
 
 <script>
