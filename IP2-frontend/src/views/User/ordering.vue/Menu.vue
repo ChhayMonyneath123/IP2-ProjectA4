@@ -40,7 +40,8 @@ export default {
                     price: 1.5,
                     deliveryTime: 15,
                     image: new URL('@/assets/images/p.jpg', import.meta.url).href,
-                    rating: 4
+                    rating: 4,
+                    category: "Food"
                 },
                 {
                     id: 2,
@@ -48,7 +49,8 @@ export default {
                     price: 1.5,
                     deliveryTime: 15,
                     image: new URL('@/assets/images/p1.png', import.meta.url).href,
-                    rating: 3
+                    rating: 3,
+                    category: "Drink"
                 },
                 {
                     id: 3,

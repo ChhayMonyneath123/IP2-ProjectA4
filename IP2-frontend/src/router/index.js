@@ -6,10 +6,10 @@ import Menu from '@/views/User/ordering.vue/Menu.vue'
 import Food from '@/views/User/categories/Food.vue'
 import Dessert from '@/views/User/categories/Dessert.vue'
 import Drink from '@/views/User/categories/Drink.vue'
-import Sign_In from '@/views/User/authentication/Sign_In.vue'
-import Manage_Acc from '@/views/User/authentication/Manage_Acc.vue'
-import My_Review from '@/views/User/authentication/My_Review.vue'
-import My_Order from '@/views/User/authentication/My_Order.vue'
+import Sign_in from '@/views/User/authentication/Sign_in.vue'
+import Manage_acc from '@/views/User/authentication/Manage_acc.vue'
+import My_review from '@/views/User/authentication/My_review.vue'
+import My_order from '@/views/User/authentication/My_order.vue'
 import FoodDessert_detail from '@/views/User/categories/Food&Dessert_detail.vue'
 import Drink_detail from '@/views/User/categories/Drink_detail.vue'
 const router = createRouter({
@@ -53,22 +53,22 @@ const router = createRouter({
     {
       path: '/sign-in',
       name: 'sign-in',
-      component: Sign_In,
+      component: Sign_in,
     },
     {
-      path: '/manage_Account',
-      name: 'manage_Account',
-      component: Manage_Acc,
+      path: '/manage_account',
+      name: 'manage_account',
+      component: Manage_acc,
     },
     {
       path: '/my_review',
       name: 'my_review',
-      component: My_Review,
+      component: My_review,
     },
     {
       path: '/my-order',
       name: 'my-order',
-      component: My_Order,
+      component: My_order,
     },
     {
       path: '/menu/food/detail/:id',

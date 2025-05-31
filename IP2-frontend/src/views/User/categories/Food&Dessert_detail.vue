@@ -26,7 +26,7 @@ export default {
     Rating,
     Footer_bar,
     FoodInfo,
-    Breadcrumb
+    Breadcrumb,
   },
   data() {
     return {
