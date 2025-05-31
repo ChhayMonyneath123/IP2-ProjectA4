@@ -1,20 +1,8 @@
 <template>
     <div class="food">
         <Nav_bar />
-<<<<<<< HEAD
-=======
         <Breadcrumb/>
->>>>>>> Neath
         <div class="food-content">
-            <div class="food-nav-link">
-                <span><router-link to="/" class="disable">Home &gt;</router-link></span>
-                <span><router-link to="/menu" class="disable">Menu &gt;</router-link></span>
-                <a href="#">Food</a>
-            </div>
-<<<<<<< HEAD
-=======
-            
->>>>>>> Neath
             <div class="food-nav-button">
                 <button type="button">View more</button>
             </div>
@@ -22,35 +10,22 @@
         <div class="food-menu">
             <h2>picture of menu</h2>
         </div>
-<<<<<<< HEAD
-        <FooterBar />
-    </div>
-=======
         
     </div>
     <Footer_bar />
->>>>>>> Neath
 </template>
 
 <script>
 import Nav_bar from '@/components/nav_bar.vue';
-<<<<<<< HEAD
-import FooterBar from '@/components/FooterBar.vue';
-=======
 import Footer_bar from '@/components/footer_bar.vue';
 import Breadcrumb from '@/components/breadcrumb.vue';
->>>>>>> Neath
 
 export default {
 name: "Food",
 components: {
     Nav_bar,
-<<<<<<< HEAD
-    FooterBar
-=======
     Footer_bar,
     Breadcrumb
->>>>>>> Neath
 }
 }
 </script>
@@ -60,18 +35,14 @@ components: {
 
 flex-direction: column;
 width: 100%;
-<<<<<<< HEAD
-min-height: 100vh;
-=======
 height: 100vh;
->>>>>>> Neath
 background-color: #f9f9f9;
 }
 
 .food-content {
     display: flex;
-    justify-content: space-between;
-padding: 1rem;
+    justify-content: flex-end;
+    padding: 1rem;
 }
 
 .food-nav-link {
