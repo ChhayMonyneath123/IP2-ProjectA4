@@ -27,10 +27,7 @@
 export default {
     name: "all_product_card",
     props: {
-<<<<<<< HEAD
-=======
         id: Number,
->>>>>>> Neath
         title: String,
         price: Number,
         deliveryTime: String,
