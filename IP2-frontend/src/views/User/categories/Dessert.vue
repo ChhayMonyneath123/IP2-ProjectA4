@@ -1,6 +1,7 @@
 <template>
     <div class="dessert">
         <Nav_bar />
+        <Breadcrumb/>
         <div class="dessert-content">
             <div class="dessert-nav-link">
                 <span><router-link to="/" class="disable">Home &gt;</router-link></span>
@@ -14,19 +15,20 @@
         <div class="dessert-menu">
             <h2>picture of dessert</h2>
         </div>
-        <Footer_bar />
     </div>
+    <Footer_bar />
 </template>
 
 <script>
 import Nav_bar from '@/components/nav_bar.vue';
 import Footer_bar from '@/components/footer_bar.vue';
-
+import Breadcrumb from '@/components/breadcrumb.vue';
 export default {
 name: "dessert",
 components: {
     Nav_bar,
-    Footer_bar
+    Footer_bar,
+    Breadcrumb
 }
 }
 </script>

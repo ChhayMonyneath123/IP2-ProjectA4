@@ -1,9 +1,9 @@
 <template>
   <div class="all-products">
-    <div class="breadcrumb">
-      <span><router-link to="/" class="disable">Home &gt;</router-link></span>
-      <a href="#">Menu</a>
+    <div class="breadcrumb-container">
+        <Breadcrumb />
     </div>
+    
     <div class="header-title">All Products</div>
     <div class="filters">
       <select class="filter-box" v-model="filters.category">
@@ -42,9 +42,13 @@
 <script>
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
+import Breadcrumb from './breadcrumb.vue';
 
 export default {
   name: 'all_product_menu',
+  components:{
+    Breadcrumb,
+  },
   setup() {
     const router = useRouter();
 
@@ -103,29 +107,48 @@ export default {
 
 
 <style scoped>
+body {
+  font-family: 'Instrument Sans', sans-serif;
+}
 .all-products {
-font-family: Arial, sans-serif;
 background-color: #f9f6f0;
 }
-
-.breadcrumb {
-background-color: #6f665d;
-color: white;
-font-size: 14px;
-padding: 1rem;
+.breadcrumb-container {
+  background-color: #6f665d; /* Match header background */
+  padding: 0.8rem 2rem;
 }
 
-.breadcrumb span .disable {
-color: white;
-text-decoration: none;
-margin-left: 10px;
+::v-deep(.breadcrumb ul) {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  list-style: none;
+  align-items: center;
+  color: white;
 }
 
-.breadcrumb a {
-color: white;
-text-decoration: underline;
-margin-left: 5px;
+::v-deep(.breadcrumb-link) {
+  color: rgb(196, 191, 191);
+  text-decoration: underline;
+  font-weight: 500;
+  font-size: 16px;
 }
+
+::v-deep(.breadcrumb-link:hover) {
+  text-decoration: none;
+}
+
+::v-deep(.breadcrumb-active) {
+  color: white;
+  font-weight: 500;
+}
+
+::v-deep(.breadcrumb li::after) {
+  content: ">";
+  margin: 0 8px;
+  color: rgb(255, 255, 255);
+}
+
 
 .header-title {
 background-color: #6f665d;

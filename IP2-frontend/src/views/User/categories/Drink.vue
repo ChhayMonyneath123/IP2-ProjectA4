@@ -1,6 +1,7 @@
 <template>
     <div class="drink">
         <Nav_bar />
+        <Breadcrumb/>
         <div class="drink-content">
             <div class="drink-nav-link">
                 <span><router-link to="/" class="disable">Home &gt;</router-link></span>
@@ -14,18 +15,21 @@
         <div class="drink-menu">
             <h2>picture of Drink</h2>
         </div>
-        <Footer_bar/>
+        
     </div>
+    <Footer_bar/>
 </template>
 
 <script>
 import Nav_bar from '@/components/nav_bar.vue';
 import Footer_bar from '@/components/footer_bar.vue';
+import Breadcrumb from '@/components/breadcrumb.vue';
 export default {
 name: "drink",
 components: {
     Nav_bar,
-    Footer_bar
+    Footer_bar,
+    Breadcrumb
 }
 }
 </script>
@@ -35,7 +39,7 @@ components: {
 
 flex-direction: column;
 width: 100%;
-min-height: 100vh;
+height: 100vh;
 background-color: #f9f9f9;
 }
 

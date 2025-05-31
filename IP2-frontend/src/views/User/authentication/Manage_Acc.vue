@@ -11,6 +11,7 @@
 import Nav_bar from '@/components/nav_bar.vue';
 import Footer_bar from '@/components/footer_bar.vue';
 
+
     export default {
         name: "manage_account",
         components:{

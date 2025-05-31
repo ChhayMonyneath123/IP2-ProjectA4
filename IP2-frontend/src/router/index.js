@@ -10,7 +10,8 @@ import Sign_In from '@/views/User/authentication/Sign_In.vue'
 import Manage_Acc from '@/views/User/authentication/Manage_Acc.vue'
 import My_Review from '@/views/User/authentication/My_Review.vue'
 import My_Order from '@/views/User/authentication/My_Order.vue'
-
+import FoodDessert_detail from '@/views/User/categories/Food&Dessert_detail.vue'
+import Drink_detail from '@/views/User/categories/Drink_detail.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -69,6 +70,17 @@ const router = createRouter({
       name: 'my-order',
       component: My_Order,
     },
+    {
+      path: '/menu/food/detail/:id',
+      name: 'detail',
+      component: FoodDessert_detail,
+    },
+    {
+      path: '/menu/drink/detail/:id',
+      name: 'drink-detail',
+      component: Drink_detail,
+    },
+
   ],
 })
 

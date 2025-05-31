@@ -27,6 +27,7 @@
 export default {
     name: "all_product_card",
     props: {
+        id: Number,
         title: String,
         price: Number,
         deliveryTime: String,
