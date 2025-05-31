@@ -13,7 +13,6 @@
 import Nav_bar from '@/components/nav_bar.vue';
 import Footer_bar from '@/components/footer_bar.vue';
 import Breadcrumb from '@/components/breadcrumb.vue';
->>>>>>> Neath
 
     export default {
         name: "Drink",
