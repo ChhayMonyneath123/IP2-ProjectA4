@@ -3,11 +3,6 @@
         <Nav_bar />
         <Breadcrumb/>
         <div class="food-content">
-            <div class="food-nav-link">
-                <span><router-link to="/" class="disable">Home &gt;</router-link></span>
-                <span><router-link to="/menu" class="disable">Menu &gt;</router-link></span>
-                <a href="#">Food</a>
-            </div>
             
             <div class="food-nav-button">
                 <button type="button">View more</button>
@@ -47,8 +42,8 @@ background-color: #f9f9f9;
 
 .food-content {
     display: flex;
-    justify-content: space-between;
-padding: 1rem;
+    justify-content: flex-end;
+    padding: 1rem;
 }
 
 .food-nav-link {
