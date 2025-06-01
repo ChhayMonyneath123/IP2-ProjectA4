@@ -12,6 +12,7 @@ import My_Review from '@/views/User/authentication/My_Review.vue'
 import My_Order from '@/views/User/authentication/My_Order.vue'
 import FoodDessert_detail from '@/views/User/categories/Food&Dessert_detail.vue'
 import Drink_detail from '@/views/User/categories/Drink_detail.vue'
+import Wishlist from '@/views/User/authentication/Wishlist.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -80,6 +81,11 @@ const router = createRouter({
       name: 'drink-detail',
       component: Drink_detail,
     },
+    {
+      path: '/wishlist',
+      name: 'Wishlist',
+      component: Wishlist
+    }
 
   ],
 })

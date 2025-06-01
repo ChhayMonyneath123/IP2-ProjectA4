@@ -19,7 +19,7 @@
   
       <div class="icon-buttons">
         <i class="fas fa-shopping-cart icon" aria-label="Cart"></i>
-        <i class="fas fa-heart icon" aria-label="Wishlist"></i>
+        <i class="fas fa-heart icon" aria-label="Wishlist" @click="goToWishlist"></i>
   
         <div class="icon-menu">
           <button @click="toggleMenu" aria-label="Toggle Menu">
@@ -70,6 +70,9 @@
         if (item.route) {
           this.$router.push(item.route);
         }
+      },
+      goToWishlist() {
+        this.$router.push('/wishlist');
       }
     }
   };
