@@ -1,6 +1,7 @@
 <template>
     <div class="page-container">
         <NavbarComponent/>
+        <Breadcrumb/>
         <div class="content-container">
             <div class="pic1" :style="{ backgroundImage: `url(${aboutUsImg})` }">
             </div>
@@ -48,6 +49,8 @@ welcoming atmosphere that will keep you coming back.</h2>
 <script>
     import NavbarComponent from '@/components/nav_bar.vue';
     import footerSection from '@/components/footer_bar.vue';
+    import Breadcrumb from '@/components/breadcrumb.vue';
+
     
     // Import images
     import feature1 from '@/assets/images/feature1.png';
@@ -63,6 +66,7 @@ welcoming atmosphere that will keep you coming back.</h2>
   components: {
     NavbarComponent,
     footerSection,
+    Breadcrumb,
     },
     data() {
     return {
