@@ -26,7 +26,7 @@ export default {
     Rating,
     Footer_bar,
     FoodInfo,
-    Breadcrumb
+    Breadcrumb,
   },
   data() {
     return {
@@ -60,6 +60,7 @@ export default {
 .container {
   background-color: #F8F7F3;
   width: 100%;
+  max-width: 100%;
   height: auto;
 }
 
