@@ -24,7 +24,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: "/home",
+      path: "",
       name: "Home",
       component: Home,
     },
@@ -148,7 +148,7 @@ const router = createRouter({
   },
   {
     // Default child route for /admin: redirect to dashboard
-    path: '', // Matches /admin exactly
+    path: '/admin', // Matches /admin exactly
     redirect: '/admin/dashboard'
   }
   ],
