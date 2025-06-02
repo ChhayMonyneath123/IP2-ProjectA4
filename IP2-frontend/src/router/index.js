@@ -14,11 +14,15 @@ import FoodDessert_detail from "@/views/User/categories/Food&Dessert_detail.vue"
 import Drink_detail from "@/views/User/categories/Drink_detail.vue";
 import ForgetPassword from "@/views/User/authentication/ForgetPassword.vue";
 import CreateAccount from "@/views/User/authentication/CreateAccount.vue";
+import ReviewsPage from "@/views/Admin/authentication/Review_Page.vue";
+import Admin_layout from "@/components/Admin_Component/admin_layout.vue";
+import DashboardPage from "@/views/Admin/authentication/DashboardPage.vue";
+import Chat_Page from "@/views/Admin/authentication/Chat_Page.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: "/",
+      path: "/home",
       name: "Home",
       component: Home,
     },
@@ -86,6 +90,65 @@ const router = createRouter({
       name: "drink-detail",
       component: Drink_detail,
     },
+    {
+      path: '/reviews',
+      name: 'Reviews',
+      component: ReviewsPage
+    },
+    // --- Admin Routes (using Admin_Layout as the parent) ---
+  {
+    path: '/admin', // The base path for all admin-related pages
+    component: Admin_layout,
+    children: [
+      {
+        path: 'dashboard', // Will resolve to /admin/dashboard
+        name: 'DashboardPage',
+        component: DashboardPage
+      },
+      // {
+      //   path: 'orders', // Will resolve to /admin/orders
+      //   name: 'Orders',
+      //   component: OrdersPage
+      // },
+      // {
+      //   path: 'stocks', // Will resolve to /admin/stocks
+      //   name: 'Stocks',
+      //   component: StocksPage
+      // },
+      // {
+      //   path: 'delivery', // Will resolve to /admin/delivery
+      //   name: 'Delivery',
+      //   component: DeliveryPage
+      // },
+      {
+        path: 'chat', // Will resolve to /admin/users
+        name: 'ChatPage',
+        component: Chat_Page
+      },
+      {
+        path: 'reviews', // Will resolve to /admin/reviews
+        name: 'Reviews',
+        component: ReviewsPage // Your specific Review Page
+      },
+      // {
+      //   path: 'chats', // Will resolve to /admin/chats
+      //   name: 'Chats',
+      //   component: ChatPage
+      // },
+      // {
+      //   path: 'manage-account', // Will resolve to /admin/manage-account
+      //   name: 'ManageAccount',
+      //   component: ManageAccountPage
+      // },
+      
+    ]
+
+  },
+  {
+    // Default child route for /admin: redirect to dashboard
+    path: '', // Matches /admin exactly
+    redirect: '/admin/dashboard'
+  }
   ],
 });
 
