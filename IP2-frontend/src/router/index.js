@@ -12,6 +12,7 @@ import My_review from '@/views/User/authentication/My_review.vue'
 import My_order from '@/views/User/authentication/My_order.vue'
 import FoodDessert_detail from '@/views/User/categories/Food&Dessert_detail.vue'
 import Drink_detail from '@/views/User/categories/Drink_detail.vue'
+import Dashboard from '@/views/Admin/Dashboard.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -79,6 +80,11 @@ const router = createRouter({
       path: '/menu/drink/detail/:id',
       name: 'drink-detail',
       component: Drink_detail,
+    },
+    {
+      path: '/admin',
+      name: 'admin_dashboard',
+      component: Dashboard,
     },
 
   ],
