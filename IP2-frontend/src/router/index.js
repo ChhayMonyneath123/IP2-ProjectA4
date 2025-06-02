@@ -18,6 +18,8 @@ import ReviewsPage from "@/views/Admin/authentication/Review_Page.vue";
 import Admin_layout from "@/components/Admin_Component/admin_layout.vue";
 import DashboardPage from "@/views/Admin/authentication/DashboardPage.vue";
 import Chat_Page from "@/views/Admin/authentication/Chat_Page.vue";
+import Stocks from "@/views/Admin/authentication/Stocks.vue";
+import Delivery from "@/views/Admin/authentication/Delivery.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -110,16 +112,16 @@ const router = createRouter({
       //   name: 'Orders',
       //   component: OrdersPage
       // },
-      // {
-      //   path: 'stocks', // Will resolve to /admin/stocks
-      //   name: 'Stocks',
-      //   component: StocksPage
-      // },
-      // {
-      //   path: 'delivery', // Will resolve to /admin/delivery
-      //   name: 'Delivery',
-      //   component: DeliveryPage
-      // },
+      {
+        path: 'stocks', // Will resolve to /admin/stocks
+        name: 'Stocks',
+        component: Stocks
+      },
+      {
+        path: 'delivery', // Will resolve to /admin/delivery
+        name: 'Delivery',
+        component: Delivery
+      },
       {
         path: 'chat', // Will resolve to /admin/users
         name: 'ChatPage',
