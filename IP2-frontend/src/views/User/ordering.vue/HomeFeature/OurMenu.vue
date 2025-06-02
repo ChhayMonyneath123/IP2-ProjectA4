@@ -17,7 +17,7 @@
 <div class="menu-labels">
   <router-link to="/menu/food"><h2>Food</h2></router-link>
   <router-link to="/menu/drinks"><h2>Drinks</h2></router-link>
-  <router-link to="/menu/dessert"><h2>Dessert</h2></router-link>
+  <router-link to="/menu/dessert"><h2>Dessertddd</h2></router-link>
 </div>
 
   
