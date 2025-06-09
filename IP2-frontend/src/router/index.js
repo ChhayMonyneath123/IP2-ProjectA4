@@ -20,6 +20,7 @@ import DashboardPage from "@/views/Admin/authentication/DashboardPage.vue";
 import Chat_Page from "@/views/Admin/authentication/Chat_Page.vue";
 import Stocks from "@/views/Admin/authentication/Stocks.vue";
 import Delivery from "@/views/Admin/authentication/Delivery.vue";
+import Wishlist from "@/views/User/authentication/Wishlist.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -47,6 +48,11 @@ const router = createRouter({
       path: "/menu/dessert",
       name: "dessert",
       component: Dessert,
+    },
+    {
+      path: "/wishlist",
+      name: "wishlist", 
+      component: Wishlist,
     },
     {
       path: "/contact",
