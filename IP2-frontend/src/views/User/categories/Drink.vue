@@ -1,16 +1,9 @@
 <template>
     <div class="drink">
         <Nav_bar />
-<<<<<<< HEAD
-=======
         <Breadcrumb/>
->>>>>>> Neath
         <div class="drink-content">
-            <div class="drink-nav-link">
-                <span><router-link to="/" class="disable">Home &gt;</router-link></span>
-                <span><router-link to="/menu" class="disable">Menu &gt;</router-link></span>
-                <a href="#">Drink</a>
-            </div>
+            
             <div class="drink-nav-button">
                 <button type="button">View more</button>
             </div>
@@ -18,7 +11,6 @@
         <div class="drink-menu">
             <h2>picture of Drink</h2>
         </div>
-        
     </div>
     <Footer_bar/>
 </template>
@@ -48,7 +40,7 @@ background-color: #f9f9f9;
 
 .drink-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
 padding: 1rem;
 }
 

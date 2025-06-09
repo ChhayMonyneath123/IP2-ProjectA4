@@ -75,7 +75,7 @@ h3 {
 
 .user-info {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   margin: 10px 0;
   margin-top: 40px;
 }
