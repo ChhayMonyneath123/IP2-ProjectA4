@@ -383,8 +383,4 @@ textarea {
         max-width: 320px;
     }
 }
-<<<<<<< HEAD
 </style>
-=======
-</style>
->>>>>>> origin/IP2-version1
