@@ -84,7 +84,7 @@
 
 <script>
 import "@fortawesome/fontawesome-free/css/all.css";
-import Sign_In from "./Sign_In.vue";
+import Sign_In from "./Sign_in.vue";
 
 export default {
   name: "CreateAccount",
