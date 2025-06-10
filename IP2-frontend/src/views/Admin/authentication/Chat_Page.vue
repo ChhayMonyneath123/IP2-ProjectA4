@@ -1,238 +1,330 @@
 <template>
-    <div class="chat-page-content">
-      <h2>Chats</h2>
-  
-      <div class="chat-area">
-        <div class="messages-list">
-          <div
-            v-for="message in messages"
-            :key="message.id"
-            :class="['message-card', message.type]"
-          >
-            <div class="message-bubble">{{ message.text }}</div>
-            <span class="message-time">{{ message.time }}</span>
-          </div>
-        </div>
-  
-        <div class="message-input-area">
-          <input type="text" placeholder="Message" class="message-input" />
-          <button class="icon-button">
-            <i class="fa-regular fa-face-smile"></i>
-          </button>
-          <button class="icon-button" @click="triggerFileUpload"> <i class="fa-solid fa-paperclip"></i>
-          </button>
-          <input
-            type="file"
-            ref="fileInput"
-            style="display: none"
-            @change="handleFileUpload"
-            accept="image/*" />
+  <div class="chat-page-container">
+    <div class="chat-messages-area">
+      <div v-for="(messageGroup, index) in chatMessages" :key="index">
+        <div class="message-date-divider" v-if="messageGroup.date">
+          {{ messageGroup.date }}
         </div>
 
-        
+        <div
+          v-for="(message, msgIndex) in messageGroup.messages"
+          :key="msgIndex"
+          class="message-bubble-wrapper"
+        >
+          <img
+            :src="message.avatar"
+            :alt="message.sender + ' Avatar'"
+            class="message-avatar"
+          />
+          <div class="message-content-wrapper">
+            <div class="message-header">
+              <span class="sender-name">{{ message.sender }}</span>
+            </div>
+            <div class="message-bubble">
+              <p>{{ message.text }}</p>
+              <div class="message-info">
+                <span class="message-time">{{ message.time }}</span>
+                <span class="message-status">
+                  <font-awesome-icon
+                    :icon="['fas', 'check-double']"
+                    class="status-icon"
+                  />
+                </span>
+              </div>
+            </div>
+            <div class="message-actions">
+              <font-awesome-icon :icon="['fas', 'share']" class="action-icon" />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    name: "ChatPage", // Component name for the chat page
-    data() {
-      return {
-        // Example chat data, in a real app this would come from an API
-        messages: [
-          {
-            id: 1, // Changed sid to id for consistency
-            text: "Hello! I was wondering what your operating hours are today. I'm planning to visit with my family, and I want to make sure you're open before heading over. Also, do you have any special offers or promotions today? Thanks.",
-            time: "7:15 pm",
-            type: "sent",
-          },
-          {
-            id: 2,
-            text: "Hi there! We're open from 10 AM to 10 PM today. Yes, we have a special promotion: buy one main course, get 50% off on the second. Valid for today only!",
-            time: "7:20 pm",
-            type: "received",
-          },
-          {
-            id: 3,
-            text: "That's great! One more thing, do you offer any vegetarian dishes? I'm trying to eat more healthy. Thanks!",
-            time: "7:25 pm",
-            type: "sent",
-          },
-          {
-            id: 4,
-            text: "We have several vegetarian options! Feel free to ask our staff for recommendations or check our menu online. Enjoy your meal!",
-            time: "7:30 pm",
-            type: "received",
-          },
-        ],
-      };
-    },
-    methods: {
-      triggerFileUpload() {
-        // Programmatically click the hidden file input
-        this.$refs.fileInput.click();
-      },
-      async handleFileUpload(event) {
-        const file = event.target.files[0]; // Get the selected file
-        if (file) {
-          console.log("Selected file:", file);
-          // You would typically upload this file to your server here
-          // Example: Using FormData for API upload
-          const formData = new FormData();
-          formData.append('image', file);
-          try {
-            const response = await fetch('/api/upload-image', {
-              method: 'POST',
-              body: formData,
-            });
-            const result = await response.json();
-            console.log('Upload successful:', result);
-            // Optionally, add a message to the chat indicating an image was sent
-            this.messages.push({
-              id: Date.now(), // Unique ID
-              text: `Image sent: ${file.name}`,
-              time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
-              type: 'sent',
-              imageUrl: result.imageUrl // Assuming API returns image URL
-            });
-          } catch (error) {
-            console.error('Error uploading image:', error);
-          }
-          
-          // Reset the file input so the same file can be selected again
-          event.target.value = ''; 
-        }
-      },
-    },
-  };
-  </script>
-  
-  <style scoped>
-  /* Your existing styles remain here */
-  .chat-page-content {
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    margin-bottom: 20px;
-    font-family: "Arial", sans-serif;
-    color: #333;
-    display: flex;
-    flex-direction: column;
-    height: calc(
-      100vh - 180px
-    ); /* Adjust height to fit within the layout, considering header and padding */
+
+    <div class="chat-input-area">
+      <input
+        type="text"
+        placeholder="Message"
+        class="message-input"
+        v-model="newMessageText"
+        @keyup.enter="sendMessage"
+      />
+      <div class="input-actions">
+        <i class="far fa-face-smile input-action-icon"></i>
+        <i class="fas fa-plus input-action-icon"></i>
+        <i
+          class="fas fa-paper-plane input-action-icon"
+          @click="sendMessage"
+          :class="{ 'disabled-icon': newMessageText.trim() === '' }"
+        ></i>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+// 1. Import your actual image assets
+import jennyAvatar from "@/assets/images/profile.jpg";
+
+export default {
+  name: "Chat_Page",
+  data() {
+    return {
+      newMessageText: "",
+      chatMessages: [
+        {
+          date: "Mon, 6/2",
+          messages: [
+            {
+              sender: "Jenny",
+              avatar: jennyAvatar, // Use imported avatar for Jenny
+              text: "Hi there! How can I help you today?",
+              time: "10:00 AM",
+              status: "sent",
+            },
+          ],
+        },
+        {
+          date: "Mon, 6/2",
+          messages: [
+            {
+              sender: "You",
+              avatar: jennyAvatar, // Use imported avatar for "You"
+              text: "I have a question about my order.",
+              time: "10:01 AM",
+              status: "sent",
+            },
+          ],
+        },
+      ],
+    };
+  },
+  methods: {
+  async sendMessage() {
+    // Don't send empty messages
+    if (this.newMessageText.trim() === "") return;
+
+    const now = new Date();
+    const time = now.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+
+    const todayDate = now.toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "numeric",
+      day: "numeric"
+    });
+
+    // Create new message object
+    const newMessage = {
+      sender: "You",
+      avatar: jennyAvatar, // Use your actual avatar import
+      text: this.newMessageText,
+      time: time,
+      status: "sent"
+    };
+
+    // Find or create today's message group
+    const lastGroup = this.chatMessages[this.chatMessages.length - 1];
+    if (lastGroup && lastGroup.date === todayDate) {
+      lastGroup.messages.push(newMessage);
+    } else {
+      this.chatMessages.push({
+        date: todayDate,
+        messages: [newMessage]
+      });
+    }
+
+    // Clear input
+    this.newMessageText = "";
+
+    // Scroll to bottom after DOM update
+    await this.$nextTick();
+    this.scrollToBottom();
+    
+    // Optional: Add message sending animation
+    this.addSendingAnimation();
+  },
+
+  scrollToBottom() {
+    const chatArea = this.$el.querySelector(".chat-messages-area");
+    if (chatArea) {
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
+  },
+
+  addSendingAnimation() {
+    // Optional: Add visual feedback
+    const planeIcon = this.$el.querySelector(".fa-paper-plane");
+    if (planeIcon) {
+      planeIcon.classList.add("sending-animation");
+      setTimeout(() => {
+        planeIcon.classList.remove("sending-animation");
+      }, 500);
+    }
   }
+}};
+</script>
+<style scoped>
+/* Your existing CSS for Chat_Page.vue will remain the same */
+/* The .message-avatar style already handles the sizing and circular shape */
+
+.chat-page-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 170px);
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  margin: 2%;
+}
+
+.chat-messages-area {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #ffffff;
   
-  h2 {
-    font-size: 1.8em;
-    color: #2c3e50;
-    margin-bottom: 25px;
-    text-align: left;
-  }
-  
-  .chat-area {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  
-  .messages-list {
-    flex-grow: 1;
-    padding: 20px;
-    overflow-y: auto; /* Enable scrolling for messages */
-    background-color: #f9f9f9;
-  }
-  
-  .message-card {
-    display: flex;
-    margin-bottom: 15px;
-    max-width: 70%; /* Limit bubble width */
-    align-items: flex-end; /* Align time to the bottom of the bubble */
-  }
-  
-  .message-card.sent {
-    justify-content: flex-start; /* Align sender's messages to left as per image */
-  }
-  
-  .message-card.received {
-    justify-content: flex-end; /* Align receiver's messages to right as per image */
-    margin-left: auto; /* Push to the right */
-  }
-  
-  .message-bubble {
-    background-color: #e0e0e0; /* Default background */
-    border-radius: 15px;
-    padding: 10px 15px;
-    font-size: 0.95em;
-    line-height: 1.4;
-    word-wrap: break-word;
-    color: #333;
-  }
-  
-  .message-card.sent .message-bubble {
-    background-color: #e0e0e0; /* Grey for "sent" messages (left side) */
-  }
-  
-  .message-card.received .message-bubble {
-    background-color: #a08c79; /* Your brand color for "received" messages (right side) */
-    color: white;
-  }
-  
-  .message-time {
-    font-size: 0.75em;
-    color: #888;
-    margin-left: 10px;
-    margin-right: 10px;
-    white-space: nowrap; /* Prevent time from wrapping */
-  }
-  
-  /* Adjust time alignment for received messages */
-  .message-card.received .message-time {
-    order: -1; /* Place time before bubble */
-    margin-right: 10px;
-    margin-left: 0;
-  }
-  
-  .message-input-area {
-    display: flex;
-    align-items: center;
-    padding: 15px;
-    background-color: #fff;
-    border-top: 1px solid #eee;
-  }
-  
-  .message-input {
-    flex-grow: 1;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    padding: 10px 15px;
-    font-size: 1em;
-    outline: none;
-    margin-right: 10px;
-  }
-  
-  .message-input:focus {
-    border-color: #a08c79;
-  }
-  
-  .icon-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 5px;
-    margin: 0 5px;
-  }
-  
-  /* The img rule is no longer directly needed if you are using Font Awesome <i> tags */
-  /* If you want to use img tags, make sure to uncomment or re-add the img rules */
-  /* .icon-button img {
-    width: 24px;
-    height: 24px;
-    vertical-align: middle;
-  } */
-  </style>
+}
+
+.message-date-divider {
+  text-align: center;
+  margin: 20px 0;
+  font-size: 0.85em;
+  color: #888;
+  position: relative;
+}
+
+.message-date-divider::before,
+.message-date-divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 35%;
+  height: 1px;
+  background-color: #eee;
+}
+
+.message-date-divider::before {
+  left: 0;
+}
+
+.message-date-divider::after {
+  right: 0;
+}
+
+.message-bubble-wrapper {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 15px;
+  gap: 15px;
+}
+
+.message-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover; /* Ensures the image fills the circular area */
+  flex-shrink: 0;
+}
+
+.message-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 70%;
+}
+
+.message-header {
+  margin-bottom: 5px;
+  font-size: 0.9em;
+  color: #666;
+  font-weight: bold;
+}
+
+.message-bubble {
+  background-color: #ffeef2;
+  border-radius: 12px;
+  padding: 12px 15px;
+  position: relative;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.message-bubble p {
+  margin: 0;
+  font-size: 0.95em;
+  line-height: 1.4;
+  color: #333;
+}
+
+.message-info {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 5px;
+  margin-top: 5px;
+  font-size: 0.75em;
+  color: #999;
+}
+
+.message-status .status-icon {
+  font-size: 0.8em;
+  color: #999;
+}
+
+.message-actions {
+  align-self: flex-end;
+  margin-top: 5px;
+  margin-left: 10px;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.message-bubble-wrapper:hover .message-actions {
+  opacity: 1;
+}
+
+.message-actions .action-icon {
+  font-size: 0.9em;
+  color: #888;
+  cursor: pointer;
+}
+
+/* Chat Input Area */
+.chat-input-area {
+  background-color: #f0f0f0;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.message-input {
+  flex-grow: 1;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  font-size: 1em;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.message-input:focus {
+  border-color: #a08c79;
+}
+
+.input-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px; /* Optional: adds some minimum space between icons */
+  width: 150px; /* Or whatever width you want */
+}
+
+.input-action-icon {
+  cursor: pointer; /* If clickable */
+  font-size: 24px; /* Adjust icon size */
+}
+</style>

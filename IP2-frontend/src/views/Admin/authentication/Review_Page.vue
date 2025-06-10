@@ -3,19 +3,6 @@
       
   
       <main class="main-content">
-        <header class="top-header">
-          <div class="header-left">
-            <div class="header-icon-text">
-              <img src="@/assets/images/sweet.png" alt="Review Icon" class="header-main-icon" /> <span>Review</span>
-            </div>
-          </div>
-          <div class="header-right">
-            <div class="header-icon-wrapper notification-icon">
-              <img src="@/assets/images/sweet.png" alt="Notifications" /> </div>
-            <div class="header-icon-wrapper profile-icon">
-              <img src="@/assets/images/sweet.png" alt="Profile" /> </div>
-          </div>
-        </header>
   
         <div class="reviews-section">
           <div class="reviews-header-bar">
@@ -42,7 +29,7 @@
   // Corrected import path based on the file structure provided:
   // from `src/views/Admin/authentication/` to `src/components/admin_component/`
   import Review_card from '@/components/Admin_Component/review_card.vue';
-  
+  import jennyAvatar from "@/assets/images/profile.jpg";
   export default {
     name: 'Review_Page', // Component name matching the file structure
     components: {
@@ -57,7 +44,7 @@
             reviewerName: 'Alex Jurk',
             reviewerTitle: 'Student in ITC',
             followers: 50,
-            avatar: 'https://via.placeholder.com/50/FF6347/FFFFFF?text=AJ', // Placeholder, replace with actual image path
+            avatar:jennyAvatar, // Placeholder, replace with actual image path
             rating: 4,
             date: '01/03/2023',
             text: 'Amazing food and great service! I ordered the Dish Name, and it was absolutely delicious. The flavors were perfect balanced, and the presentation was beautiful. However, I felt the dessert was a bit too sweet for my taste. Overall, a solid 4-star experience and would highly recommend this place for anyone looking for high-quality food and a nice atmosphere.',
@@ -67,7 +54,7 @@
             reviewerName: 'Alex Jurk',
             reviewerTitle: 'Student in ITC',
             followers: 50,
-            avatar: 'https://via.placeholder.com/50/FF6347/FFFFFF?text=AJ',
+            avatar: jennyAvatar,
             rating: 5,
             date: '03/05/2023',
             text: 'Best meal I\'ve had in a long time! The crispy fish was cooked to perfection, and the staff were attentive and beyond to make sure I was happy with my order. I also loved how they offer so many healthy options. The atmosphere was perfect for a casual dinner. Can\'t wait to come back!',
@@ -77,7 +64,7 @@
             reviewerName: 'Alex Jurk',
             reviewerTitle: 'Student in ITC',
             followers: 50,
-            avatar: 'https://via.placeholder.com/50/FF6347/FFFFFF?text=AJ',
+            avatar: jennyAvatar,
             rating: 3,
             date: '04/11/2023',
             text: 'The food was really good! I ordered the Green Tea, and while it tasted great, I felt the portion could have been a little bigger for the price. Still, the flavors were spot on, and the service was fast! Will definitely be coming back to try other dishes!',
@@ -87,7 +74,7 @@
             reviewerName: 'Alex Jurk',
             reviewerTitle: 'Student in ITC',
             followers: 50,
-            avatar: 'https://via.placeholder.com/50/FF6347/FFFFFF?text=AJ',
+            avatar: jennyAvatar,
             rating: 4,
             date: '04/11/2023',
             text: 'The food was really good! I ordered the Green Tea, and while it tasted great, I felt the portion could have been a little bigger for the price. Still, the flavors were spot on, and the service was fast! Will definitely be coming back to try other dishes!',
@@ -97,7 +84,7 @@
             reviewerName: 'Alex Jurk',
             reviewerTitle: 'Student in ITC',
             followers: 50,
-            avatar: 'https://via.placeholder.com/50/FF6347/FFFFFF?text=AJ',
+            avatar: jennyAvatar,
             rating: 3,
             date: '14/01/2023',
             text: 'The food was really good! I ordered the Green Tea, and while it tasted great, I felt the portion could have been a little bigger for the price. Still, the flavors were spot on, and the service was fast! Will definitely be coming back to try other dishes!',

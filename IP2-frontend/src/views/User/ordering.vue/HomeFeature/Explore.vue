@@ -1,71 +1,51 @@
 <template>
-    <section class="py-16 bg-gray-50">
-      <div class="container mx-auto px-4 text-center max-w-6xl">
-        <h2 class="font-bold text-gray-800 mb-8">Explore Our New Menu Every Day</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div
-            v-for="(item, index) in allFoodItems"
-            :key="index"
-            v-show="showAllItems || index < 4"
-            class="flex items-center bg-white rounded-lg shadow-md p-4 transition-transform duration-300 ease-in-out hover:scale-105"
-          >
-            <img
-              :src="item.image"   
-              class="w-40 h-40 object-cover rounded-md mr-4 flex-shrink-0"
-            />
-            <div class="text-left flex-grow">
-              <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ item.title }}</h3>
-              <p class="text-gray-600 text-sm font-medium mb-1">{{ item.type }}</p>
-              <p class="text-gray-600 text-sm">{{ item.description }}</p>
-            </div>
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 text-center max-w-6xl">
+      <h2 class="font-bold text-gray-800 mb-8">Explore Our New Menu Every Day</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div
+          v-for="(item, index) in foodStore.allFoodItems"
+          :key="index"
+          v-show="showAllItems || index < 4"
+          class="flex items-center bg-white rounded-lg shadow-md p-4 transition-transform duration-300 ease-in-out hover:scale-105"
+        >
+          <img
+            :src="item.image"
+            class="w-40 h-40 object-cover rounded-md mr-4 flex-shrink-0"
+          />
+          <div class="text-left flex-grow">
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ item.title }}</h3>
+            <p class="text-gray-600 text-sm font-medium mb-1">{{ item.type }}</p>
+            <p class="text-gray-600 text-sm">{{ item.description }}</p>
           </div>
         </div>
-  
-        <div class="flex justify-center mt-8" v-if="!showAllItems">
-          <button
-            @click="toggleViewMore"
-            class="bg-black hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-md transition-colors duration-300"
-          >
-            View More
-          </button>
-        </div>
       </div>
-      <FoodWebsiteSection />
-    </section>
-  </template>
-  
-  <script>
-  import mangoCake from '@/assets/images/mango_cake.png';
-  import amok from '@/assets/images/amok.png';
-  import fishCheese from '@/assets/images/fish_cheese.png';
-  import redCake from '@/assets/images/red_cake.png';
-  import Sushi from '@/assets/images/sushi.png';
+
+      <div class="flex justify-center mt-8" v-if="!showAllItems">
+        <button
+          @click="toggleViewMore"
+          class="bg-black hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-md transition-colors duration-300"
+        >
+          View More
+        </button>
+      </div>
+    </div>
+    <FoodWebsiteSection />
+  </section>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+import { useFoodStore } from '@/stores/foodstation';
 import FoodWebsiteSection from './FoodWebsiteSection.vue';
-  
-export default {
-  name: "Explore",
-  components: {
-    FoodWebsiteSection // Registering the component for use in the template
-  },
-    data() {
-      return {
-        showAllItems: false,
-        allFoodItems: [
-          { image: mangoCake, type: "Tea", title: "Iced Latte", description: "A refreshing cold drink made with espresso and milk" },
-          { image: amok, type: "Seafood", title: "Sushi", description: "Fresh and delicious sushi rolls" },
-          { image: redCake, type: "Dessert", title: "Cake", description: "Yummy cake with creamy frosting" },
-          { image: fishCheese, type: "Drink", title: "Mango Shake", description: "A refreshing tropical drink made with ripe mangoes" },
-          { image: Sushi, type: "Fast Food", title: "Burger", description: "Juicy beef patty with fresh toppings" },
-        ],
-      };
-    },
-    methods: {
-      toggleViewMore() {
-        this.showAllItems = !this.showAllItems;
-      },
-    },
-  };
-  </script>
+
+const foodStore = useFoodStore();
+const showAllItems = ref(false);
+
+function toggleViewMore() {
+  showAllItems.value = !showAllItems.value;
+}
+</script>
   
 <style scoped>
 section {
@@ -80,6 +60,7 @@ section {
   margin-right: auto;
   padding-left: 1rem;
   padding-right: 1rem;
+  padding-bottom: 1%;
   text-align: center;
 }
 
@@ -90,7 +71,7 @@ section {
 
 .grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 10fr;
   gap: 1.5rem;
 }
 

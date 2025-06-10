@@ -41,38 +41,53 @@
   </template>
   
   <script>
-  export default {
-    name: "LoginSection",
-    data() {
-      return {
-        email: "",
-        password: "",
-        errorMessage: ""
-      };
-    },
-    methods: {
-      handleLogin() {
-        if (!this.email || !this.password) {
-          this.errorMessage = "Both fields are required.";
-          return;
-        }
-  
-        this.errorMessage = ""; // Clear error
-  
-        // Example login logic (you can replace with real API)
-        console.log("Logging in with:", this.email, this.password);
-  
-        // Simulate successful login and redirect to homepage
-        this.$router.push("/");
-      },
-      forgotPassword() {
-        this.$router.push("/forgot-password");
-      },
-      createAccount() {
-        this.$router.push("/register");
+ import axios from "axios";
+
+export default {
+  name: "LoginSection",
+  data() {
+    return {
+      email: "",
+      password: "",
+      errorMessage: ""
+    };
+  },
+  methods: {
+    async handleLogin() {
+      if (!this.email || !this.password) {
+        this.errorMessage = "Both fields are required.";
+        return;
       }
+
+      this.errorMessage = "";
+
+      try {
+        const response = await axios.post("http://localhost:3000/api/login", {
+          email: this.email,
+          password: this.password
+        }, {
+          withCredentials: true // if you're using Sanctum for cookie auth
+        });
+
+        console.log("Login successful:", response.data);
+
+        localStorage.setItem("token", response.data.token); // optional
+
+        this.$router.push("/");
+      } catch (error) {
+        console.error("Login failed:", error);
+        this.errorMessage = "Invalid email or password.";
+      }
+    },
+    forgotPassword() {
+      this.$router.push("/forgot-password");
+    },
+    createAccount() {
+      this.$router.push("/register");
     }
-  };
+  }
+};
+
   </script>
   
   <style scoped>

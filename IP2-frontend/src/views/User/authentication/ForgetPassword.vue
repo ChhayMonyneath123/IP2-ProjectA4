@@ -117,7 +117,7 @@
     align-items: center;
     min-height: 100vh;
     background-color: #F8F4ED; /* Consistent light background */
-    background-image: url('path/to/your/background-image.jpg'); /* Optional: Add a background image */
+    /* background-image: url('path/to/your/background-image.jpg'); Optional: Add a background image */
     background-size: cover;
     background-position: center;
   }
