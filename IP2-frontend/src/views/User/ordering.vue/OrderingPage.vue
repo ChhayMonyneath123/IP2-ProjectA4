@@ -6,7 +6,6 @@
             <h1>welcome to ordering</h1>
         </div>
         <Footer_bar/>
-
     </div>
 </template>
 <script>
