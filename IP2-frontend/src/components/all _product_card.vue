@@ -1,142 +1,165 @@
 <template>
     <div class="product-card">
-        <div class="product-image">
-            <img :src="image" alt="Product Image" />
+      <div class="product-image">
+        <img :src="image" alt="Product Image" />
+      </div>
+      <div class="product-info">
+        <div class="card-left">
+          <h3 class="product-title">{{ title }}</h3>
+          <p class="product-price">${{ price }}</p>
+          <p class="product-review">1112 Reviews</p>
         </div>
-        <div class="product-info">
-            <div class="card-left">
-                <h3 class="product-title">{{ title }}</h3>
-                <p class="product-price">${{ price }}</p>
-                <p class="product-review">1112 Reviews</p>
-            </div>
-            <div class="card-right">
-                <div class="ratings">
-                    <span v-for="star in 5" :key="star" class="star" :class="{ filled: star <= rating }">★</span>
-                </div>
-                <p class="product-delivery">Delivery: {{ deliveryTime }} mins</p>
-                <div class="button-container">
-                    <button class="add-to-cart"><i class="fa-solid fa-plus"></i></button>
-                    <button class="add-to-cart-heart"><i class="fa-solid fa-heart"></i></button>
-                </div>
-            </div>
+        <div class="card-right">
+          <div class="ratings">
+            <span
+              v-for="star in 5"
+              :key="star"
+              class="star"
+              :class="{ filled: star <= rating }"
+            >★</span>
+          </div>
+          <p class="product-delivery">Delivery: {{ deliveryTime }}</p>
+          <div class="button-container">
+            <button class="add-to-cart">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+            <button class="add-to-cart-heart">
+              <i class="fa-solid fa-heart"></i>
+            </button>
+          </div>
         </div>
+      </div>
     </div>
-</template>
-
-<script>
-export default {
+  </template>
+  
+  <script>
+  export default {
     name: "all_product_card",
     props: {
-        id: Number,
-        title: String,
-        price: Number,
-        deliveryTime: String,
-        image: String,
-        rating: Number,
+      id: Number,
+      title: String,
+      price: Number,
+      deliveryTime: String,
+      image: String,
+      rating: Number,
     },
-};
-</script>
-
-<style scoped>
-body {
-  font-family: 'Instrument Sans', sans-serif;
-
-}
-.product-card {
+  };
+  </script>
+  
+  <style scoped>
+  .product-card {
     background-color: #f8f8f8;
-    border-radius: 2rem;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(49, 49, 49, 0.1);
-    width: 17%;
-    border: 1px solid rgb(99, 97, 97);
-    height: 27rem;
-    margin-top: 2rem;
-    padding: 16px;
-    margin: 2rem;
+    border: 1px solid #636161;
+    border-radius: 1.5rem;
+    box-shadow: 0 2px 12px rgba(49, 49, 49, 0.1);
+    width: 14rem;
+    height: 22rem;
+    padding: 12px;
+    margin: 1rem;
     font-family: 'Instrument Sans', sans-serif;
-}
-.product-image {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .product-image {
     width: 100%;
-    height: 65%;
-    border-radius: 2rem;
+    height: 55%;
+    border-radius: 1rem;
     overflow: hidden;
-}
-.product-image img{
+  }
+  
+  .product-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-.product-info {
+  }
+  
+  .product-info {
     display: flex;
-    padding: 10px;
-    margin-top: 1rem;
-}
-.card-left {
-    width: 50%;
-    height: 100%;
-}
-.card-right {
-    width: 50%;
-    height: 100%;
-    padding: 0 0px 5px 25px;
-}
-.product-title {
-    font-size: 22px;
+    padding-top: 10px;
+  }
+  
+  .card-left {
+    width: 55%;
+  }
+  
+  .card-right {
+    width: 45%;
+    padding-left: 10px;
+  }
+  
+  .product-title {
+    font-size: 16px;
     font-weight: bold;
     margin: 0;
-}
-.product-price {
-    font-size: 16px;
+  }
+  
+  .product-price {
+    font-size: 14px;
     color: black;
-    margin: 0;
-}
-.product-delivery {
+    margin: 4px 0;
+  }
+  
+  .product-review {
+    color: #777;
     font-size: 12px;
-    margin-top: 5px;
-}
-.ratings {
-    font-size: 25px;
-    margin: 0;
-}
-.star {
+  }
+  
+  .product-delivery {
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  
+  .ratings {
+    font-size: 18px;
+    line-height: 1;
+  }
+  
+  .star {
     color: #ddd;
-}
-.star.filled {
+  }
+  
+  .star.filled {
     color: #f39c12;
-}
-
-.button-container {
+  }
+  
+  .button-container {
     display: flex;
-    margin-top: 3px;
-}
-.add-to-cart,
-.add-to-cart-heart {
-    background-color: #31261b;
-    color: #fff;
+    margin-top: 5px;
+  }
+  
+  .add-to-cart,
+  .add-to-cart-heart {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
     border: none;
+    border-radius: 50%;
     cursor: pointer;
-    font-size: 24px;
-    padding: 10px;
-    width: 40px;
-    height: 40px;
-    clip-path: circle(50% at 50% 50%);
     transition: background-color 0.3s;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: 10px;
-}
-.add-to-cart-heart {
+  }
+  
+  .add-to-cart {
+    background-color: #31261b;
+    color: #fff;
+  }
+  
+  .add-to-cart-heart {
     background-color: #5a5244;
-}
-.product-review {
-    color: #777;
-    margin-top: 5px;
-}
-.add-to-cart:hover {
+    margin-left: 8px;
+    color: white;
+  }
+  
+  .add-to-cart:hover {
     background-color: #4a1f17;
-}
-.add-to-cart-heart:hover {
+  }
+  
+  .add-to-cart-heart:hover {
     background-color: #4c3e36;
-}
-</style>
+  }
+  </style>
+  

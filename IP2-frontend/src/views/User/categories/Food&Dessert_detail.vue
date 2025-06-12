@@ -10,13 +10,13 @@
     <FoodInfo />
     <Rating />
 
+    <Footer_bar/>
   </div>
-  <Footer_bar />
 </template>
 
 <script>
 import Nav_bar from '@/components/nav_bar.vue';
-import Footer_bar from '@/components/footer_bar.vue';
+import Footer_bar from '../../../components/footer_bar.vue';
 import FoodInfo from '@/components/food_info.vue';
 import Rating from '@/components/rating.vue';
 import Breadcrumb from '@/components/breadcrumb.vue';
@@ -58,6 +58,7 @@ export default {
 
 <style scoped>
 .container {
+  max-width: 100%;
   background-color: #F8F7F3;
   width: 100%;
   height: auto;

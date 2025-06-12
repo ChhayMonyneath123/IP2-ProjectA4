@@ -56,7 +56,7 @@
     
     <script>
     export default {
-        name: "FooterBar"
+        name: "Footer_bar"
     }
     </script>
     
