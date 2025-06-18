@@ -1,244 +1,251 @@
 <template>
-    <div class="menu">
-      <Nav_bar />
-      <Breadcrumb/>
-      <div class="menu-categories">
-        <div class="menu-header">
-          <h1>Product</h1>
-        </div>
-  
-        <div class="category-tabs">
-          <template v-for="category in categories" :key="category">
-            <button
-              v-if="category === 'All'"
-              @click="selectCategory(category)"
-              :class="{ active: activeCategory === category }"
-              class="category-button"
-            >
-              {{ category }}
-            </button>
-            
-            <div v-else class="category-dropdown-container">
-              <button
-                @click="toggleDropdown(category)"
-                :class="{ active: activeCategory === category }"
-                class="category-button button-with-dropdown"
-              >
-                {{ category }}
-                <span class="dropdown-arrow" :class="{ 'rotate': activeCategory === category && showDropdownForCategory === category }"></span>
-              </button>
-              
-              <div v-if="activeCategory === category && showDropdownForCategory === category" class="region-dropdown">
-                <div
-                  v-for="subcategory in getSubcategories(category)"
-                  :key="subcategory"
-                  @click="selectSubcategory(category, subcategory)"
-                  :class="{ 'active-region-option': activeSubcategory === subcategory }"
-                  class="dropdown-option"
-                >
-                  {{ subcategory }}
-                </div>
-              </div>
+  <div class="menu">
+    <Nav_bar />
+    <Breadcrumb />
+    <div class="menu-categories">
+      <div class="menu-header">
+        <h1>Our Menu</h1>
+      </div>
+
+      <div class="category-tabs">
+        <button @click="selectCategory('All')" :class="{ active: activeCategory === 'All' }" class="category-button">
+          All
+        </button>
+
+        <div v-for="category in categories" :key="category.id" class="category-dropdown-container">
+          <button @click="toggleDropdown(category.name)" :class="{ active: activeCategory === category.name }"
+            class="category-button button-with-dropdown">
+            {{ category.name }}
+            <span class="dropdown-arrow"
+              :class="{ 'rotate': activeCategory === category.name && showDropdownForCategory === category.name }"></span>
+          </button>
+
+          <div v-if="activeCategory === category.name && showDropdownForCategory === category.name"
+            class="region-dropdown">
+            <div v-for="subcategory in category.subcategories" :key="subcategory.id"
+              @click="selectSubcategory(category.name, subcategory.name)"
+              :class="{ 'active-region-option': activeSubcategory === subcategory.name }" class="dropdown-option">
+              {{ subcategory.name }}
             </div>
-          </template>
-        </div>
-  
-        <div class="category-content">
-          <transition name="fade" mode="out-in">
-            <div v-if="filteredProducts.length > 0" :key="activeCategory + activeSubcategory" class="menu-card">
-              <div class="contain-menu">
-                <all_product_card
-                  v-for="product in filteredProducts"
-                  :key="product.id"
-                  :price="product.price"
-                  :title="product.title"
-                  :rating="product.rating"
-                  :deliveryTime="product.deliveryTime + ' mins'"
-                  :image="product.image"
-                />
-              </div>
-            </div>
-            <div v-else class="no-items-message">
-              No items found for the selected category or subcategory.
-            </div>
-          </transition>
+          </div>
         </div>
       </div>
-      <Footer_bar />
+
+      <div class="category-content">
+        <div v-if="isLoading" class="loading-spinner">
+          <div class="spinner"></div>
+          <p>Loading menu...</p>
+        </div>
+
+        <div v-else-if="error" class="error-message">
+          <p>{{ error }}</p>
+          <button @click="fetchData" class="retry-button">Try Again</button>
+        </div>
+
+        <transition v-else name="fade" mode="out-in">
+          <div v-if="filteredProducts.length > 0" class="menu-card">
+            <div class="contain-menu">
+              <all_product_card v-for="product in filteredProducts" :key="product.id" :price="product.price"
+                :title="product.name" :rating="product.rating" :deliveryTime="product.delivery_time + ' mins'"
+                :image="getImageUrl(product.image)" @click="goToProductDetail(product.id)" />
+
+            </div>
+          </div>
+          <div v-else class="no-items-message">
+            No products found in this category.
+          </div>
+        </transition>
+      </div>
     </div>
+    <Footer_bar />
+  </div>
 </template>
 
 <script>
 import Nav_bar from '@/components/nav_bar.vue';
 import Footer_bar from '@/components/footer_bar.vue';
-import All_product_card from '@/components/all _product_card.vue';
+import all_product_card from '@/components/all _product_card.vue';
 import Breadcrumb from '@/components/breadcrumb.vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 
 export default {
-    name: "MenuPage",
-    components: {
-        Footer_bar,
-        Nav_bar,
-        All_product_card,
-        Breadcrumb
-    },
-    data() {
-        return {
-            subcategories: {
-                'Food': ['Asia', 'Europe'],
-                'Drink': ['Hot Drink', 'Iced & Smoothie', 'Juice & Fresh'],
-                'Dessert': ['Asian', 'European', 'Middle Eastern']
-            },
-            activeCategory: 'All',
-            activeSubcategory: '',
-            showDropdownForCategory: null,
-            products: []
-        };
-    },
-    setup() {
-        const router = useRouter();
-        const goToProductDetail = (id) => {
-            console.log("Navigating to product detail with ID:", id);
-            router.push({ name: "detail", params: { id } });
-        };
-        return {
-            goToProductDetail 
-        };
-    },
-    computed: {
-        categories() {
-            const uniqueCategories = [...new Set(this.products.map(item => item.category))];
-            return ['All', ...uniqueCategories];
-        },
-        filteredProducts() {
-            let currentProducts = this.products;
+  name: "MenuPage",
+  components: {
+    Footer_bar,
+    Nav_bar,
+    all_product_card,
+    Breadcrumb
+  },
+  data() {
+    return {
+      categories: [],      // Will store all categories with subcategories
+      products: [],        // Will store all products
+      activeCategory: 'All',
+      activeSubcategory: '',
+      showDropdownForCategory: null,
+      isLoading: true,
+      error: null
+    };
+  },
+  setup() {
+    const router = useRouter();
+    const goToProductDetail = (id) => {
+      router.push({ name: "detail", params: { id } });
+    };
+    return { goToProductDetail };
+  },
+  computed: {
+    filteredProducts() {
+      if (this.activeCategory === 'All') {
+        return this.products;
+      }
 
-            // 1. Filter by Category (if not 'All')
-            if (this.activeCategory !== 'All') {
-                currentProducts = currentProducts.filter(product => product.category === this.activeCategory);
-            }
-            
-            // 2. Filter by Subcategory (if one is selected)
-            if (this.activeSubcategory) {
-                currentProducts = currentProducts.filter(product => product.subcategory === this.activeSubcategory);
-            }
-            
-            return currentProducts;
-        }
-    },
-    methods: {
-        getSubcategories(category) {
-            return this.subcategories[category] || [];
-        },
-        
-        selectCategory(category) {
-            this.activeCategory = category;
-            this.activeSubcategory = '';
-            this.showDropdownForCategory = null;
-        },
-        
-        toggleDropdown(category) {
-            if (this.activeCategory === category && this.showDropdownForCategory === category) {
-                this.showDropdownForCategory = null;
-                this.activeSubcategory = '';
-                this.activeCategory = category;
-            } else {
-                this.showDropdownForCategory = category;
-                this.activeCategory = category;
-                
-                const subcats = this.getSubcategories(category);
-                if (subcats.length > 0) {
-                    this.activeSubcategory = subcats[0];
-                }
-            }
-        },
+      let filtered = this.products.filter(
+        product => product.category === this.activeCategory
+      );
 
-        selectSubcategory(category, subcategory) {
-            this.activeCategory = category;
-            this.activeSubcategory = subcategory;
-            this.showDropdownForCategory = null;
-        },
+      if (this.activeSubcategory) {
+        filtered = filtered.filter(
+          product => product.subcategory === this.activeSubcategory
+        );
+      }
 
-        async fetchProducts() {
-            try {
-                const response = await axios.get('http://127.0.0.1:8000/api/products');
-                this.products = response.data.map(product => ({
-                    id: product.id,
-                    title: product.title,
-                    price: product.price,
-                    deliveryTime: product.delivery_time
-                        ? parseInt(product.delivery_time.split(':')[1])
-                        : 0,
-                    image: product.image ? `http://127.0.0.1:8000/storage/${product.image}` : '',
-                    rating: product.rating || 0,
-                    category: product.category || 'Food', // Default to 'Food' if not specified
-                    subcategory: product.subcategory || 'Asia' // Default to 'Asia' if not specified
-                }));
-            } catch (error) {
-                console.error("Error fetching products:", error);
-                this.products = [];
-            }
-        }
-    },
-    mounted() {
-        this.fetchProducts();
-    },
-    created() {
-        this.selectCategory('All'); 
+      return filtered;
     }
-}
+  },
+  methods: {
+    async fetchData() {
+  this.isLoading = true;
+  this.error = null;
+
+  try {
+    // Fetch categories, subcategories, and products
+    const [categoriesRes, subcategoriesRes, productsRes] = await Promise.all([
+      axios.get('http://127.0.0.1:8000/api/categories'),
+      axios.get('http://127.0.0.1:8000/api/subcategories'),
+      axios.get('http://127.0.0.1:8000/api/products')
+    ]);
+
+    const categories = categoriesRes.data;
+    const subcategories = subcategoriesRes.data;
+
+    // Add subcategories to each category
+    const categoryMap = categories.map(cat => {
+      return {
+        ...cat,
+        subcategories: subcategories.filter(sub => sub.category_id === cat.category_id)
+      };
+    });
+
+    this.categories = categoryMap;
+
+    // Normalize product data
+    this.products = productsRes.data.data.map(product => ({
+      id: product.product_id,
+      title: product.title,
+      price: product.price,
+      image: product.image,
+      delivery_time: product.estimated_delivery_minutes || 30,
+      rating: product.average_rating || 0,
+      category: product.category_name,
+      subcategory: product.subcategory_name
+    }));
+  } catch (err) {
+    console.error("Error fetching data:", err);
+    this.error = "Failed to load menu. Please try again later.";
+  } finally {
+    this.isLoading = false;
+  }
+},
+
+    getImageUrl(imagePath) {
+      if (!imagePath) return require('@/assets/default-product.png');
+      if (imagePath.startsWith('http')) return imagePath;
+      return `http://127.0.0.1:8000/storage/${imagePath}`;
+    },
+
+    selectCategory(category) {
+      this.activeCategory = category;
+      this.activeSubcategory = '';
+      this.showDropdownForCategory = null;
+    },
+
+    toggleDropdown(category) {
+      if (this.showDropdownForCategory === category) {
+        this.showDropdownForCategory = null;
+      } else {
+        this.showDropdownForCategory = category;
+        this.activeCategory = category;
+        // Select first subcategory by default
+        const categoryObj = this.categories.find(c => c.name === category);
+        if (categoryObj?.subcategories?.length) {
+          this.activeSubcategory = categoryObj.subcategories[0].name;
+        }
+      }
+    },
+
+    selectSubcategory(category, subcategory) {
+      this.activeCategory = category;
+      this.activeSubcategory = subcategory;
+      this.showDropdownForCategory = null;
+    }
+  },
+  mounted() {
+    this.fetchData();
+  }
+};
 </script>
 <style scoped>
 .menu {
-    width: 100%;
+  width: 100%;
 }
 
 .menu-header {
-    text-align: center;
-    margin-bottom: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
 .category-tabs {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem; 
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
 }
 
 /* Base style for all category buttons */
 .category-button {
-    padding: 0.8rem 1.8rem;
-    border: none;
-    background: #f5f5f5;
-    color: #555;
-    font-size: 1rem;
-    font-weight: 500;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex; 
-    align-items: center;
-    justify-content: center;
+  padding: 0.8rem 1.8rem;
+  border: none;
+  background: #f5f5f5;
+  color: #555;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .category-button.active {
-    background: #3a2e26;
-    color: white;
+  background: #3a2e26;
+  color: white;
 }
 
 /* Container for category buttons with integrated dropdowns */
 .category-dropdown-container {
-  position: relative; 
-  display: inline-block; 
+  position: relative;
+  display: inline-block;
 }
 
 /* Styling for buttons that have a dropdown */
 .button-with-dropdown {
-  padding-right: 2.5rem; /* Make space for the arrow */
+  padding-right: 2.5rem;
+  /* Make space for the arrow */
 }
 
 .dropdown-arrow {
@@ -247,12 +254,13 @@ export default {
   height: 0;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
-  border-top: 5px solid #555; 
+  border-top: 5px solid #555;
   transition: transform 0.3s ease;
 }
 
 .category-button.active .dropdown-arrow {
-  border-top-color: white; /* Arrow color when button is active */
+  border-top-color: white;
+  /* Arrow color when button is active */
 }
 
 .dropdown-arrow.rotate {
@@ -262,16 +270,18 @@ export default {
 /* Styling for the dropdown menu itself (regions) */
 .region-dropdown {
   position: absolute;
-  top: 100%; /* Position right below the button */
+  top: 100%;
+  /* Position right below the button */
   left: 0;
   background-color: white;
   border: 1px solid #ddd;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  min-width: 120px; 
-  z-index: 10; 
-  overflow: hidden; 
-  margin-top: 5px; /* Small gap below button */
+  min-width: 120px;
+  z-index: 10;
+  overflow: hidden;
+  margin-top: 5px;
+  /* Small gap below button */
 }
 
 .dropdown-option {
@@ -286,7 +296,7 @@ export default {
 }
 
 .dropdown-option.active-region-option {
-  background-color: #e0e0e0; 
+  background-color: #e0e0e0;
   font-weight: 600;
   color: #3a2e26;
 }
@@ -294,14 +304,14 @@ export default {
 /* No more .region-select for separate dropdowns, as they are now integrated */
 
 .category-content {
-    padding: 1rem;
+  padding: 1rem;
 }
 
 .contain-menu {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-    justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
 }
 
 .no-items-message {
@@ -311,10 +321,13 @@ export default {
   font-size: 1.1rem;
 }
 
-.fade-enter-active, .fade-leave-active {
-    transition: opacity 0.3s;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
 }
-.fade-enter, .fade-leave-to {
-    opacity: 0;
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

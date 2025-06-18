@@ -20,8 +20,10 @@ class ProductsController extends Controller
             
             // Calculate average rating for each product
             $products->each(function ($product) {
-                $product->average_rating = $product->ratings->avg('rating') ?? 0;
-            });
+            $product->average_rating = $product->ratings->avg('rating') ?? 0;
+            $product->category_name = $product->category->name ?? 'Unknown';
+            $product->subcategory_name = $product->subcategory->name ?? 'Unknown';
+        });
             
             return response()->json([
                 'status' => 'success',
