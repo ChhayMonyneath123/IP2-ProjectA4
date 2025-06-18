@@ -15,7 +15,6 @@ class Category extends Model
     {
         return $this->hasMany(Product::class, 'category_id');
     }
-
     public function beverages(): HasMany
     {
         return $this->hasMany(Beverage::class, 'category_id');
