@@ -1,6 +1,5 @@
 <?php
 
-// app/Models/Product.php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -13,8 +12,14 @@ class Product extends Model
     protected $primaryKey = 'product_id';
     
     protected $fillable = [
-        'title', 'description', 'price', 'image', 'quantity',
-        'category_id', 'cuisine_id', 'beverage_type_id', 'delivery_time', 'rating' //subcategory_id is not included in fillable as it is nullable
+        'title', 
+        'description', 
+        'price', 
+        'image', 
+        'quantity',
+        'category_id', 
+        'subcategory_id', 
+        'estimated_delivery_minutes'
     ];
 
     public function category(): BelongsTo
@@ -22,15 +27,16 @@ class Product extends Model
         return $this->belongsTo(Category::class, 'category_id');
     }
 
-    public function cuisine(): BelongsTo
+    public function subcategory(): BelongsTo
     {
-        return $this->belongsTo(Cuisine::class, 'cuisine_id');
+        return $this->belongsTo(Subcategory::class, 'subcategory_id');
     }
 
-    public function beverageType(): BelongsTo
+    public function ratings(): HasMany
     {
-        return $this->belongsTo(Beverage::class, 'beverage_type_id');
+        return $this->hasMany(ProductRating::class, 'product_id');
     }
+
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class, 'product_id');
@@ -49,5 +55,30 @@ class Product extends Model
     public function stocking(): HasOne
     {
         return $this->hasOne(Stocking::class, 'product_id');
+    }
+
+    /**
+     * Calculate estimated delivery time
+     */
+    public function getEstimatedDeliveryTimeAttribute()
+{
+    return now()->addMinutes($this->estimated_delivery_minutes)->format('H:i');
+}
+
+
+    /**
+     * Calculate average rating
+     */
+    public function getAverageRatingAttribute()
+    {
+        return $this->ratings()->avg('rating') ?? 0;
+    }
+
+    /**
+     * Get rating count
+     */
+    public function getRatingCountAttribute()
+    {
+        return $this->ratings()->count();
     }
 }

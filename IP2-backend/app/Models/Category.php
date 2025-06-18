@@ -9,14 +9,14 @@ class Category extends Model
 {
     protected $primaryKey = 'category_id';
     
-    protected $fillable = ['title', 'description', 'image_url'];
+    protected $fillable = ['name', 'description'];
 
     public function products(): HasMany
     {
         return $this->hasMany(Product::class, 'category_id');
     }
-    public function beverages(): HasMany
+    public function subcategories(): HasMany
     {
-        return $this->hasMany(Beverage::class, 'category_id');
+        return $this->hasMany(Subcategory::class, 'category_id');
     }
 }

@@ -15,9 +15,8 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|in:food,dessert,drink',
+            'name' => 'required|string',
             'description' => 'nullable|string',
-            'image_url' => 'nullable|url'
         ]);
 
         $category = Category::create($validated);
@@ -32,9 +31,8 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         $validated = $request->validate([
-            'name' => 'sometimes|in:food,dessert,drink',
+            'name' => 'required|string',
             'description' => 'nullable|string',
-            'image_url' => 'nullable|url'
         ]);
 
         $category->update($validated);

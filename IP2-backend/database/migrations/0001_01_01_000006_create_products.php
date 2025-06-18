@@ -19,10 +19,10 @@ return new class extends Migration
             $table->text('image');
             $table->integer('quantity');
             $table->foreignId('category_id')->constrained('categories', 'category_id');
-            $table->foreignId('cuisine_id')->nullable()->constrained('cuisines', 'cuisine_id');
-            $table->foreignId('beverage_type_id')->nullable()->constrained('beverages', 'beverage_type_id');
-            $table->time('delivery_time');
-            $table->decimal('rating', 3, 1)->nullable();
+            $table->foreignId('subcategory_id')->nullable()->constrained('subcategories', 'subcategory_id');
+            // $table->foreignId('beverage_type_id')->nullable()->constrained('beverages', 'beverage_type_id');
+            $table->integer('estimated_delivery_minutes')->default(30);
+            // $table->decimal('rating', 3, 1)->nullable();
             $table->timestamps();
         });
 
