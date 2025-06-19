@@ -56,13 +56,14 @@ const routes = [
         name: 'login',
         component: () => import('@/views/User/authentication/Log_in.vue'),
         meta: { guestOnly: true }
-    },
-    {
+      },
+      {
         path: '/register',
         name: 'register',
         component: () => import('@/views/User/authentication/Create_account.vue'),
         meta: { guestOnly: true }
-    },
+      }
+,      
     {
         path: '/forgot-password',
         name: 'forgot-password',
