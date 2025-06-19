@@ -28,21 +28,21 @@
         aria-label="Wishlist"
         @click="goToWishlist"
       ></i>
-      <router-link to="/sign-in">
-        <button class="auth-button">Login</button>
-      </router-link>
 
-      <router-link to="/register">
-        <button class="auth-button">Register</button>
-      </router-link>
-    </div>
+        <!-- Login Button -->
+        <router-link to="/login" class="login-btn"> Login </router-link>
+
+        <!-- Register Button -->
+        <router-link to="/register" class="register-btn">
+          Register
+        </router-link>
+      </div>
   </nav>
 </template>
 
 <script>
 export default {
   name: "Navbar",
-  data() {},
   methods: {
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen;
@@ -237,17 +237,18 @@ export default {
   gap: 10px;
 }
 
-.auth-button {
+.login-btn,
+.register-btn {
+  text-decoration: none;
   padding: 6px 12px;
-  border: none;
-  background-color: #635a44;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
+  border: 1px solid #333;
+  border-radius: 5px;
+  color: #333;
 }
 
-.auth-button:hover {
-  background-color: #635a44;
+.login-btn:hover,
+.register-btn:hover {
+  background-color: #f0f0f0;
 }
 
 </style>

@@ -35,9 +35,10 @@ services:
       context: ./IP2-frontend
     container_name: vue-app
     ports:
-      - "5173:5173"
+      - "5174:5173"
     volumes:
       - ./IP2-frontend:/app
+      - /app/node_modules
     working_dir: /app
     command: npm run dev
     networks:
@@ -53,8 +54,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: laravel
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      # MYSQL_ROOT: root
+      # MYSQL_PASSWORD: root
     networks:
       - app-network
 

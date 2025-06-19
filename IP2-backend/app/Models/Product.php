@@ -14,8 +14,7 @@ class Product extends Model
     
     protected $fillable = [
         'title', 'description', 'price', 'image', 'quantity',
-        'category_id', 'cuisine_id', 'beverage_type_id', 
-        'subcategory_id', 'delivery_time', 'rating'
+        'category_id', 'cuisine_id', 'beverage_type_id', 'delivery_time', 'rating' //subcategory_id is not included in fillable as it is nullable
     ];
 
     public function category(): BelongsTo

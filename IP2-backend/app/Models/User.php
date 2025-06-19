@@ -5,43 +5,84 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens; // ✅ Import the trait
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable; // ✅ Add HasApiTokens here
+    use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
-        'name',
+        'username',
         'email',
         'password',
+        'role',
+        'address',
+        'phone_number'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
+    public function isAdmin()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed', // Laravel 10+ feature
-        ];
+        return $this->role === 'admin';
+    }
+    // Relationships
+
+    /**
+     * Orders placed by the user
+     */
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    /**
+     * Items in user's shopping cart
+     */
+    public function cartItems()
+    {
+        return $this->hasMany(Cart::class);
+    }
+
+    /**
+     * User's wishlist items
+     */
+    public function wishlist()
+    {
+        return $this->belongsToMany(Product::class, 'wishlists')
+                   ->withTimestamps();
+    }
+
+    /**
+     * Payments made by the user
+     */
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    /**
+     * User's favorite products
+     */
+    public function favorites()
+    {
+        return $this->belongsToMany(Product::class, 'favorites')
+                   ->withTimestamps();
+    }
+
+    /**
+     * User's shipping addresses (if multiple)
+     */
+    public function addresses()
+    {
+        return $this->hasMany(User::class);
     }
 }

@@ -11,8 +11,8 @@
             <h2>picture of menu</h2>
         </div>
         
+        <Footer_bar />
     </div>
-    <Footer_bar />
 </template>
 
 <script>
@@ -27,6 +27,7 @@ components: {
     Footer_bar,
     Breadcrumb
 }
+
 }
 </script>
 

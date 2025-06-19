@@ -2,32 +2,19 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AuthController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AdminController;
+use App\Http\Middleware\AdminMiddleware;
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('/products', [ProductController::class, 'index']);
 
-Route::post('/login', function (Request $request) {
-    $credentials = $request->only('email', 'password');
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::post('/forgot-password', [AuthController::class, 'sendPasswordResetLink']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
-    if (Auth::attempt($credentials)) {
-        $request->session()->regenerate();
-        return response()->json(Auth::user());
-    }
-
-    return response()->json(['message' => 'Invalid credentials'], 401);
-});
-
-Route::post('/logout', function (Request $request) {
-    Auth::logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-
-    return response()->json(['message' => 'Logged out']);
-});
-
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard']);
 });
