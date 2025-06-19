@@ -6,6 +6,10 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SubcategoryController;
+use App\Http\Controllers\ProductRatingController;
 
 Route::get('/products', [ProductController::class, 'index']);
 
@@ -18,10 +22,7 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard']);
 });
-use App\Http\Controllers\ProductsController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\SubcategoryController;
-use App\Http\Controllers\ProductRatingController;
+
 
 // Optional: user route if using Sanctum
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
