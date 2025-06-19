@@ -4,15 +4,22 @@
       <img :src="review.avatar" class="avatar" alt="Avatar" />
       <div>
         <strong>{{ review.name }}</strong>
-        <p class="date">{{ review.date }}</p>
+        <p class="date">{{ formattedDate }}</p>
         <div class="wrapper">
           <p class="label">Rating:</p>
-        <div class="stars">
-          <i v-for="n in review.rating" :key="n" class="fas fa-star filled"></i>
-          <i v-for="n in (5 - review.rating)" :key="'e' + n" class="fas fa-star empty"></i>
+          <div class="stars">
+            <i
+              v-for="n in review.rating"
+              :key="`filled-${n}`"
+              class="fas fa-star filled"
+            ></i>
+            <i
+              v-for="n in (5 - review.rating)"
+              :key="`empty-${n}`"
+              class="fas fa-star empty"
+            ></i>
+          </div>
         </div>
-        </div>
-        
       </div>
     </div>
     <p class="comment">{{ review.comment }}</p>
@@ -26,6 +33,12 @@ export default {
     review: {
       type: Object,
       required: true
+    }
+  },
+  computed: {
+    formattedDate() {
+      const date = new Date(this.review.date || this.review.created_at);
+      return date.toLocaleDateString();
     }
   }
 };
@@ -55,14 +68,13 @@ export default {
   color: #888;
   margin-top: 0px;
 }
-.wrapper{
+.wrapper {
   display: flex;
   flex-direction: row;
   gap: 10px;
 }
 .label {
   font-size: 13px;
-  margin-top: 0px;
   font-weight: 500;
 }
 .stars {

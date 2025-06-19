@@ -7,21 +7,21 @@ use Illuminate\Http\Request;
 
 class ProductRatingController extends Controller
 {
-    // GET /api/product-ratings
-   public function index(Request $request)
-{
-    $query = ProductRating::with(['product', 'user']);
+    public function store(Request $request, $productId)
+    {
+        $validated = $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string|max:1000',
+            'user_id' => 'required|integer|exists:users,id'
+        ]);
 
-    // Optional: filter by product_id or user_id from query string
-    if ($request->has('product_id')) {
-        $query->where('product_id', $request->input('product_id'));
+        $rating = ProductRating::create([
+            'product_id' => $productId,
+            'user_id' => $validated['user_id'],
+            'rating' => $validated['rating'],
+            'comment' => $validated['comment']
+        ]);
+
+        return response()->json(['status' => 'success', 'data' => $rating], 201);
     }
-
-    if ($request->has('user_id')) {
-        $query->where('user_id', $request->input('user_id'));
-    }
-
-    return response()->json($query->get());
-}
-
 }

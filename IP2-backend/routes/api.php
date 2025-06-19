@@ -6,6 +6,8 @@ use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\ProductRatingController;
+use App\Http\Controllers\UserController;
+
 
 // Optional: user route if using Sanctum
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -43,3 +45,5 @@ Route::prefix('subcategories')->group(function () {
     Route::get('/{subcategory}/products', [SubcategoryController::class, 'products']); // optional
 });
 
+Route::post('/products/{product}/ratings', [ProductRatingController::class, 'store']);
+Route::get('/users/{user}', [UserController::class, 'show']);

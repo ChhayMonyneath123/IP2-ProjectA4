@@ -32,9 +32,15 @@ class UserController extends Controller
     }
 
     public function show(User $user)
-    {
-        return response()->json($user);
-    }
+{
+    return response()->json([
+        'id' => $user->id,
+        'name' => $user->username, // or real name if exists
+        'avatar' => $user->avatar ?? 'https://randomuser.me/api/portraits/women/45.jpg',
+        'email' => $user->email
+    ]);
+}
+
 
     public function update(Request $request, User $user)
     {
