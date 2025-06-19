@@ -1,6 +1,11 @@
 {
   "dependencies": {
+<<<<<<< HEAD
     "@fontsource-variable/instrument-sans": "^5.2.5",
     "@fontsource/ibm-plex-sans-condensed": "^5.2.5"
+=======
+    "@fontsource/ibm-plex-sans-condensed": "^5.2.5",
+    "@fortawesome/fontawesome-free": "^6.7.2"
+>>>>>>> origin/IP2-version1
   }
 }
