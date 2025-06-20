@@ -10,15 +10,15 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Product extends Model
 {
     protected $primaryKey = 'product_id';
-    
+
     protected $fillable = [
-        'title', 
-        'description', 
-        'price', 
-        'image', 
+        'title',
+        'description',
+        'price',
+        'image',
         'quantity',
-        'category_id', 
-        'subcategory_id', 
+        'category_id',
+        'subcategory_id',
         'estimated_delivery_minutes'
     ];
 
