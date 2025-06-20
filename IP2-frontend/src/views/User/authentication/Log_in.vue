@@ -1,104 +1,107 @@
 <template>
   <div class="login-container">
     <div class="login-box">
-      <h1>Welcome Back</h1>
-      
-      <!-- Success messages -->
-      <div v-if="$route.query.passwordReset" class="success-message">
-        Your password has been reset successfully!
-      </div>
-      <div v-if="$route.query.resetEmailSent" class="success-message">
-        Password reset link sent to your email.
-      </div>
-      
+      <h1>Login</h1>
       <form @submit.prevent="handleLogin">
-        <!-- General error message -->
-        <div v-if="authStore.errors.general" class="error-message">
-          {{ authStore.errors.general[0] }}
-        </div>
-        
-        <!-- Email Field -->
         <div class="input-group">
           <label for="email">Email</label>
           <input
             type="email"
             id="email"
-            v-model="form.email"
-            placeholder="your@email.com"
+            v-model="email"
+            placeholder="Your Email"
             required
-            :class="{ 'input-error': authStore.errors.email }"
           />
-          <p v-if="authStore.errors.email" class="input-error-message">
-            {{ authStore.errors.email[0] }}
-          </p>
         </div>
-        
-        <!-- Password Field -->
         <div class="input-group">
           <label for="password">Password</label>
           <input
             type="password"
             id="password"
-            v-model="form.password"
-            placeholder="••••••••"
+            v-model="password"
+            placeholder="Your Password"
             required
-            :class="{ 'input-error': authStore.errors.password }"
           />
-          <p v-if="authStore.errors.password" class="input-error-message">
-            {{ authStore.errors.password[0] }}
-          </p>
         </div>
-        
-        <!-- Remember Me & Forgot Password -->
-        <div class="remember-forgot">
-          <div class="remember-me">
-            <input
-              type="checkbox"
-              id="remember"
-              v-model="form.remember"
-            />
-            <label for="remember">Remember me</label>
-          </div>
-          <router-link to="/forgot-password" class="forgot-password">
-            Forgot password?
-          </router-link>
+
+        <!-- Error Message -->
+        <div v-if="errorMessage" class="error-message">
+          {{ errorMessage }}
         </div>
-        
-        <!-- Submit Button -->
-        <button type="submit" :disabled="authStore.loading" class="login-button">
-          <svg v-if="authStore.loading" class="spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          <span>{{ authStore.loading ? 'Logging in...' : 'Login' }}</span>
-        </button>
-        
-        <!-- Registration Link -->
-        <div class="register-link">
-          Don't have an account? 
-          <router-link to="/register">Register here</router-link>
-        </div>
+
+        <button type="submit" class="login-button">Login</button>
       </form>
+
+      <div class="links">
+        <a href="#" @click.prevent="forgotPassword">Forget Password?</a>
+        <a href="#" @click.prevent="createAccount">Create new account</a>
+      </div>
     </div>
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue'
-import { useAuthStore } from '@/stores/auth'
-import { useRoute } from 'vue-router'
+<script>
+import axios from 'axios'
 
-const authStore = useAuthStore()
-const route = useRoute()
+export default {
+  name: 'LoginSection',
+  data() {
+    return {
+      email: '',
+      password: '',
+      errorMessage: ''
+    }
+  },
+  methods: {
+    async handleLogin() {
+      this.errorMessage = ''
 
-const form = ref({
-  email: '',
-  password: '',
-  remember: false
-})
+      if (!this.email || !this.password) {
+        this.errorMessage = 'Both fields are required.'
+        return
+      }
 
-const handleLogin = async () => {
-  await authStore.login(form.value)
+      try {
+        const response = await axios.post('http://localhost:8000/api/login', {
+          email: this.email,
+          password: this.password
+        })
+
+        // Save token and user info
+        const token = response.data.token
+        localStorage.setItem('auth_token', token)
+
+        const user = response.data.user
+        localStorage.setItem('user', JSON.stringify(user))
+
+        // Admin email check and redirect
+        const adminEmail = 'admin@example.com' // Your admin email
+
+// Use redirect query if exists, else admin/user redirect
+const redirectPath = this.$route.query.redirect || (user.email === adminEmail ? '/admin/dashboard' : '/')
+this.$router.push(redirectPath)
+      } catch (error) {
+        if (error.response) {
+          if (error.response.status === 401) {
+            this.errorMessage = 'Invalid email or password.'
+          } else if (error.response.data.message) {
+            this.errorMessage = error.response.data.message
+          } else {
+            this.errorMessage = 'Login failed. Please try again.'
+          }
+        } else {
+          this.errorMessage = 'Network error. Please check your connection.'
+        }
+        console.error('Login error:', error)
+      }
+    },
+    forgotPassword() {
+      this.$router.push('/forgot-password')
+    },
+    createAccount() {
+      this.$router.push('/register')
+    }
+  }
 }
 </script>
 
@@ -107,186 +110,94 @@ const handleLogin = async () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(
-      rgba(0, 0, 0, 0.4),
-      rgba(0, 0, 0, 0.4)
-    ),
-    url("@/assets/images/bg_login.jpg") center/cover no-repeat;
-  padding: 20px;
+  height: 100vh;
+  background: url('@/assets/images/bg_login.jpg') center/cover no-repeat, #f5f5f5;
 }
 
 .login-box {
-  background: rgba(255, 255, 255, 0.85);
+  background: 
+linear-gradient(
+  rgba(255, 255, 255, 0.3),
+  rgba(255, 255, 255, 0)
+),
+rgba(255, 255, 255, 1);
   padding: 40px 50px;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
   width: 100%;
-  max-width: 450px;
-  animation: slideFadeIn 0.6s ease-out;
-}
-
-@keyframes slideFadeIn {
-  from {
-    transform: translateY(30px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  max-width: 600px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  max-height: 180vh;
+  overflow-y: auto;
 }
 
 h1 {
-  font-size: 2.5rem;
-  color: #2e2e2e;
-  margin-bottom: 2rem;
-  font-weight: 700;
+  font-size: 3.5em;
+  margin-bottom: 30px;
+  color: #333;
 }
 
 .input-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 25px;
   text-align: left;
 }
 
 .input-group label {
   display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: #444;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #555;
 }
 
 .input-group input {
-  width: 100%;
-  padding: 0.875rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 0.75rem;
-  font-size: 1rem;
-  background: #fdfdfd;
-  transition: border 0.2s ease-in-out;
-}
-
-.input-group input:focus {
-  outline: none;
-  border-color: #574e4a;
-  box-shadow: 0 0 5px rgba(87, 78, 74, 0.3);
-}
-
-.input-error {
-  border-color: #ef4444 !important;
-}
-
-.input-error-message {
-  color: #ef4444;
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
+  width: calc(100% - 20px);
+  padding: 15px 10px;
+  border: 1px solid #ffffff;
+  border-radius: 15px;
+  font-size: 1.1em;
+  box-sizing: border-box;
 }
 
 .error-message {
-  color: #d93025;
-  background-color: #ffe8e8;
-  border-radius: 0.5rem;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1.5rem;
-  font-size: 0.95rem;
-}
-
-.success-message {
-  color: #15803d;
-  background-color: #dcfce7;
-  border-radius: 0.5rem;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1.5rem;
-  font-size: 0.95rem;
-}
-
-.remember-forgot {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.remember-me {
-  display: flex;
-  align-items: center;
-}
-
-.remember-me input {
-  margin-right: 0.5rem;
-}
-
-.forgot-password {
-  color: #574e4a;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 0.875rem;
-  transition: color 0.3s;
-}
-
-.forgot-password:hover {
-  text-decoration: underline;
-  color: #2e2e2e;
+  color: red;
+  margin-bottom: 15px;
+  font-size: 0.95em;
 }
 
 .login-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
   background-color: #574e4a;
   color: white;
-  padding: 0.875rem;
-  width: 100%;
+  padding: 15px 10px;
   border: none;
-  border-radius: 0.75rem;
-  font-size: 1rem;
-  font-weight: 600;
+  border-radius: 8px;
+  font-size: 1.2em;
   cursor: pointer;
-  transition: background 0.3s ease;
-  margin-bottom: 1.5rem;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  margin-top: 20px;
 }
 
 .login-button:hover {
-  background-color: #3e3733;
+  background-color: #433b37;
 }
 
-.login-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.7;
+.links {
+  margin-top: 25px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 1em;
 }
 
-.spinner {
-  animation: spin 1s linear infinite;
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.register-link {
-  font-size: 0.95rem;
-  color: #444;
-}
-
-.register-link a {
+.links a {
   color: #574e4a;
-  font-weight: 500;
   text-decoration: none;
-  transition: color 0.3s;
+  transition: color 0.3s ease;
 }
 
-.register-link a:hover {
+.links a:hover {
   text-decoration: underline;
-  color: #2e2e2e;
+  color: #333;
 }
 </style>

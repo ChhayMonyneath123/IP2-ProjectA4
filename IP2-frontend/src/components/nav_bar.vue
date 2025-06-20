@@ -1,11 +1,7 @@
 <template>
   <nav class="navbar">
     <div class="logo-section">
-      <img
-        src="@/assets/logofood_station.png"
-        alt="La Libre Logo"
-        class="logo"
-      />
+      <img src="@/assets/logofood_station.png" alt="La Libre Logo" class="logo" />
       <span class="brand-name">La Libre</span>
     </div>
 
@@ -23,45 +19,50 @@
 
     <div class="icon-buttons">
       <i class="fas fa-shopping-cart icon" aria-label="Cart"></i>
-      <i
-        class="fas fa-heart icon"
-        aria-label="Wishlist"
-        @click="goToWishlist"
-      ></i>
+      <i class="fas fa-heart icon" aria-label="Wishlist" @click="goToWishlist"></i>
 
-        <!-- Login Button -->
-        <router-link to="/login" class="login-btn"> Login </router-link>
+      <!-- Conditionally render based on login state -->
+      <template v-if="!isLoggedIn">
+        <router-link to="/login" class="login-btn">Login</router-link>
+        <router-link to="/register" class="register-btn">Register</router-link>
+      </template>
 
-        <!-- Register Button -->
-        <router-link to="/register" class="register-btn">
-          Register
+      <template v-else>
+        <router-link to="/profile" class="avatar-circle">
+          {{ firstLetter }}
         </router-link>
-      </div>
+        <button class="logout-btn" @click="handleLogout">Logout</button>
+      </template>
+    </div>
   </nav>
 </template>
 
-<script>
-export default {
-  name: "Navbar",
-  methods: {
-    toggleMenu() {
-      this.isMenuOpen = !this.isMenuOpen;
-    },
-    selectItem(item) {
-      console.log("Selected:", item.label);
-      this.isMenuOpen = false;
-      if (item.route) {
-        this.$router.push(item.route);
-      }
-    },
-    goToWishlist() {
-      this.$router.push("/wishlist");
-    },
-  },
-};
+<script setup>
+import { computed } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
+
+const authStore = useAuthStore()
+const router = useRouter()
+
+const isLoggedIn = computed(() => authStore.isLoggedIn)  // make sure isLoggedIn is reactive in your store
+
+const firstLetter = computed(() => {
+  return authStore.user?.name ? authStore.user.name.charAt(0).toUpperCase() : '?'
+})
+
+function goToWishlist() {
+  router.push('/wishlist')
+}
+
+function handleLogout() {
+  authStore.logout()
+  router.push('/login')
+}
 </script>
 
 <style scoped>
+/* Your styles remain the same */
 .navbar {
   width: 100%;
   background-color: #f8f7f3;
@@ -145,98 +146,6 @@ export default {
   cursor: pointer;
 }
 
-.icon-menu {
-  position: relative;
-}
-
-.selectMenu {
-  position: absolute;
-  top: 2rem;
-  right: 0;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  min-width: 180px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
-}
-
-.selectMenu ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.menu-item {
-  padding: 12px 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.menu-item:hover {
-  background-color: #f0f0f0;
-}
-
-.menu-icon {
-  display: inline-block;
-  font-size: 1rem;
-}
-
-/* Transition */
-.slide-fade-enter-active,
-.slide-fade-leave-active {
-  transition: all 0.3s ease;
-}
-
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  transform: translateY(-10px);
-  opacity: 0;
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
-  .navbar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .nav-links {
-    width: 100%;
-    justify-content: flex-start;
-    gap: 1.2rem;
-  }
-
-  .search-section,
-  .icon-buttons {
-    width: 100%;
-    justify-content: flex-start;
-    margin-top: 10px;
-  }
-
-  .search-section input {
-    width: 100%;
-  }
-}
-
-@media (max-width: 600px) {
-  .brand-name {
-    font-size: 1.3rem;
-  }
-
-  .nav-links {
-    flex-direction: column;
-    gap: 10px;
-  }
-}
-.icon-buttons {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 .login-btn,
 .register-btn {
   text-decoration: none;
@@ -251,4 +160,36 @@ export default {
   background-color: #f0f0f0;
 }
 
+.avatar-circle {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  background-color: #574e4a;
+  color: white;
+  font-weight: bold;
+  font-size: 1.5rem;
+  border-radius: 50%;
+  text-transform: uppercase;
+  cursor: pointer;
+  user-select: none;
+  text-align: center;
+  line-height: 40px;
+}
+
+.logout-btn {
+  background-color: #a08c79;
+  border: none;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+  background-color: #8d7a65;
+}
 </style>

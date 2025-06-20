@@ -55,7 +55,7 @@ const routes = [
         path: '/login',
         name: 'login',
         component: () => import('@/views/User/authentication/Log_in.vue'),
-        meta: { guestOnly: true }
+       
       },
       {
         path: '/register',
@@ -151,7 +151,7 @@ router.beforeEach(async (to) => {
 
     // Check if route requires authentication and user is not authenticated
     if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-        return { name: 'sign-in', query: { redirect: to.fullPath } }
+        return { name: 'login', query: { redirect: to.fullPath } }
     }
 
     // Check if route requires admin and user is not admin
