@@ -18,20 +18,8 @@
                 </div>
                 <p class="product-delivery">Delivery: {{ deliveryTime }} mins</p>
                 <div class="button-container">
-                    <button 
-                        class="add-to-cart" 
-                        @click="handleAddToCart"
-                        :disabled="cartStore.loading"
-                        :class="{ 
-                            'loading': cartStore.loading
-                        }"
-                    >
-                        <i class="fa-solid fa-plus" v-if="!cartStore.loading"></i>
-                        <i class="fa-solid fa-spinner fa-spin" v-else></i>
-                    </button>
-                    <button class="add-to-cart-heart" @click="addToWishlist">
-                        <i class="fa-solid fa-heart"></i>
-                    </button>
+                    <button class="add-to-cart"><i class="fa-solid fa-plus"></i></button>
+                    <button class="add-to-cart-heart"><i class="fa-solid fa-heart"></i></button>
                 </div>
             </div>
         </div>
@@ -39,10 +27,6 @@
 </template>
 
 <script>
-import { useCartStore } from "@/stores/cart";
-import { useAuthStore } from "@/stores/auth";
-import { useRouter } from 'vue-router';
-
 export default {
     name: "all_product_card",
     props: {
@@ -53,47 +37,6 @@ export default {
         image: String,
         rating: Number,
     },
-    emits: ['image-click'],
-    setup(props) {
-        const cartStore = useCartStore();
-        const authStore = useAuthStore();
-        const router = useRouter();
-
-        const handleAddToCart = async () => {
-            try {
-                // Debug: Log the product ID being sent
-                console.log('Product ID being sent:', props.id);
-                console.log('All props:', props);
-                
-                // Check if product ID exists
-                if (!props.id) {
-                    console.error('Product ID is missing!');
-                    alert('Product ID is missing. Please check the product data.');
-                    return;
-                }
-
-                // Add to cart with the product ID
-                await cartStore.addToCart(props.id, 1);
-                
-                console.log('Item added to cart successfully!');
-                
-            } catch (error) {
-                console.error('Failed to add item to cart:', error);
-            }
-        };
-
-        const addToWishlist = () => {
-            // Implement wishlist functionality
-            console.log('Added to wishlist:', props.id);
-        };
-
-        return {
-            cartStore,
-            authStore,
-            handleAddToCart,
-            addToWishlist
-        };
-    }
 };
 </script>
 
@@ -130,48 +73,7 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: all 0.3s ease;
 }
-
-.image-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    border-radius: 2rem;
-}
-
-.product-image:hover .image-overlay {
-    opacity: 1;
-}
-
-.product-image:hover img {
-    transform: scale(1.05);
-}
-
-.detail-button {
-    background-color: #3a2e26;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.detail-button:hover {
-    background-color: #5a4a3d;
-    transform: scale(1.05);
-}
-
 .product-info {
     display: flex;
     padding: 10px;

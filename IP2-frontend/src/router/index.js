@@ -83,8 +83,12 @@ const routes = [
         // meta: { requiresAuth: true }
     },
     {
-
-        path: '/menu/food/detail/:id',
+        path: "/payment",
+        name: "Payment",
+        component: () => import('@/views/User/authentication/Payment.vue'),
+    },
+    {
+        path: '/menu/detail/:id',
         name: 'detail',
         component: () => import('@/views/User/categories/Food&Dessert_detail.vue'),
         meta: { requiresAuth: false }
