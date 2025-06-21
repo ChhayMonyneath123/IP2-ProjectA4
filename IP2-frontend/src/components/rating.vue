@@ -8,11 +8,7 @@
           <h2>Rating Overview</h2>
           <p class="rating-score">{{ averageRating }}</p>
           <div class="star-display">
-            <i
-              v-for="(icon, index) in starVisualArray"
-              :key="index"
-              :class="icon"
-            ></i>
+            <i v-for="(icon, index) in starVisualArray" :key="index" :class="icon"></i>
           </div>
         </div>
 
@@ -29,31 +25,41 @@
     </div>
 
     <!-- Individual Reviews -->
-    <Review_card v-for="review in reviews" :key="review.id" :review="review" />
+    <div class="review-list">
+      <Review_card
+        v-for="review in reviews"
+        :key="review.id"
+        :review="review"
+      />
+    </div>
 
     <!-- Comment Submission -->
-    <Commentinfo @submit="addReview" />
+    <div class="comment-form-container">
+      <Commentinfo
+        :productId="product.id"
+        :userId="user.id"
+        @submit="addReview"
+      />
+    </div>
   </section>
 </template>
 
+
 <script>
+import axios from 'axios'
 import Review_card from './review_card.vue'
 import Commentinfo from './comment_info.vue'
 
 export default {
+  name: 'RatingSection',
   components: { Review_card, Commentinfo },
+  props: {
+    product: { type: Object, required: true },
+    user: { type: Object, required: true }
+  },
   data() {
     return {
-      reviews: [
-        {
-          id: 1,
-          name: 'Jochido Nitacha',
-          date: 'March 1, 2025',
-          rating: 5,
-          comment: 'The foods are very delicious and well-cook. The delivery is accurate and fast.',
-          avatar: 'https://randomuser.me/api/portraits/women/40.jpg'
-        }
-      ]
+      reviews: []
     }
   },
   computed: {
@@ -89,11 +95,32 @@ export default {
   },
   methods: {
     addReview(newReview) {
-      this.reviews.push({ ...newReview, id: this.reviews.length + 1 })
+      this.reviews.unshift({ ...newReview, id: Date.now() }) // or use backend response ID
     },
     getBarWidth(star) {
       return this.ratingDistribution[star] || 0
+    },
+    fetchReviews() {
+      axios.get(`http://localhost:8000/api/products/${this.product.id}`)
+        .then(res => {
+          const product = res.data.data
+          this.reviews = product.ratings.map(r => ({
+            id: r.id,
+            rating: r.rating,
+            comment: r.comment,
+            date: r.created_at,
+            name: r.user?.name || `User ${r.user_id}`,
+            avatar: r.user?.avatar || 'https://randomuser.me/api/portraits/lego/1.jpg'
+          }))
+        })
+        .catch(err => {
+          console.error('Failed to fetch reviews', err)
+        })
     }
+
+  },
+  mounted() {
+    this.fetchReviews()
   }
 }
 </script>
@@ -102,27 +129,26 @@ export default {
 .review-section {
   max-width: 85%;
   margin: 0 auto;
-  padding: 20px;
-
+  padding: 16px;
 }
 
-/* Rating Overview Box */
+/* Rating Overview */
 .rating-overview {
   display: flex;
   flex-direction: column;
-  padding: 20px 20px;
-  border-radius: 12px;
-  max-width: 1800px;
-  margin: 0 auto 40px auto;
+  padding: 16px;
+  border-radius: 10px;
+  max-width: 1600px;
+  margin: 0 auto 32px auto;
 }
 
-/* Flex container for average + bars */
+/* Flex container */
 .rating-summary {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 40px;
+  gap: 32px;
 }
 
 /* Title + Average block */
@@ -130,32 +156,30 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-width: 220px;
+  min-width: 180px;
   text-align: center;
 }
 
 .commentbar h2 {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
-  margin: 0 0 8px;
+  margin-bottom: 6px;
   color: #333;
 }
 
-/* Average rating text */
 .rating-score {
-  font-size: 64px;
+  font-size: 52px;
   font-weight: bold;
   color: #2c2c2c;
   margin: 0;
 }
 
-/* Dynamic stars */
 .star-display {
   display: flex;
   justify-content: center;
-  gap: 6px;
-  margin-top: 6px;
-  font-size: 24px;
+  gap: 5px;
+  margin-top: 4px;
+  font-size: 20px;
   color: #ffb400;
 }
 
@@ -164,42 +188,57 @@ export default {
 }
 
 .star-display i:hover {
-  transform: scale(1.2);
+  transform: scale(1.1);
 }
 
-/* Bar chart layout */
+/* Rating Bar Section */
 .rating-bars {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  min-width: 250px;
+  gap: 10px;
+  min-width: 220px;
 }
 
 .rating-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .rating-bar-bg {
   flex: 1;
-  height: 14px;
+  height: 12px;
   background-color: #ddd;
-  border-radius: 8px;
+  border-radius: 6px;
   overflow: hidden;
 }
 
 .rating-bar-fill {
   height: 100%;
   background-color: #ffb400;
-  border-radius: 8px;
+  border-radius: 6px;
   transition: width 0.3s ease;
 }
 
 .rating-label {
-  font-size: 16px;
-  min-width: 36px;
+  font-size: 14px;
+  min-width: 32px;
   color: #444;
 }
+
+/* Review Cards */
+.review-list {
+  margin: 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Comment Submission Box */
+.comment-form-container {
+  margin-top: 20px;
+  padding: 1%;
+}
+
 </style>

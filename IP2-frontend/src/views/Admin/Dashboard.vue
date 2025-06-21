@@ -12,7 +12,7 @@ import Footer_bar from '@/components/footer_bar.vue';
 import Admin_bar from '@/components/admin_bar.vue';
 import Side_adbar from '@/components/side_adbar.vue';
     export default {
-        name: "my-order",
+        name: "dashboard",
         components:{
             Footer_bar,
             Admin_bar,
