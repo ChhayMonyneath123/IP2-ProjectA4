@@ -33,22 +33,46 @@
           </div>
           
           <div class="product-status">
-            <span 
-              class="status-tag" 
+            <span
+              v-if="editingStatusId !== product.id"
+              class="status-tag"
               :class="getStatusClass(product.status)"
             >
-              {{ product.status }}
+                {{ product.status }}
             </span>
+
+            <select 
+              v-else
+              v-model="editedStatus"
+              class="status-select"
+              :class="getStatusClass(editedStatusstatus)"
+            >
+              <option value="In Stock">In Stock</option>
+              <option value="Low Stock">Low Stock</option>
+              <option value="Out of Stock">Out of Stock</option>
+            </select>
           </div>
           
           <div class="product-actions">
-            <button class="btn-update" @click="updateProduct(product.id)">
+            <!-- Show Update button when editing -->
+            <button 
+              class="btn-update" 
+              v-if="editingStatusId === product.id"
+              @click="updateProduct(product.id)"
+            >
               Update
             </button>
-            <button class="btn-notification" @click="toggleNotification(product.id)">
-              Notification
+
+            <!-- Show Edit button when NOT editing -->
+            <button 
+              class="btn-notification"
+              v-else
+              @click="editProduct(product.id)"
+            >
+              Edit
             </button>
           </div>
+          
         </div>
       </div>
     </div>
@@ -117,7 +141,9 @@ export default {
           status: 'Low Stock',
           image: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=100&h=100&fit=crop&crop=center'
         }
-      ]
+      ],
+      editingStatusId: null,
+      editedStatus: ''
     }
   },
   methods: {
@@ -129,21 +155,29 @@ export default {
       }
       return classes[category] || 'category-default'
     },
+
     getStatusClass(status) {
       const classes = {
         'In Stock': 'status-in-stock',
         'Low Stock': 'status-low-stock',
         'Out of Stock': 'status-out-stock'
-      }
-      return classes[status] || 'status-default'
+      };
+      return classes[status] || 'status-default';
     },
+
+    editProduct(productId) {
+      this.editingStatusId = productId;
+      const product = this.products.find(p => p.id === productId);
+      this.editedStatus = product.status; 
+    },
+
     updateProduct(productId) {
-      console.log('Update product:', productId)
-      // Add your update logic here
-    },
-    toggleNotification(productId) {
-      console.log('Toggle notification for product:', productId)
-      // Add your notification logic here
+      const product = this.products.find(p => p.id === productId);
+      if (product) {
+        product.status = this.editedStatus;
+        this.editingStatusId = null;
+        this.editedStatus = '';
+      }
     }
   }
 }
@@ -242,64 +276,93 @@ export default {
   color: #c2185b;
 }
 
-.status-tag {
-  padding: 4px 12px;
-  border-radius: 16px;
-  font-size: 12px;
+.status-tag,
+.status-select {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.9rem;
   font-weight: 500;
-  display: inline-block;
+  min-width: 100px;
+  text-align: center;
 }
 
 .status-in-stock {
-  background-color: #e8f5e8;
-  color: #4caf50;
+  background-color: #e6f4ea;
+  color: #2e7d32;
+  border: 1px solid #a5d6a7;
 }
 
 .status-low-stock {
   background-color: #fff3e0;
-  color: #ff9800;
+  color: #ef6c00;
+  border: 1px solid #ffb74d;
 }
 
 .status-out-stock {
-  background-color: #ffebee;
-  color: #f44336;
+  background-color: #fdecea;
+  color: #d32f2f;
+  border: 1px solid #e57373;
 }
 
-.product-actions {
-  display: flex;
-  gap: 8px;
+/* === CATEGORY TAGS === */
+.category-food {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
 }
 
+.category-beverages {
+  background-color: #d0ebff;
+  color: #0b5394;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
+
+.category-bakery {
+  background-color: #fce4ec;
+  color: #ad1457;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
+
+/* === BUTTON STYLES === */
 .btn-update {
-  padding: 8px 16px;
   background-color: #4caf50;
   color: white;
   border: none;
+  padding: 6px 12px;
+  margin-right: 6px;
   border-radius: 6px;
-  font-size: 12px;
-  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease;
 }
 
 .btn-update:hover {
-  background-color: #45a049;
+  background-color: #388e3c;
 }
 
 .btn-notification {
-  padding: 8px 16px;
   background-color: #9e9e9e;
   color: white;
   border: none;
+  padding: 6px 12px;
   border-radius: 6px;
-  font-size: 12px;
-  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease;
 }
 
 .btn-notification:hover {
   background-color: #757575;
+}
+
+/* === SELECT STYLE === */
+.status-select {
+  border: 1px solid #ccc;
+  font-weight: 500;
 }
 
 @media (max-width: 768px) {

@@ -10,6 +10,7 @@ import Sign_In from "@/views/User/authentication/Sign_in.vue";
 import Manage_Acc from "@/views/User/authentication/Manage_acc.vue";
 import My_Review from "@/views/User/authentication/My_review.vue";
 import My_Order from "@/views/User/authentication/My_order.vue";
+import ManageAccountPage from "@/views/Admin/authentication/ManageAccountPage.vue";
 import FoodDessert_detail from "@/views/User/categories/Food&Dessert_detail.vue";
 import Drink_detail from "@/views/User/categories/Drink_detail.vue";
 import ForgetPassword from "@/views/User/authentication/Forget_password.vue";
@@ -21,6 +22,8 @@ import Chat_Page from "@/views/Admin/authentication/Chat_Page.vue";
 import Stocks from "@/views/Admin/authentication/Stocks.vue";
 import Delivery from "@/views/Admin/authentication/Delivery.vue";
 import Wishlist from "@/views/User/authentication/Wishlist.vue";
+import EditAccount from "@/views/Admin/authentication/EditAccount.vue";
+import Payment from "@/views/User/authentication/Payment.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -89,6 +92,11 @@ const router = createRouter({
       component: My_Order,
     },
     {
+      path: "/payment",
+      name: "Payment",
+      component: Payment,
+    },
+    {
       path: "/menu/food/detail/:id",
       name: "detail",
       component: FoodDessert_detail,
@@ -143,12 +151,16 @@ const router = createRouter({
         //   name: 'Chats',
         //   component: ChatPage
         // },
-        // {
-        //   path: 'manage-account', // Will resolve to /admin/manage-account
-        //   name: 'ManageAccount',
-        //   component: ManageAccountPage
-        // },
-
+        {
+          path: 'manage-account', // Will resolve to /admin/manage-account
+          name: 'ManageAccount',
+          component: ManageAccountPage
+        },
+        {
+          path: '/manage-account/Edit', // Will resolve to /admin/manage-account
+          name: 'EditAccount',
+          component: EditAccount
+        },
       ]
 
     },
