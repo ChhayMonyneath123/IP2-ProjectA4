@@ -62,3 +62,5 @@ Route::middleware(['auth:api', 'admin'])->group(function () {
     Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']); // delete a review
     Route::post('/reviews/{id}/reply', [ReviewController::class, 'reply']); // admin reply to review
 });
+Route::post('/products/{product}/ratings', [ProductRatingController::class, 'store']);
+Route::get('/users/{user}', [UserController::class, 'show']);

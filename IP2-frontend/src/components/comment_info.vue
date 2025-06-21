@@ -1,32 +1,47 @@
 <template>
-  <div class="comment-form">
-    <h3>Leave a Comment</h3>
-    <p>Please feel free to give us a feedback!</p>
+  <div class="container">
+    <div class="comment-form">
+      <h3>Leave a Comment</h3>
+      <p>Please feel free to give us a feedback!</p>
 
-    <div class="user-info">
-      <img :src="user.avatar" class="avatar" />
-      <div class="container">
-        <strong>{{ user.name }}</strong>
-        <p class="date">{{ user.date }}</p>
-        <div class="wrapper">
-          <p class="label">Your Rating:</p>
-          <div class="stars">
-            <i v-for="n in 5" :key="n" class="fas fa-star" :class="{ selected: n <= form.rating }"
-              @click="form.rating = n"></i>
+      <div class="user-info">
+        <img :src="user.avatar" class="avatar" />
+        <div class="user-meta">
+          <strong>{{ user.name }}</strong>
+          <p class="date">{{ user.date }}</p>
+          <div class="wrapper">
+            <p class="label">Your Rating:</p>
+            <div class="stars">
+              <i
+                v-for="n in 5"
+                :key="n"
+                class="fas fa-star"
+                :class="{ selected: n <= form.rating }"
+                @click="form.rating = n"
+              ></i>
+            </div>
           </div>
         </div>
+      </div>
 
+      <textarea v-model="form.comment" placeholder="Your Message" />
+      <div class="button-wrapper">
+        <button @click="submit">Submit Comment</button>
       </div>
     </div>
-
-    <textarea v-model="form.comment" placeholder="Your Message" />
-    <button @click="submit">Submit Comment</button>
   </div>
 </template>
 
+
 <script>
+import axios from 'axios';
+
 export default {
   name: 'Commentinfo',
+  props: {
+    productId: { type: Number, required: true },
+    userId: { type: Number, required: true }
+  },
   data() {
     return {
       form: {
@@ -35,7 +50,7 @@ export default {
       },
       user: {
         name: 'Ella Mondre',
-        date: 'March 14, 2025',
+        date: new Date().toLocaleDateString(),
         avatar: 'https://randomuser.me/api/portraits/women/45.jpg'
       }
     };
@@ -43,14 +58,28 @@ export default {
   methods: {
     submit() {
       if (this.form.rating && this.form.comment) {
-        this.$emit('submit', {
-          ...this.form,
-          name: this.user.name,
-          date: this.user.date,
-          avatar: this.user.avatar
-        });
-        this.form.rating = 0;
-        this.form.comment = '';
+        const payload = {
+          rating: this.form.rating,
+          comment: this.form.comment,
+          user_id: this.userId
+        };
+
+        axios.post(`http://localhost:8000/api/products/${this.productId}/ratings`, payload)
+          .then(res => {
+            this.$emit('submit', {
+              ...this.form,
+              name: this.user.name,
+              date: this.user.date,
+              avatar: this.user.avatar,
+              id: res.data.data.id // use real ID
+            });
+            this.form.rating = 0;
+            this.form.comment = '';
+          })
+          .catch(err => {
+            const message = err.response?.data?.message || 'Failed to submit review.';
+            alert(message);
+          });
       } else {
         alert('Please complete all fields.');
       }
@@ -60,54 +89,90 @@ export default {
 </script>
 
 <style scoped>
+/* Global container match (same as Rating Overview) */
+.container {
+  max-width: 100vw; /* match other sections */
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* Comment form itself */
 .comment-form {
+  width: 100%;
+  padding: 20px 30px;
+  background-color: #ffffff;
+  border: 1px solid #e0dcd5;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
   margin-top: 40px;
-  margin-bottom: 10%;
-
-
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
 
+/* Headings */
 h3 {
-  font-size: 28px;
-  margin-bottom: 2px;
-  color: #402E2E;
+  font-size: 26px;
+  margin-bottom: 6px;
+  color: #402e2e;
+  font-weight: 600;
 }
 
+p {
+  margin: 0 0 16px 0;
+  font-size: 15px;
+  color: #555;
+}
+
+/* User section */
 .user-info {
   display: flex;
-  gap: 10px;
-  margin: 10px 0;
-  margin-top: 40px;
-}
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
 
+}
 
 .avatar {
   width: 60px;
   height: 60px;
   border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-meta {
+  flex: 1;
 }
 
 .date {
-  font-size: 10px;
-  margin-top: 0px;
-  color: #888;
+  font-size: 12px;
+  color: #999;
+  margin-top: 2px;
 }
-.wrapper{
+
+/* Rating stars */
+.wrapper {
   display: flex;
-  flex-direction: row;
-  gap: 10px;
+  align-items: center;
+  gap: 4px; /* reduced from 8px to 4px */
+  line-height: 1;
+  margin-top: 6px;
 }
 
 .label {
-  font-size: 13px;
-  margin-top: 0px;
-  font-weight: 500;
-  
+  font-size: 14px;
+  color: #333;
+  margin: 0;
+  line-height: 1;
 }
 
 .stars {
-  font-size: 16px;
-  margin-top: 0px;
+  display: flex;
+  align-items: center;
+  gap: 2px; /* reduced from 4px to 2px */
+  font-size: 17px;
   color: #ccc;
 }
 
@@ -116,29 +181,64 @@ h3 {
   cursor: pointer;
 }
 
+
+/* Textarea */
 textarea {
-  width: 98.5%;
-  height: 120px;
-  padding: 10px;
-  font-size: 14px;
-  border-radius: 4px;
-  border: 1px solid #31261B;
+  width: 98%;
+  min-height: 120px;
+  padding: 14px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1px solid #31261b;
   resize: vertical;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #31261b;
+  box-shadow: 0 0 6px rgba(56, 53, 43, 0.35);
+  background-color: #fffef5;
+}
+
+/* Button wrapper and alignment */
+.button-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
 }
 
 button {
-  margin-top: 15px;
-  padding: 10px 30px;
-  display: flex;
-  margin-left: 90%;
-  background-color: #31261B;
+  padding: 12px 24px;
+  background-color: #31261b;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 14px;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 button:hover {
   background-color: #2c241f;
 }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .comment-form {
+    padding: 24px;
+  }
+
+  .wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .button-wrapper {
+    justify-content: center;
+  }
+}
+
 </style>
