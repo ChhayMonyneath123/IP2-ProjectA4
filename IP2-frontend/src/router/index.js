@@ -147,30 +147,30 @@ const router = createRouter({
     routes
 })
 
-router.beforeEach(async (to) => {
+// router.beforeEach(async (to) => {
 
-    axios.defaults.baseURL = 'http://localhost:8000/api';
-    axios.defaults.withCredentials = true; // if needed for cookies
+//     axios.defaults.baseURL = 'http://localhost:8000/api';
+//     axios.defaults.withCredentials = true; // if needed for cookies
     
-    const authStore = useAuthStore()
-    await authStore.init() // Make sure to await the init if it's async
+//     const authStore = useAuthStore()
+//     await authStore.init() // Make sure to await the init if it's async
 
-    // Check if route requires authentication and user is not authenticated
-    if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-        return { name: 'login', query: { redirect: to.fullPath } }
-    }
+//     // Check if route requires authentication and user is not authenticated
+//     if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+//         return { name: 'login', query: { redirect: to.fullPath } }
+//     }
 
-    // Check if route requires admin and user is not admin
-    if (to.meta.requiresAdmin && (!authStore.isAuthenticated || authStore.user.role !== 'admin')) {
-        return { name: 'Home' }
-    }
+//     // Check if route requires admin and user is not admin
+//     if (to.meta.requiresAdmin && (!authStore.isAuthenticated || authStore.user.role !== 'admin')) {
+//         return { name: 'Home' }
+//     }
 
-    // Check if route is guest only and user is authenticated
-    if (to.meta.guestOnly && authStore.isAuthenticated) {
-        return { 
-            path: authStore.user.role === 'admin' ? '/admin/dashboard' : '/' 
-        }
-    }
-})
+//     // Check if route is guest only and user is authenticated
+//     if (to.meta.guestOnly && authStore.isAuthenticated) {
+//         return { 
+//             path: authStore.user.role === 'admin' ? '/admin/dashboard' : '/' 
+//         }
+//     }
+// })
 
 export default router

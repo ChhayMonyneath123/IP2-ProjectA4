@@ -55,10 +55,10 @@ Route::prefix('subcategories')->group(function () {
     Route::get('/{subcategory}/products', [SubcategoryController::class, 'products']); // optional
 });
 
-Route::middleware(['auth:api', 'admin'])->group(function () {
-    Route::get('/reviews', [ReviewController::class, 'index']);        // list all reviews
-    Route::post('/reviews', [ReviewController::class, 'store']);       // create a review
-    Route::put('/reviews/{id}', [ReviewController::class, 'update']);  // update a review
-    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']); // delete a review
-    Route::post('/reviews/{id}/reply', [ReviewController::class, 'reply']); // admin reply to review
-});
+
+    Route::get('/reviews', [ReviewController::class, 'index']);
+    Route::post('/reviews', [ReviewController::class, 'store']);
+    Route::put('/reviews/{id}', [ReviewController::class, 'update']);
+    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
+    Route::post('/reviews/{id}/reply', [ReviewController::class, 'reply']);
+    Route::get('/reviews/{id}/replies', [ReviewController::class, 'replies']);
