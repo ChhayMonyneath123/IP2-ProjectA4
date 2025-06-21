@@ -1,16 +1,14 @@
 <template>
-    <router-view/>
+  <router-view />
 </template>
 
-<script>
-  export default {
-    setup () {
-      
-      return {}
-    }
-  }
+<script setup>
+import { useAuthStore } from '@/stores/auth'
+import { onMounted } from 'vue'
+
+const authStore = useAuthStore()
+
+onMounted(() => {
+  authStore.init()
+})
 </script>
-
-<style scoped>
-
-</style>

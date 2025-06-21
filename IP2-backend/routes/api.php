@@ -2,10 +2,22 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\LoginController;
+use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\ProductRatingController;
+use App\Http\Controllers\ReviewController;
+
+Route::get('/products', [ProductController::class, 'index']);
+
+Route::post('/login', [LoginController::class, 'check']);
+Route::post('/register', [RegisterController::class, 'store']);
+
+
 
 // Optional: user route if using Sanctum
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -43,3 +55,12 @@ Route::prefix('subcategories')->group(function () {
     Route::get('/{subcategory}/products', [SubcategoryController::class, 'products']); // optional
 });
 
+Route::middleware(['auth:api', 'admin'])->group(function () {
+    Route::get('/reviews', [ReviewController::class, 'index']);        // list all reviews
+    Route::post('/reviews', [ReviewController::class, 'store']);       // create a review
+    Route::put('/reviews/{id}', [ReviewController::class, 'update']);  // update a review
+    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']); // delete a review
+    Route::post('/reviews/{id}/reply', [ReviewController::class, 'reply']); // admin reply to review
+});
+Route::post('/products/{product}/ratings', [ProductRatingController::class, 'store']);
+Route::get('/users/{user}', [UserController::class, 'show']);
