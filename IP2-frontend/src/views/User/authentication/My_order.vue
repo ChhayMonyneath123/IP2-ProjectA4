@@ -21,7 +21,7 @@
 import { ref } from 'vue'
 import Nav_bar from '@/components/nav_bar.vue'
 import Footer_bar from '@/components/footer_bar.vue'
-import ProductCard from '@/components/ProductCard.vue'
+import ProductCard from '@/components/ordering_card.vue'
 import CartSummary from '@/components/CartSummary.vue'
 
 const items = ref([
