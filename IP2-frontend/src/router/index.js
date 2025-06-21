@@ -91,7 +91,7 @@ const routes = [
     {
       path: "/payment",
       name: "Payment",
-      component: Payment,
+      component: () => import('@/views/User/authentication/Payment.vue'),
     },
     {
         path: '/menu/detail/:id',
