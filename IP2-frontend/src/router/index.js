@@ -89,6 +89,11 @@ const routes = [
         meta: { requiresAuth: true }
     },
     {
+      path: "/payment",
+      name: "Payment",
+      component: Payment,
+    },
+    {
         path: '/menu/detail/:id',
         name: 'detail',
         component: () => import('@/views/User/categories/Food&Dessert_detail.vue'),

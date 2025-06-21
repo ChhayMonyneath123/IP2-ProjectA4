@@ -208,7 +208,9 @@ export default {
   padding: 0;
   margin: 0;
 }
-
+.sidebar-nav ul :hover{
+  background-color: #f0f0f0;
+}
 .nav-item {
   display: flex;
   align-items: center;
