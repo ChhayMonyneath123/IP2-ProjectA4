@@ -74,7 +74,7 @@ export default {
       try {
         const response = await axios.post('http://localhost:8000/api/register', payload)
         alert('Account created successfully!')
-        this.$router.push('/logins')
+        this.$router.push('/login')
       } catch (error) {
         if (error.response?.status === 422) {
           alert('Validation failed: ' + JSON.stringify(error.response.data.errors))
