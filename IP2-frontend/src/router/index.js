@@ -15,24 +15,6 @@ const routes = [
         component: () => import('@/views/User/ordering.vue/Menu.vue'),
         meta: { requiresAuth: false }
     },
-    // {
-    //     path: '/menu/food',
-    //     name: 'food',
-    //     component: () => import('@/views/User/categories/Food.vue'),
-    //     meta: { requiresAuth: false }
-    // },
-    // {
-    //     path: '/menu/drink',
-    //     name: 'drink',
-    //     component: () => import('@/views/User/categories/Drink.vue'),
-    //     meta: { requiresAuth: false }
-    // },
-    // {
-    //     path: '/menu/dessert',
-    //     name: 'dessert',
-    //     component: () => import('@/views/User/categories/Dessert.vue'),
-    //     meta: { requiresAuth: false }
-    // },
     {
         path: '/wishlist',
         name: 'wishlist',
@@ -86,12 +68,12 @@ const routes = [
         path: '/my-order',
         name: 'my-order',
         component: () => import('@/views/User/authentication/My_order.vue'),
-        meta: { requiresAuth: true }
+        // meta: { requiresAuth: true }
     },
     {
-      path: "/payment",
-      name: "Payment",
-      component: Payment,
+        path: "/payment",
+        name: "Payment",
+        component: () => import('@/views/User/authentication/Payment.vue'),
     },
     {
         path: '/menu/detail/:id',
