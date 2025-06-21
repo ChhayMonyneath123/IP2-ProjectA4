@@ -54,53 +54,57 @@ export default {
   },
   methods: {
     async handleLogin() {
-      this.errorMessage = ''
+  this.errorMessage = ''
 
-      if (!this.email || !this.password) {
-        this.errorMessage = 'Both fields are required.'
-        return
+  if (!this.email || !this.password) {
+    this.errorMessage = 'Both fields are required.'
+    return
+  }
+
+  try {
+    const response = await axios.post('http://localhost:8000/api/login', {
+      email: this.email,
+      password: this.password
+    })
+
+    const user = response.data.user
+    localStorage.setItem('auth_token', response.data.token || '')
+    localStorage.setItem('user', JSON.stringify(user))
+
+    // ✅ Redirect based on email
+    if (user.email === 'admin@gmail.com') {
+      this.$router.push('/admin')
+    } else {
+      this.$router.push('/')
+    }
+
+  } catch (error) {
+    if (error.response) {
+      if (error.response.status === 401) {
+        this.errorMessage = 'Invalid email or password.'
+      } else if (error.response.data.message) {
+        this.errorMessage = error.response.data.message
+      } else {
+        this.errorMessage = 'Login failed. Please try again.'
       }
+    } else {
+      this.errorMessage = 'Network error. Please check your connection.'
+    }
+    console.error('Login error:', error)
+  }
+},
 
-      try {
-        const response = await axios.post('http://localhost:8000/api/login', {
-          email: this.email,
-          password: this.password
-        })
-
-        // Save token and user info
-        const token = response.data.token
-        localStorage.setItem('auth_token', token)
-
-        const user = response.data.user
-        localStorage.setItem('user', JSON.stringify(user))
-
-        // Admin email check and redirect
-        const adminEmail = 'admin@example.com' // Your admin email
-
-// Use redirect query if exists, else admin/user redirect
-const redirectPath = this.$route.query.redirect || (user.email === adminEmail ? '/admin/dashboard' : '/')
-this.$router.push(redirectPath)
-      } catch (error) {
-        if (error.response) {
-          if (error.response.status === 401) {
-            this.errorMessage = 'Invalid email or password.'
-          } else if (error.response.data.message) {
-            this.errorMessage = error.response.data.message
-          } else {
-            this.errorMessage = 'Login failed. Please try again.'
-          }
-        } else {
-          this.errorMessage = 'Network error. Please check your connection.'
-        }
-        console.error('Login error:', error)
-      }
-    },
     forgotPassword() {
       this.$router.push('/forgot-password')
     },
+
     createAccount() {
       this.$router.push('/register')
     }
+  },
+  mounted() {
+    // Clear any previous error messages on mount
+    this.errorMessage = ''
   }
 }
 </script>

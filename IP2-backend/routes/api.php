@@ -10,6 +10,7 @@ use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\ProductRatingController;
+use App\Http\Controllers\ReviewController;
 
 Route::get('/products', [ProductController::class, 'index']);
 
@@ -54,3 +55,10 @@ Route::prefix('subcategories')->group(function () {
     Route::get('/{subcategory}/products', [SubcategoryController::class, 'products']); // optional
 });
 
+Route::middleware(['auth:api', 'admin'])->group(function () {
+    Route::get('/reviews', [ReviewController::class, 'index']);        // list all reviews
+    Route::post('/reviews', [ReviewController::class, 'store']);       // create a review
+    Route::put('/reviews/{id}', [ReviewController::class, 'update']);  // update a review
+    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']); // delete a review
+    Route::post('/reviews/{id}/reply', [ReviewController::class, 'reply']); // admin reply to review
+});

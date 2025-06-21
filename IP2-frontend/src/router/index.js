@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
+import axios from 'axios'
+
+
 const routes = [
     // User routes
     {
@@ -105,7 +108,6 @@ const routes = [
     {
         path: '/admin',
         component: () => import('@/components/Admin_Component/admin_layout.vue'),
-        meta: { requiresAuth: true, requiresAdmin: true },
         children: [
             {
                 path: '',
@@ -146,6 +148,10 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
+
+    axios.defaults.baseURL = 'http://localhost:8000/api';
+    axios.defaults.withCredentials = true; // if needed for cookies
+    
     const authStore = useAuthStore()
     await authStore.init() // Make sure to await the init if it's async
 
