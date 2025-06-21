@@ -45,10 +45,33 @@ import { useRouter } from 'vue-router'
 const authStore = useAuthStore()
 const router = useRouter()
 
-const isLoggedIn = computed(() => authStore.isLoggedIn)  // make sure isLoggedIn is reactive in your store
+const isLoggedIn = computed(() => authStore.isLoggedIn)
 
-const firstLetter = computed(() => {
-  return authStore.user?.name ? authStore.user.name.charAt(0).toUpperCase() : '?'
+// Avatar list
+const randomAvatars = [
+  'https://i.pravatar.cc/40?img=1',
+  'https://i.pravatar.cc/40?img=2',
+  'https://i.pravatar.cc/40?img=3',
+  'https://i.pravatar.cc/40?img=4',
+  'https://i.pravatar.cc/40?img=5',
+]
+
+// Hash function to pick avatar index deterministically
+function hashStringToIndex(str, max) {
+  let hash = 0
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i)
+    hash |= 0
+  }
+  return Math.abs(hash) % max
+}
+
+// Computed avatar URL per user
+const userAvatar = computed(() => {
+  if (!authStore.user) return randomAvatars[0] // fallback avatar if no user data yet
+  const key = authStore.user.email || authStore.user.name || 'default'
+  const idx = hashStringToIndex(key, randomAvatars.length)
+  return randomAvatars[idx]
 })
 
 function goToWishlist() {
@@ -62,7 +85,6 @@ function handleLogout() {
 </script>
 
 <style scoped>
-/* Your styles remain the same */
 .navbar {
   width: 100%;
   background-color: #f8f7f3;
@@ -161,21 +183,19 @@ function handleLogout() {
 }
 
 .avatar-circle {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
+  display: inline-block;
   width: 40px;
   height: 40px;
-  background-color: #574e4a;
-  color: white;
-  font-weight: bold;
-  font-size: 1.5rem;
   border-radius: 50%;
-  text-transform: uppercase;
+  overflow: hidden;
   cursor: pointer;
-  user-select: none;
-  text-align: center;
-  line-height: 40px;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .logout-btn {
