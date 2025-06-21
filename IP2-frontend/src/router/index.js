@@ -15,24 +15,24 @@ const routes = [
         component: () => import('@/views/User/ordering.vue/Menu.vue'),
         meta: { requiresAuth: false }
     },
-    {
-        path: '/menu/food',
-        name: 'food',
-        component: () => import('@/views/User/categories/Food.vue'),
-        meta: { requiresAuth: false }
-    },
-    {
-        path: '/menu/drink',
-        name: 'drink',
-        component: () => import('@/views/User/categories/Drink.vue'),
-        meta: { requiresAuth: false }
-    },
-    {
-        path: '/menu/dessert',
-        name: 'dessert',
-        component: () => import('@/views/User/categories/Dessert.vue'),
-        meta: { requiresAuth: false }
-    },
+    // {
+    //     path: '/menu/food',
+    //     name: 'food',
+    //     component: () => import('@/views/User/categories/Food.vue'),
+    //     meta: { requiresAuth: false }
+    // },
+    // {
+    //     path: '/menu/drink',
+    //     name: 'drink',
+    //     component: () => import('@/views/User/categories/Drink.vue'),
+    //     meta: { requiresAuth: false }
+    // },
+    // {
+    //     path: '/menu/dessert',
+    //     name: 'dessert',
+    //     component: () => import('@/views/User/categories/Dessert.vue'),
+    //     meta: { requiresAuth: false }
+    // },
     {
         path: '/wishlist',
         name: 'wishlist',
@@ -89,13 +89,13 @@ const routes = [
         meta: { requiresAuth: true }
     },
     {
-        path: '/menu/food/detail/:id',
+        path: '/menu/detail/:id',
         name: 'detail',
         component: () => import('@/views/User/categories/Food&Dessert_detail.vue'),
         meta: { requiresAuth: false }
     },
     {
-        path: '/menu/drink/detail/:id',
+        path: '/menu/detail/:id',
         name: 'drink-detail',
         component: () => import('@/views/User/categories/Drink_detail.vue'),
         meta: { requiresAuth: false }
