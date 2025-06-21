@@ -6,7 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-
+use App\Models\Category;
+use App\Models\Subcategory;
+use App\Models\ProductRating;
+use App\Models\OrderItem;
+use App\Models\Cart;
+use App\Models\Wishlist;
+use App\Models\Stocking;
+use App\Models\Review;
 class Product extends Model
 {
     protected $primaryKey = 'product_id';
@@ -80,5 +87,9 @@ class Product extends Model
     public function getRatingCountAttribute()
     {
         return $this->ratings()->count();
+    }
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class, 'product_id');
     }
 }

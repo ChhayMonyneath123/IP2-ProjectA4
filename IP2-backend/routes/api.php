@@ -3,19 +3,21 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\LoginController;
-use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\ProductRatingController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\UserController;
 
 Route::get('/products', [ProductController::class, 'index']);
 
-Route::post('/login', [LoginController::class, 'check']);
-Route::post('/register', [RegisterController::class, 'store']);
+Route::post('/register', [UserController::class, 'register']);
+Route::post('/login', [UserController::class, 'login']);
+Route::post('/password/email', [UserController::class, 'sendResetLinkEmail']);
+Route::post('/password/reset', [UserController::class, 'resetPassword']);
+Route::get('/users', [UserController::class, 'index']); // Get all users
+Route::get('/users/{id}', [UserController::class, 'show']); // Get user by ID
 
 
 
@@ -55,12 +57,12 @@ Route::prefix('subcategories')->group(function () {
     Route::get('/{subcategory}/products', [SubcategoryController::class, 'products']); // optional
 });
 
-Route::middleware(['auth:api', 'admin'])->group(function () {
-    Route::get('/reviews', [ReviewController::class, 'index']);        // list all reviews
-    Route::post('/reviews', [ReviewController::class, 'store']);       // create a review
-    Route::put('/reviews/{id}', [ReviewController::class, 'update']);  // update a review
-    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']); // delete a review
-    Route::post('/reviews/{id}/reply', [ReviewController::class, 'reply']); // admin reply to review
+// routes/api.php
+Route::prefix('reviews')->group(function () {
+    Route::get('/', [ReviewController::class, 'index']);
+    Route::post('/', [ReviewController::class, 'store']);
+    Route::put('/{review}', [ReviewController::class, 'update']);
+    Route::delete('/{review}', [ReviewController::class, 'destroy']);
+    Route::post('/{review}/reply', [ReviewController::class, 'reply']);
+    Route::get('/stats', [ReviewController::class, 'stats']);
 });
-Route::post('/products/{product}/ratings', [ProductRatingController::class, 'store']);
-Route::get('/users/{user}', [UserController::class, 'show']);

@@ -1,5 +1,6 @@
 <?php
 
+// app/Models/Review.php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -14,18 +15,19 @@ class Review extends Model
         'user_id',
         'rating',
         'message',
-        'reply',
     ];
 
-    // Relationships
+    protected $casts = [
+        'created_at' => 'datetime',
+    ];
+
     public function user()
-{
-    return $this->belongsTo(User::class, 'user_id', 'user_id');
-}
+    {
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
 
-public function product()
-{
-    return $this->belongsTo(Product::class, 'product_id', 'product_id');
-}
-
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id', 'product_id');
+    }
 }

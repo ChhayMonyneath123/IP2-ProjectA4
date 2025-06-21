@@ -1,0 +1,110 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;  // <-- Add this import
+use App\Models\User;
+
+class UserController extends Controller
+{
+    // Register new user
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|unique:users,email',
+            'password' => 'required|string|confirmed|min:6', // password_confirmation required
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        return response()->json([
+            'message' => 'User registered successfully',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
+        ], 201);
+    }
+
+    // Login user (no token, just return user info)
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (! $user || ! Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'message' => 'The provided credentials are incorrect.'
+            ], 401);
+        }
+
+        return response()->json([
+            'message' => 'User logged in successfully',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
+        ]);
+    }
+
+    // Send password reset link
+    public function sendResetLinkEmail(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $status = Password::sendResetLink($request->only('email'));
+
+        if ($status == Password::RESET_LINK_SENT) {
+            return response()->json(['message' => __($status)]);
+        } else {
+            return response()->json(['message' => __($status)], 400);
+        }
+    }
+
+    // Reset password using the token
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required|string',
+            'email' => 'required|email',
+            'password' => 'required|string|confirmed|min:6',
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->password = Hash::make($password);
+                $user->save();
+            }
+        );
+
+        if ($status == Password::PASSWORD_RESET) {
+            return response()->json(['message' => __($status)]);
+        } else {
+            return response()->json(['message' => __($status)], 400);
+        }
+    }
+    // Add this method inside your UserController class
+
+public function index()
+{
+    // Get all users with selected fields you want to expose
+    $users = User::all();
+
+    return response()->json($users);
+}
+
+}

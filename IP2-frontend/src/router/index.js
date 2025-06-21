@@ -142,10 +142,16 @@ const routes = [
                 component: () => import('@/views/Admin/authentication/Chat_Page.vue')
             },
             {
+                path: 'users',
+                name: 'AdminUsersPage',
+                component: () => import('@/views/Admin/authentication/User.vue')
+            },
+            {
                 path: 'reviews',
-                name: 'AdminReviews',
+                name: 'ReviewPage',
                 component: () => import('@/views/Admin/authentication/Review_Page.vue')
-            }
+            },
+            
         ]
     }
 ]
@@ -155,26 +161,30 @@ const router = createRouter({
     routes
 })
 
-router.beforeEach(async (to) => {
-    const authStore = useAuthStore()
-    await authStore.init() // Make sure to await the init if it's async
+// router.beforeEach(async (to) => {
 
-    // Check if route requires authentication and user is not authenticated
-    if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-        return { name: 'login', query: { redirect: to.fullPath } }
-    }
+//     axios.defaults.baseURL = 'http://localhost:8000/api';
+//     axios.defaults.withCredentials = true; // if needed for cookies
+    
+//     const authStore = useAuthStore()
+//     await authStore.init() // Make sure to await the init if it's async
 
-    // Check if route requires admin and user is not admin
-    if (to.meta.requiresAdmin && (!authStore.isAuthenticated || authStore.user.role !== 'admin')) {
-        return { name: 'Home' }
-    }
+//     // Check if route requires authentication and user is not authenticated
+//     if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+//         return { name: 'login', query: { redirect: to.fullPath } }
+//     }
 
-    // Check if route is guest only and user is authenticated
-    if (to.meta.guestOnly && authStore.isAuthenticated) {
-        return { 
-            path: authStore.user.role === 'admin' ? '/admin/dashboard' : '/' 
-        }
-    }
-})
+//     // Check if route requires admin and user is not admin
+//     if (to.meta.requiresAdmin && (!authStore.isAuthenticated || authStore.user.role !== 'admin')) {
+//         return { name: 'Home' }
+//     }
+
+//     // Check if route is guest only and user is authenticated
+//     if (to.meta.guestOnly && authStore.isAuthenticated) {
+//         return { 
+//             path: authStore.user.role === 'admin' ? '/admin/dashboard' : '/' 
+//         }
+//     }
+// })
 
 export default router

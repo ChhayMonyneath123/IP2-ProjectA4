@@ -28,7 +28,7 @@
       </template>
 
       <template v-else>
-        <router-link to="/profile" class="avatar-circle">
+        <router-link to="/manage_account" class="avatar-circle">
           {{ firstLetter }}
         </router-link>
         <button class="logout-btn" @click="handleLogout">Logout</button>
