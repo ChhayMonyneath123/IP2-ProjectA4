@@ -5,8 +5,13 @@
       <div class="payment-container">
         <!-- Delivery Service Section -->
         <div class="section">
-          <label>Type of Service:</label>
-          <input type="text" placeholder="Please select" id="delivery" class="style-input" />
+          <label for="serviceType">Type of Service:</label>
+          <select id="serviceType" v-model="serviceType" class="style-input">
+           <option disabled value="">Please select</option>
+           <option value="Dine in">Dine In</option>
+           <option value="Delivery">Delivery</option> 
+          </select>
+          <!-- <input type="text" placeholder="Please select" id="delivery" class="style-input" /> -->
         </div>
 
         <!-- Location Selection -->
@@ -126,19 +131,19 @@ const paymentMethods = [
   },
   {
     id: 2,
-    name: 'MasterCard',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg',
+    name: 'KHQR',
+    logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwG-Zx92YNnU6BuabALnRRwBqX_5USd3AJJw&s',
   },
-  {
-    id: 3,
-    name: 'ABA',
-    logo: 'https://cdn.brandfetch.io/iduTsrn35q/w/284/h/354/theme/dark/logo.png?c=1dxbfHSJFAPEGdCLU4o5B',
-  },
-  {
-    id: 4,
-    name: 'Aceleda',
-    logo: 'https://acledabank.com.kh/kh/assets/download_image/download-logo-blue.jpg',
-  },
+  // {
+  //   id: 3,
+  //   name: 'ABA',
+  //   logo: 'https://cdn.brandfetch.io/iduTsrn35q/w/284/h/354/theme/dark/logo.png?c=1dxbfHSJFAPEGdCLU4o5B',
+  // },
+  // {
+  //   id: 4,
+  //   name: 'Aceleda',
+  //   logo: 'https://acledabank.com.kh/kh/assets/download_image/download-logo-blue.jpg',
+  // },
 ]
 </script>
 
@@ -171,7 +176,7 @@ const paymentMethods = [
 }
 
 .payment-container {
-  background-color: #cacaca;
+  background-color: #ffffff;
   padding: 2rem;
   border-radius: 10px;
   flex: 1 1 60%;
@@ -181,6 +186,21 @@ const paymentMethods = [
 .section {
   margin-bottom: 1.5rem;
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+.style-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  background-color: #fff;
+}
+
+.style-input:focus {
+  outline: none;
+  border-color: #007BFF;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
 .section label {
@@ -223,7 +243,7 @@ const paymentMethods = [
 
 .method-option.selected {
   border-color: #3b2e1c;
-  background-color: #f1ece5;
+  background-color: #e7e7e7;
 }
 
 .method-option input {
@@ -257,7 +277,7 @@ const paymentMethods = [
   background-color: #5a4b3c;
 }
 .order-summary {
-  background-color: #d3d3d3;
+  background-color: #ffffff;
   border: 1px solid #ccc;
   border-radius: 12px;
   padding: 1.5rem;
