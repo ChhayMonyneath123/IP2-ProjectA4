@@ -11,22 +11,23 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\ProductRatingController;
 use App\Http\Controllers\ReviewController;
-
+use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\AdminDeliveryController;
+use App\Http\Controllers\DashboardController;
 Route::get('/products', [ProductController::class, 'index']);
 
 Route::post('/login', [LoginController::class, 'check']);
 Route::post('/register', [RegisterController::class, 'store']);
 
-
-
 // Optional: user route if using Sanctum
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
+
 Route::get('/product-ratings', [ProductRatingController::class, 'index']);
 Route::get('/product-ratings/{productRating}', [ProductRatingController::class, 'show']);
 
-//  Products
+// Products
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductsController::class, 'index']);
     Route::post('/', [ProductsController::class, 'store']);
@@ -45,7 +46,7 @@ Route::prefix('categories')->group(function () {
     Route::get('/{category}/products', [CategoryController::class, 'products']); // optional
 });
 
-//  Subcategories
+// Subcategories
 Route::prefix('subcategories')->group(function () {
     Route::get('/', [SubcategoryController::class, 'index']);
     Route::post('/', [SubcategoryController::class, 'store']);
@@ -62,5 +63,31 @@ Route::middleware(['auth:api', 'admin'])->group(function () {
     Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']); // delete a review
     Route::post('/reviews/{id}/reply', [ReviewController::class, 'reply']); // admin reply to review
 });
+
 Route::post('/products/{product}/ratings', [ProductRatingController::class, 'store']);
-Route::get('/users/{user}', [UserController::class, 'show']);
+
+// REMOVED: Route::get('/users/{user}', [UserController::class, 'show']); 
+// UserController doesn't exist - commented out to prevent 500 errors
+
+// Wishlist routes
+Route::middleware('auth:sanctum')->group(function () {
+    // Get wishlist items
+    Route::get('/wishlist', [WishlistController::class, 'index']);
+    
+    // Add to wishlist
+    Route::post('/wishlist/{product}', [WishlistController::class, 'store']);
+    
+    // Remove from wishlist
+    Route::delete('/wishlist/{product}', [WishlistController::class, 'destroy']);
+});
+
+// Admin deliveries
+Route::get('/admin/deliveries', [AdminDeliveryController::class, 'index']);
+Route::patch('/admin/deliveries/{id}/status', [AdminDeliveryController::class, 'updateStatus']);
+
+// Dashboard API routes
+Route::get('/api/dashboard/stats', [DashboardController::class, 'getStats']);
+Route::get('/api/dashboard/order-summary', [DashboardController::class, 'getOrderSummary']);
+Route::get('/api/dashboard/top-food', [DashboardController::class, 'getTopFood']);
+Route::get('/api/dashboard/top-drinks', [DashboardController::class, 'getTopDrinks']);
+Route::get('/api/dashboard/debug', [DashboardController::class, 'debugData']);
