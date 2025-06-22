@@ -3,7 +3,7 @@
     <div class="header">
       <h1>All Products</h1>
     </div>
-    
+
     <div class="table-container">
       <div class="table-header">
         <div class="col-name">Name</div>
@@ -11,68 +11,43 @@
         <div class="col-status">Status</div>
         <div class="col-manage">Manage</div>
       </div>
-      
+
       <div class="product-list">
-        <div 
-          v-for="product in products" 
-          :key="product.id"
-          class="product-row"
-        >
+        <div v-for="product in products" :key="product.id" class="product-row">
           <div class="product-info">
-            <img :src="product.image" :alt="product.name" class="product-image">
+            <img :src="product.image" :alt="product.name" class="product-image" />
             <span class="product-name">{{ product.name }}</span>
           </div>
-          
+
           <div class="product-category">
-            <span 
-              class="category-tag" 
-              :class="getCategoryClass(product.category)"
-            >
+            <span class="category-tag" :class="getCategoryClass(product.category)">
               {{ product.category }}
             </span>
           </div>
-          
+
           <div class="product-status">
-            <span
-              v-if="editingStatusId !== product.id"
-              class="status-tag"
-              :class="getStatusClass(product.status)"
-            >
-                {{ product.status }}
+            <span v-if="editingStatusId !== product.id" class="status-tag" :class="getStatusClass(product.status)">
+              {{ product.status }}
             </span>
 
-            <select 
-              v-else
-              v-model="editedStatus"
-              class="status-select"
-              :class="getStatusClass(editedStatusstatus)"
-            >
+            <select v-else v-model="editedStatus" class="status-select" :class="getStatusClass(editedStatus)">
               <option value="In Stock">In Stock</option>
               <option value="Low Stock">Low Stock</option>
               <option value="Out of Stock">Out of Stock</option>
             </select>
           </div>
-          
+
           <div class="product-actions">
             <!-- Show Update button when editing -->
-            <button 
-              class="btn-update" 
-              v-if="editingStatusId === product.id"
-              @click="updateProduct(product.id)"
-            >
+            <button class="btn-update" v-if="editingStatusId === product.id" @click="updateProduct(product.id)">
               Update
             </button>
 
             <!-- Show Edit button when NOT editing -->
-            <button 
-              class="btn-notification"
-              v-else
-              @click="editProduct(product.id)"
-            >
+            <button class="btn-notification" v-else @click="editProduct(product.id)">
               Edit
             </button>
           </div>
-          
         </div>
       </div>
     </div>
@@ -81,109 +56,104 @@
 
 <script>
 export default {
-  name: 'ProductManagement',
+  name: "ProductManagement",
   data() {
     return {
-      products: [
-        {
-          id: 1,
-          name: 'Amok Trey with cheese',
-          category: 'Food',
-          status: 'In Stock',
-          image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=100&h=100&fit=crop&crop=center'
-        },
-        {
-          id: 2,
-          name: 'Strawberry Soda',
-          category: 'Beverages',
-          status: 'In Stock',
-          image: 'https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=100&h=100&fit=crop&crop=center'
-        },
-        {
-          id: 3,
-          name: 'Margherita Pizza',
-          category: 'Food',
-          status: 'Low Stock',
-          image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=100&h=100&fit=crop&crop=center'
-        },
-        {
-          id: 4,
-          name: 'Caesar Salad Bowl',
-          category: 'Food',
-          status: 'In Stock',
-          image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=100&h=100&fit=crop&crop=center'
-        },
-        {
-          id: 5,
-          name: 'Fresh Orange Juice',
-          category: 'Beverages',
-          status: 'Out of Stock',
-          image: 'https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=100&h=100&fit=crop&crop=center'
-        },
-        {
-          id: 6,
-          name: 'Chocolate Croissant',
-          category: 'Bakery',
-          status: 'In Stock',
-          image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=100&h=100&fit=crop&crop=center'
-        },
-        {
-          id: 7,
-          name: 'Grilled Salmon',
-          category: 'Food',
-          status: 'In Stock',
-          image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=100&h=100&fit=crop&crop=center'
-        },
-        {
-          id: 8,
-          name: 'Iced Coffee Latte',
-          category: 'Beverages',
-          status: 'Low Stock',
-          image: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=100&h=100&fit=crop&crop=center'
-        }
-      ],
+      products: [], // fetched products list
       editingStatusId: null,
-      editedStatus: ''
-    }
+      editedStatus: "",
+    };
   },
   methods: {
     getCategoryClass(category) {
       const classes = {
-        'Food': 'category-food',
-        'Beverages': 'category-beverages',
-        'Bakery': 'category-bakery'
-      }
-      return classes[category] || 'category-default'
+        Food: "category-food",
+        Beverages: "category-beverages",
+        Bakery: "category-bakery",
+      };
+      return classes[category] || "category-default";
     },
 
     getStatusClass(status) {
       const classes = {
-        'In Stock': 'status-in-stock',
-        'Low Stock': 'status-low-stock',
-        'Out of Stock': 'status-out-stock'
+        "In Stock": "status-in-stock",
+        "Low Stock": "status-low-stock",
+        "Out of Stock": "status-out-stock",
       };
-      return classes[status] || 'status-default';
+      return classes[status] || "status-default";
     },
 
     editProduct(productId) {
       this.editingStatusId = productId;
-      const product = this.products.find(p => p.id === productId);
-      this.editedStatus = product.status; 
+      const product = this.products.find((p) => p.id === productId);
+      this.editedStatus = product ? product.status : "";
     },
 
-    updateProduct(productId) {
-      const product = this.products.find(p => p.id === productId);
-      if (product) {
-        product.status = this.editedStatus;
-        this.editingStatusId = null;
-        this.editedStatus = '';
-      }
+   async updateProduct(productId) {
+  const product = this.products.find((p) => p.id === productId);
+  if (!product) return;
+
+  try {
+    const response = await fetch(`http://localhost:8000/api/products/${productId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ status: this.editedStatus }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Update failed:", errorData);
+      throw new Error(errorData.message || "Failed to update product status");
     }
+
+    const updatedProduct = await response.json();
+    product.status = updatedProduct.status || this.editedStatus;
+    this.editingStatusId = null;
+    this.editedStatus = "";
+
+    alert("Product status updated successfully.");
+  } catch (error) {
+    console.error("Error updating product:", error);
+    alert("Could not update product status. Please try again.");
   }
 }
+,
+
+    async fetchProducts() {
+  try {
+    const response = await fetch("http://localhost:8000/api/products");
+    if (!response.ok) throw new Error("Failed to fetch products");
+    const data = await response.json();
+    console.log("Fetched products:", data);
+
+    // Normalize data keys to match your template usage
+    this.products = data.data.map(p => ({
+      id: p.product_id,      // map product_id to id
+      name: p.title,         // map title to name
+      category: p.category ? p.category.name : "Uncategorized",  // assuming category relation returns {id, name}
+      status: p.status || "In Stock",  // if you have a status field or default it
+      image: p.image || "default-image.jpg",  // fallback if no image
+      // add other properties if needed
+    }));
+
+  } catch (error) {
+    console.error("Error fetching products:", error);
+  }
+}
+
+
+  },
+  mounted() {
+    this.fetchProducts();
+  },
+};
 </script>
 
 <style scoped>
+/* Your existing CSS styles remain the same */
 .product-management {
   padding: 20px;
   background-color: #f5f5f5;
@@ -202,7 +172,7 @@ export default {
   background: white;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .table-header {
@@ -304,31 +274,6 @@ export default {
   border: 1px solid #e57373;
 }
 
-/* === CATEGORY TAGS === */
-.category-food {
-  background-color: #fff3cd;
-  color: #856404;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 0.8rem;
-}
-
-.category-beverages {
-  background-color: #d0ebff;
-  color: #0b5394;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 0.8rem;
-}
-
-.category-bakery {
-  background-color: #fce4ec;
-  color: #ad1457;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 0.8rem;
-}
-
 /* === BUTTON STYLES === */
 .btn-update {
   background-color: #4caf50;
@@ -366,12 +311,13 @@ export default {
 }
 
 @media (max-width: 768px) {
+
   .table-header,
   .product-row {
     grid-template-columns: 1fr;
     gap: 8px;
   }
-  
+
   .product-actions {
     justify-content: flex-start;
   }
