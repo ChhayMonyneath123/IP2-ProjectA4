@@ -18,7 +18,7 @@
     </div>
 
     <div class="icon-buttons">
-      <i class="fas fa-shopping-cart icon" aria-label="Cart"></i>
+      <i class="fas fa-shopping-cart icon" aria-label="Cart" @click="goToCart"></i>
       <i class="fas fa-heart icon" aria-label="Wishlist" @click="goToWishlist"></i>
 
       <!-- Conditionally render based on login state -->
@@ -76,6 +76,10 @@ const userAvatar = computed(() => {
 
 function goToWishlist() {
   router.push('/wishlist')
+}
+
+function goToCart() {
+  router.push('/my-order')
 }
 
 function handleLogout() {

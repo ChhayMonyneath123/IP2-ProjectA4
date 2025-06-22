@@ -1,21 +1,36 @@
 <template>
   <div>
     <!-- Pay Now Button -->
-    <button @click="openPopup" class="pay-now-btn">Pay Now</button>
+    <button @click="openPopup" class="pay-now-btn" :disabled="!selectedMethod">Pay Now</button>
 
     <!-- Order Placed Popup -->
     <div v-if="showPopup" class="popup-overlay">
       <div class="popup">
         <button class="close-btn" @click="showPopup = false">×</button>
-        <img src="https://cdn-icons-png.flaticon.com/512/3159/3159066.png" alt="celebration" class="popup-img" />
-        <h2>Payment Successfully!</h2>
+
+        <h2>Scan Payment Here!</h2> 
         <div v-if="qrCodeDataUrl">
           <img :src="qrCodeDataUrl" alt="Bakong QR" style="width: 160px; margin: 16px 0;" />
         </div>
         <div v-if="loading && !transactionSuccess">Checking transaction status...</div>
         <div v-if="transactionSuccess">Transaction completed!</div>
         <div v-if="error" style="color:red">{{ error }}</div>
-        <button class="thanks-btn" @click="goHome">Thanks!</button>
+        <button class="cancel-btn" @click="CancelPayment">Cancel</button>
+      </div>
+    </div>
+
+    <div v-if="showSuccessModal" class="success-modal-overlay">
+      <div class="success-modal">
+        <button class="close-btn" @click="confirmSuccess">×</button>
+        <div class="icon-container">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="green" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" stroke="green" fill="white"/>
+            <path d="M9 12l2 2l4 -4" />
+          </svg>
+        </div>
+        <h2>Transaction Successful</h2>
+        <p>Thank you for your payment!</p>
+        <button @click="confirmSuccess" class="ok-btn">OK</button>
       </div>
     </div>
   </div>
@@ -27,8 +42,14 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import QRCode from 'qrcode';
 import axios from 'axios';
+import { defineProps } from 'vue';
 
-// Add your imports for getUser, checkout, ChangeBoughtStatus, getCurrentDateTime, sendTelegramMessage, updateCouponQTY, sharedState, etc.
+const props = defineProps({
+  selectedMethod: {
+    type: [Number, String, null],
+    default: null,
+  },
+});
 
 const router = useRouter();
 const showPopup = ref(false);
@@ -36,6 +57,7 @@ const qrCodeDataUrl = ref(null);
 const transactionSuccess = ref(false);
 const loading = ref(false);
 const error = ref(null);
+const showSuccessModal = ref(false);
 
 // Example refs for required data (replace with your actual logic)
 const md5 = ref(''); // Set this from your logic
@@ -76,15 +98,16 @@ const checkTransactionStatus = async (md5) => {
 
     if (res.data.responseMessage === "Success") {
       transactionSuccess.value = true;
-      alert("Transaction successful!");
-      
+      showPopup.value = false;
+      showSuccessModal.value = true;
+      // alert("Transaction successful!");
+      // router.push("/");
       // Call your business logic here
       // Example:
       // const user = getUser();
       // checkout(res.data.responseMessage, itemsID.value, "...", "Store accepted", amountInKHR.value, user);
       // itemsID.value.map((item) => ChangeBoughtStatus(item));
       // ...etc
-
       // setTimeout(() => router.push("/"), 3000);
     } else {
       setTimeout(() => checkTransactionStatus(md5), 5000); // Pass md5 again
@@ -95,13 +118,17 @@ const checkTransactionStatus = async (md5) => {
   }
 };
 
-const goHome = () => {
+const confirmSuccess = () => {
+  showSuccessModal.value = false;
+  router.push("/");
+};
+const CancelPayment = () => {
   showPopup.value = false;
   qrCodeDataUrl.value = null;
   transactionSuccess.value = false;
   loading.value = false;
   error.value = null;
-  router.push('/');
+  router.push('/payment');
 };
 </script>
 
@@ -129,22 +156,18 @@ const goHome = () => {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 10;
 }
 
 .popup {
   background: white;
-  border-radius: 12px;
-  padding: 30px;
-  text-align: center;
-  position: relative;
+  padding: 2rem;
+  border-radius: 1rem;
+  width: 90%;
   max-width: 400px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  font-size: 15px;
-}
-
-.popup-img {
-  width: 60px;
-  margin-bottom: 20px;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
 }
 
 .close-btn {
@@ -156,8 +179,57 @@ const goHome = () => {
   font-size: 20px;
   cursor: pointer;
 }
+.success-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
 
-.thanks-btn {
+.success-modal {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+  position: relative;
+}
+
+.success-modal .icon-container {
+  font-size: 3rem;
+  color: green;
+  margin-bottom: 1rem;
+}
+
+.success-modal h2 {
+  margin-bottom: 0.5rem;
+}
+
+.success-modal p {
+  margin-bottom: 1.5rem;
+}
+
+.success-modal .ok-btn {
+  padding: 0.5rem 1.5rem;
+  background-color: #3085d6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.icon-container .icon {
+  width: 120px;
+  height: 120px;
+}
+.cancel-btn {
   padding: 10px 20px;
   background-color: black;
   color: white;
@@ -165,7 +237,7 @@ const goHome = () => {
   border-radius: 6px;
   cursor: pointer;
 }
-.thanks-btn:hover {
+.cancel-btn:hover {
   background-color: #219bff;
 }
 </style>
