@@ -97,31 +97,17 @@ class ProductsController extends Controller
     /**
      * Update the specified product.
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'title' => 'sometimes|string|max:255',
-            'description' => 'sometimes|string',
-            'price' => 'sometimes|numeric|min:0|max:999999.99',
-            'image' => 'sometimes|url|max:255',
-            'quantity' => 'sometimes|integer|min:0|max:999999',
-            'category_id' => 'sometimes|exists:categories,id',
-            'subcategory_id' => 'sometimes|exists:subcategories,id',
-            'estimated_delivery_minutes' => 'sometimes|integer|min:5|max:300',
+        $request->validate([
+            'status' => 'required|string',
         ]);
 
-        try {
-            $product->update($validated);
-            
-            return response()->json([
-                'status' => 'success',
-                'data' => $product->fresh(['category', 'subcategory']),
-                'message' => 'Product updated successfully'
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Product update failed: ' . $e->getMessage());
-            return $this->errorResponse('Failed to update product', $e);
-        }
+        $product = Product::findOrFail($id);
+        $product->status = $request->status;
+        $product->save();
+
+        return response()->json($product, 200);
     }
 
     /**
@@ -218,6 +204,8 @@ class ProductsController extends Controller
             return $this->errorResponse('Failed to filter products by category', $e);
         }
     }
+// Duplicate update method removed to resolve redeclaration error.
+
 
     /**
      * Helper method for error responses
@@ -230,4 +218,5 @@ class ProductsController extends Controller
             'error' => env('APP_DEBUG') ? $e->getMessage() : null
         ], 500);
     }
+    
 }

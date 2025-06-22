@@ -14,25 +14,19 @@
     </div>
 
     <div class="price">${{ price.toFixed(2) }}</div>
-
-    <button class="remove-btn" @click="$emit('remove')">🗑️</button>
+    <button class="remove-btn" @click="$emit('remove')">
+      <i class="fas fa-trash-alt"></i>
+    </button>
   </div>
 </template>
 
 <script setup>
-const props = defineProps({
-  title: String,
-  description: String,
-  price: Number,
-  image: String,
-  quantity: Number
-})
-const emit = defineEmits(['remove', 'update:quantity'])
+import { ref } from 'vue'
+defineProps(['title', 'description', 'price', 'image', 'quantity'])
+defineEmits(['remove', 'updateQuantity'])
 
-const increase = () => {
-  emit('update:quantity', props.quantity + 1)
-}
-
+const quantity = ref(1)
+const increase = () => quantity.value++
 const decrease = () => {
   if (props.quantity > 1) {
     emit('update:quantity', props.quantity - 1)
