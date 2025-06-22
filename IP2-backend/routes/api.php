@@ -3,21 +3,25 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\LoginController;
-use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\ProductRatingController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AdminDeliveryController;
 use App\Http\Controllers\DashboardController;
 Route::get('/products', [ProductController::class, 'index']);
 
-Route::post('/login', [LoginController::class, 'check']);
-Route::post('/register', [RegisterController::class, 'store']);
+Route::post('/register', [UserController::class, 'register']);
+Route::post('/login', [UserController::class, 'login']);
+Route::post('/password/email', [UserController::class, 'sendResetLinkEmail']);
+Route::post('/password/reset', [UserController::class, 'resetPassword']);
+Route::get('/users', [UserController::class, 'index']); // Get all users
+Route::get('/users/{id}', [UserController::class, 'show']); // Get user by ID
+
+
 
 // Optional: user route if using Sanctum
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -56,10 +60,12 @@ Route::prefix('subcategories')->group(function () {
     Route::get('/{subcategory}/products', [SubcategoryController::class, 'products']); // optional
 });
 
-
-    Route::get('/reviews', [ReviewController::class, 'index']);
-    Route::post('/reviews', [ReviewController::class, 'store']);
-    Route::put('/reviews/{id}', [ReviewController::class, 'update']);
-    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
-    Route::post('/reviews/{id}/reply', [ReviewController::class, 'reply']);
-    Route::get('/reviews/{id}/replies', [ReviewController::class, 'replies']);
+// routes/api.php
+Route::prefix('reviews')->group(function () {
+    Route::get('/', [ReviewController::class, 'index']);
+    Route::post('/', [ReviewController::class, 'store']);
+    Route::put('/{review}', [ReviewController::class, 'update']);
+    Route::delete('/{review}', [ReviewController::class, 'destroy']);
+    Route::post('/{review}/reply', [ReviewController::class, 'reply']);
+    Route::get('/stats', [ReviewController::class, 'stats']);
+});

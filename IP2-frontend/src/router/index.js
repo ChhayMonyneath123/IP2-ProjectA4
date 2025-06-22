@@ -143,14 +143,14 @@ const routes = [
                 component: () => import('@/views/Admin/authentication/Chat_Page.vue')
             },
             {
-                path: 'reviews',
-                name: 'AdminReviews',
-                component: () => import('@/views/Admin/authentication/Review_Page.vue')
+                path: 'users',
+                name: 'AdminUsersPage',
+                component: () => import('@/views/Admin/authentication/User.vue')
             },
             {
-                path: 'chats',
-                name: 'ChatPage',
-                component: () => import('@/views/Admin/authentication/Chat_Page.vue')
+                path: 'reviews',
+                name: 'ReviewPage',
+                component: () => import('@/views/Admin/authentication/Review_Page.vue')
             },
             {
                 path: 'manage-account',
