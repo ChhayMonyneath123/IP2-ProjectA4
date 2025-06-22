@@ -9,7 +9,9 @@ use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\ProductRatingController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\AdminDeliveryController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/products', [ProductController::class, 'index']);
 
