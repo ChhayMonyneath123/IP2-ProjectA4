@@ -14,7 +14,6 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AdminDeliveryController;
 use App\Http\Controllers\DashboardController;
-Route::get('/products', [ProductController::class, 'index']);
 
 Route::post('/login', [LoginController::class, 'check']);
 Route::post('/register', [RegisterController::class, 'store']);
@@ -24,8 +23,13 @@ Route::post('/register', [RegisterController::class, 'store']);
 //     return $request->user();
 // });
 
-Route::get('/product-ratings', [ProductRatingController::class, 'index']);
-Route::get('/product-ratings/{productRating}', [ProductRatingController::class, 'show']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/products/{productId}/ratings', [ProductRatingController::class, 'store']);
+    Route::get('/products/{productId}/ratings', [ProductRatingController::class, 'index']);
+});
+
+
 
 // Products
 Route::prefix('products')->group(function () {

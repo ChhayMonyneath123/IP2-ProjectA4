@@ -39,8 +39,7 @@ import axios from 'axios';
 export default {
   name: 'Commentinfo',
   props: {
-    productId: { type: Number, required: true },
-    userId: { type: Number, required: true }
+    productId: { type: Number, required: true }
   },
   data() {
     return {
@@ -49,11 +48,34 @@ export default {
         comment: ''
       },
       user: {
-        name: 'Ella Mondre',
-        date: new Date().toLocaleDateString(),
-        avatar: 'https://randomuser.me/api/portraits/women/45.jpg'
+        id: null,
+        name: '',
+        date: '',
+        avatar: ''
       }
     };
+  },
+  mounted() {
+    // Fetch logged-in user info on mount
+    axios.get('http://localhost:8000/api/user', { withCredentials: true })
+      .then((response) => {
+        const userData = response.data;
+        this.user = {
+          id: userData.id,
+          name: userData.name,
+          avatar: userData.avatar || 'https://randomuser.me/api/portraits/lego/1.jpg',
+          date: new Date().toLocaleDateString()
+        };
+      })
+      .catch((error) => {
+        console.error('Failed to load user', error);
+        this.user = {
+          id: 0,
+          name: "Guest",
+          avatar: "https://randomuser.me/api/portraits/lego/1.jpg",
+          date: new Date().toLocaleDateString()
+        };
+      });
   },
   methods: {
     submit() {
@@ -61,25 +83,28 @@ export default {
         const payload = {
           rating: this.form.rating,
           comment: this.form.comment,
-          user_id: this.userId
+          user_id: this.user.id
         };
 
-        axios.post(`http://localhost:8000/api/products/${this.productId}/ratings`, payload)
-          .then(res => {
-            this.$emit('submit', {
-              ...this.form,
-              name: this.user.name,
-              date: this.user.date,
-              avatar: this.user.avatar,
-              id: res.data.data.id // use real ID
-            });
-            this.form.rating = 0;
-            this.form.comment = '';
-          })
-          .catch(err => {
-            const message = err.response?.data?.message || 'Failed to submit review.';
-            alert(message);
+        axios.post(`http://localhost:8000/api/products/${this.productId}/ratings`, payload, {
+          withCredentials: true
+        })
+        .then(res => {
+          this.$emit('submit', {
+            ...this.form,
+            name: this.user.name,
+            date: this.user.date,
+            avatar: this.user.avatar,
+            id: res.data.data.id
           });
+
+          this.form.rating = 0;
+          this.form.comment = '';
+        })
+        .catch(err => {
+          const message = err.response?.data?.message || 'Failed to submit review.';
+          alert(message);
+        });
       } else {
         alert('Please complete all fields.');
       }
@@ -87,6 +112,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 /* Global container match (same as Rating Overview) */

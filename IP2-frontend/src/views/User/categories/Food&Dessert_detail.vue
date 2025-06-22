@@ -69,7 +69,7 @@ export default {
       });
 
     // Fetch user (adjust URL to match your real user endpoint)
-    axios.get('http://localhost:8000/api/users/1')
+    axios.get('http://localhost:8000/api/users')
       .then((response) => {
         this.user = response.data.data; // Make sure your backend wraps it in { data: { ... } }
       })
