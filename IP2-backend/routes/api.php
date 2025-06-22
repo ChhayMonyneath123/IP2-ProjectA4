@@ -29,10 +29,11 @@ Route::put('/user/profile', [UserController::class, 'updateProfile']);
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
+
 Route::get('/product-ratings', [ProductRatingController::class, 'index']);
 Route::get('/product-ratings/{productRating}', [ProductRatingController::class, 'show']);
 
-//  Products
+// Products
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductsController::class, 'index']);
     Route::post('/', [ProductsController::class, 'store']);
@@ -51,7 +52,7 @@ Route::prefix('categories')->group(function () {
     Route::get('/{category}/products', [CategoryController::class, 'products']); // optional
 });
 
-//  Subcategories
+// Subcategories
 Route::prefix('subcategories')->group(function () {
     Route::get('/', [SubcategoryController::class, 'index']);
     Route::post('/', [SubcategoryController::class, 'store']);
@@ -70,3 +71,14 @@ Route::prefix('reviews')->group(function () {
     Route::post('/{review}/reply', [ReviewController::class, 'reply']);
     Route::get('/stats', [ReviewController::class, 'stats']);
 });
+
+// Admin deliveries
+Route::get('/admin/deliveries', [AdminDeliveryController::class, 'index']);
+Route::patch('/admin/deliveries/{id}/status', [AdminDeliveryController::class, 'updateStatus']);
+
+// Dashboard API routes
+Route::get('/api/dashboard/stats', [DashboardController::class, 'getStats']);
+Route::get('/api/dashboard/order-summary', [DashboardController::class, 'getOrderSummary']);
+Route::get('/api/dashboard/top-food', [DashboardController::class, 'getTopFood']);
+Route::get('/api/dashboard/top-drinks', [DashboardController::class, 'getTopDrinks']);
+Route::get('/api/dashboard/debug', [DashboardController::class, 'debugData']);
