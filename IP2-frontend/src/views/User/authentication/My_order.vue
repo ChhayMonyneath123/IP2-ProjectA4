@@ -1,26 +1,64 @@
 <template>
-    <div class="my-order">
-        <Nav_bar/>
-        <div class="">
-            <h1>welcome to my-order</h1>
-        </div>
-        <Footer_bar/>
+<div class="myorder">
+  <Nav_bar />
+  <div class="order-page">
+    <div class="product-list">
+      <ProductCard
+        v-for="(item, index) in items"
+        :key="index"
+        v-bind="item"
+        @remove="removeItem(index)"
+      />
     </div>
+
+    <div class="cart-summary-container">
+      <CartSummary />
+    </div>
+  </div>
+  <Footer_bar />
+</div>
 </template>
-<script>
-import Nav_bar from '@/components/nav_bar.vue';
-import Footer_bar from '@/components/footer_bar.vue';
-    export default {
-        name: "my-order",
-        components:{
-            Footer_bar,
-            Nav_bar
-        }
-    }
+
+<script setup>
+import { ref } from 'vue'
+import Nav_bar from '@/components/nav_bar.vue'
+import Footer_bar from '@/components/footer_bar.vue'
+import ProductCard from '@/components/ordering_card.vue'
+import CartSummary from '@/components/CartSummary.vue'
+
+const items = ref([
+  {
+    title: 'Amok Fish',
+    description: 'Cambodian dish',
+    price: 3.2,
+    image: 'https://i.pinimg.com/736x/87/38/4a/87384ae90057fc7f1ad80e51a4d58c33.jpg',
+  },
+
+])
+
+const removeItem = (index) => {
+  items.value.splice(index, 1)
+}
+
 </script>
+
 <style scoped>
-.my-order{
-    width: 100%;
-    height: 20rem;
+.order-page {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: space-between;
+  margin: 5rem auto;
+  width: 85%;
+  gap: 3rem;
+}
+
+.product-list {
+  flex: 1;
+  border-radius: 10px;
+}
+
+.cart-summary-container {
+  width: 30%;
+  border-radius: 10px;
 }
 </style>

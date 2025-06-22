@@ -1,7 +1,10 @@
 <template>
     <div class="product-card">
-        <div class="product-image">
+        <div class="product-image" @click="$emit('image-click')">
             <img :src="image" alt="Product Image" />
+            <div class="image-overlay">
+                <button class="detail-button">View Details</button>
+            </div>
         </div>
         <div class="product-info">
             <div class="card-left">
@@ -15,7 +18,9 @@
                 </div>
                 <p class="product-delivery">Delivery: {{ deliveryTime }} mins</p>
                 <div class="button-container">
-                    <button class="add-to-cart"><i class="fa-solid fa-plus"></i></button>
+                    <button class="add-to-cart" @click="addToCart">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
                     <button class="add-to-cart-heart"><i class="fa-solid fa-heart"></i></button>
                 </div>
             </div>
@@ -24,6 +29,7 @@
 </template>
 
 <script>
+import {useCartStore} from "@/stores/cart";
 export default {
     name: "all_product_card",
     props: {
@@ -34,14 +40,24 @@ export default {
         image: String,
         rating: Number,
     },
+    emits: ['image-click'] ,// Declare the emitted event
+    setup(pros){
+        const cartStore = useCartStore();
+        const addToCart = () => {
+            cartStore.addToCart(pros.id)
+        }
+        return {
+            addToCart,
+        };
+    }
 };
 </script>
 
 <style scoped>
 body {
   font-family: 'Instrument Sans', sans-serif;
-
 }
+
 .product-card {
     background-color: #f8f8f8;
     border-radius: 2rem;
@@ -54,17 +70,62 @@ body {
     padding: 16px;
     margin: 2rem;
     font-family: 'Instrument Sans', sans-serif;
+    position: relative;
 }
+
 .product-image {
     width: 100%;
     height: 65%;
     border-radius: 2rem;
     overflow: hidden;
+    position: relative;
+    cursor: pointer;
 }
-.product-image img{
+
+.product-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: all 0.3s ease;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 2rem;
+}
+
+.product-image:hover .image-overlay {
+    opacity: 1;
+}
+
+.product-image:hover img {
+    transform: scale(1.05);
+}
+
+.detail-button {
+    background-color: #3a2e26;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.detail-button:hover {
+    background-color: #5a4a3d;
+    transform: scale(1.05);
 }
 .product-info {
     display: flex;

@@ -19,8 +19,8 @@
 
 
 
+    <Footer_bar />
   </div>
-  <Footer_bar />
 </template>
 
 <script>
