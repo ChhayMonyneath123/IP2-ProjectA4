@@ -115,7 +115,9 @@ body {
     margin: 2rem;
     font-family: 'Instrument Sans', sans-serif;
     position: relative;
+    position: relative;
 }
+
 
 .product-image {
     width: 100%;
@@ -124,7 +126,11 @@ body {
     overflow: hidden;
     position: relative;
     cursor: pointer;
+    position: relative;
+    cursor: pointer;
 }
+
+.product-image img {
 
 .product-image img {
     width: 100%;
