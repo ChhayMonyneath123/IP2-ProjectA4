@@ -26,7 +26,8 @@ class Product extends Model
         'quantity',
         'category_id',
         'subcategory_id',
-        'estimated_delivery_minutes'
+        'estimated_delivery_minutes',
+        'status'
     ];
 
     public function category(): BelongsTo

@@ -36,8 +36,8 @@ Route::get('/product-ratings/{productRating}', [ProductRatingController::class, 
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductsController::class, 'index']);
     Route::post('/', [ProductsController::class, 'store']);
-    Route::get('/{product}', [ProductsController::class, 'show']);
-    Route::put('/{product}', [ProductsController::class, 'update']);
+    Route::put('/{product}', [ProductsController::class, 'update']); Route::get('/{product}', [ProductsController::class, 'show']);
+    Route::put('/products/{productId}', [ProductsController::class, 'update']);
     Route::delete('/{product}', [ProductsController::class, 'destroy']);
 });
 
