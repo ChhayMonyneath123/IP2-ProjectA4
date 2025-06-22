@@ -14,6 +14,8 @@ use App\Models\Cart;
 use App\Models\Wishlist;
 use App\Models\Stocking;
 use App\Models\Review;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 class Product extends Model
 {
     use HasFactory; // Keep or add HasFactory if you're using factories

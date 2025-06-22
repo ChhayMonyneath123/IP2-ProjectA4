@@ -1,11 +1,7 @@
 <template>
     <div class="product-card">
         <div class="product-image" @click="$emit('image-click')">
-        <div class="product-image" @click="$emit('image-click')">
             <img :src="image" alt="Product Image" />
-            <div class="image-overlay">
-                <button class="detail-button">View Details</button>
-            </div>
             <div class="image-overlay">
                 <button class="detail-button">View Details</button>
             </div>
@@ -106,7 +102,6 @@ body {
   font-family: 'Instrument Sans', sans-serif;
 }
 
-
 .product-card {
     background-color: #f8f8f8;
     border-radius: 2rem;
@@ -120,9 +115,7 @@ body {
     margin: 2rem;
     font-family: 'Instrument Sans', sans-serif;
     position: relative;
-    position: relative;
 }
-
 
 .product-image {
     width: 100%;
@@ -131,11 +124,7 @@ body {
     overflow: hidden;
     position: relative;
     cursor: pointer;
-    position: relative;
-    cursor: pointer;
 }
-
-.product-image img {
 
 .product-image img {
     width: 100%;
