@@ -7,24 +7,31 @@
         <div class="section">
           <label for="serviceType">Type of Service:</label>
           <select id="serviceType" v-model="serviceType" class="style-input">
-           <option disabled value="">Please select</option>
-           <option value="Dine in">Dine In</option>
-           <option value="Delivery">Delivery</option> 
+            <option disabled value="">Please select</option>
+            <option value="Dine in">Dine In</option>
+            <option value="Delivery">Delivery</option> 
           </select>
-          <!-- <input type="text" placeholder="Please select" id="delivery" class="style-input" /> -->
         </div>
 
         <!-- Location Selection -->
         <div class="section">
           <label for="location">Choose Location:</label>
-          <input type="text" placeholder="Please select" id="location" class="style-input" readonly @click="showPopup = true" :value="selectedLocationDisplay"/>
+          <input
+            type="text"
+            placeholder="Please select"
+            id="location"
+            class="style-input"
+            readonly
+            @click="showPopup = true"
+            :value="selectedLocationDisplay"
+          />
         </div>
 
         <!-- Location Popup -->
-         <Transition name="fade">
+        <Transition name="fade">
           <div v-if="showPopup" class="popup-overlay">
             <div class="popup-content">
-            <h3>Input Your Location</h3>
+              <h3>Input Your Location</h3>
               <input v-model="form.name" type="text" placeholder="Full Name" class="popup-input" />
               <input v-model="form.phone" type="text" placeholder="Phone Number" class="popup-input" />      
 
@@ -36,7 +43,7 @@
               </div>          
             </div>       
           </div>
-         </Transition>
+        </Transition>
 
         <!-- Payment Method -->
         <div class="payment-methods">
@@ -56,75 +63,35 @@
 
         <!-- Cost and Pay Button -->
         <div class="pay-section">
-          <p>Total Cost <strong>$ 20.20</strong></p>
-          <Popup :selectedMethod="selectedMethod"/>
+          <p>Total Cost <strong>${{ cartStore.cartTotal.toFixed(2) }}</strong></p>
+          <Popup :selectedMethod="selectedMethod" />
         </div>
       </div>
 
       <!-- Order Summary -->
-      <div class="order-summary">
+      <div class="cart-summary">
         <h3>Order Summary</h3>
-        <div class="order-items">
-          <div class="order-item">
-            <span>Amok Fish</span>
-            <div class="item-details">
-              <span class="quantity">x2</span>
-              <span class="price">$10.00</span>
-            </div>
-          </div>
 
-          <div class="order-item">
-            <span>Strawberry Shake</span>
-            <div class="item-details">
-              <span class="quantity">x3</span>
-              <span class="price">$9.00</span>
-            </div>
+        <div
+          v-for="item in cartStore.cartItems"
+          :key="item.cart_id"
+          class="summary-item"
+        >
+          <div class="item-info">
+            <span class="item-name">{{ item.product_name }}</span>
+            <span class="item-quantity">x {{ item.quantity }}</span>
           </div>
-
-          <div class="order-item">
-            <span>Strawberry Shake</span>
-            <div class="item-details">
-              <span class="quantity">x3</span>
-              <span class="price">$9.00</span>
-            </div>
-          </div>
-          <div class="order-item">
-            <span>Blueberry Cake</span>
-            <div class="item-details">
-              <span class="quantity">x3</span>
-              <span class="price">$18.00</span>
-            </div>
-          </div>
-          <div class="order-item">
-            <span>Beef Stack</span>
-            <div class="item-details">
-              <span class="quantity">x3</span>
-              <span class="price">$11.00</span>
-            </div>
+          <div class="item-price">
+            ${{ (item.unit_price * item.quantity).toFixed(2) }}
           </div>
         </div>
-
-        <hr />
-
-        <div class="summary-row">
-          <span>Sub Total:</span>
-          <span>$47.00</span>
-        </div>
-        <div class="summary-row">
-          <span>Discount:</span>
-          <span>$0.00</span>
-        </div>
-        <div class="summary-row">
-          <span>Delivery Fee:</span>
-          <span>$0.20</span>
-        </div>
-
-        <hr />
 
         <div class="summary-row total">
-          <strong>Total:</strong>
-          <strong>$47.20</strong>
+          <span>Total:</span>
+          <span>${{ cartStore.cartTotal.toFixed(2) }}</span>
         </div>
+
+        
       </div>
     </div>
   </div>
@@ -132,18 +99,25 @@
 </template>
 
 <script setup>
-import { ref,computed, onMounted, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
+import { useCartStore } from '@/stores/cart'
 import L from 'leaflet'
 import Popup from '@/components/popup.vue'
 import Footer_bar from '@/components/footer_bar.vue'
 import Nav_bar from '@/components/nav_bar.vue'
+import { useRouter } from 'vue-router'
 
+const cartStore = useCartStore()
+const router = useRouter()
+
+const serviceType = ref('')
 const showPopup = ref(false)
 const form = ref({
   name: '',
   phone: '',
   location: '',
 })
+
 const selectedLocationDisplay = computed(() => {
   if (!form.value.name && !form.value.phone && !form.value.location) return ''
   return `${form.value.name}, ${form.value.phone}, ${form.value.location}`
@@ -153,7 +127,7 @@ let map = null
 let marker = null
 
 const initMap = () => {
-  map = L.map('map').setView([11.5564, 104.9282], 13) // Default to Phnom Penh
+  map = L.map('map').setView([11.5564, 104.9282], 13) // Default Phnom Penh
   setTimeout(() => map.invalidateSize(), 300)
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
@@ -173,12 +147,11 @@ const initMap = () => {
 
 watch(showPopup, (newVal) => {
   if (newVal) {
-    // Wait for DOM render, then initialize
     setTimeout(() => {
       if (!map) {
         initMap()
       } else {
-        map.invalidateSize() // <-- Important to fix white/cut area
+        map.invalidateSize()
       }
     }, 100)
   }
@@ -187,10 +160,9 @@ watch(showPopup, (newVal) => {
 const confirmLocation = () => {
   showPopup.value = false
 }
-// Selected payment method
+
 const selectedMethod = ref(null)
 
-// Payment methods Options
 const paymentMethods = [
   {
     id: 1,
@@ -203,6 +175,10 @@ const paymentMethods = [
     logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwG-Zx92YNnU6BuabALnRRwBqX_5USd3AJJw&s',
   },
 ]
+
+const proceedToCheckout = () => {
+  router.push('/some-next-route') // Replace with your next step route if needed
+}
 </script>
 
 <style scoped>
@@ -214,7 +190,7 @@ const paymentMethods = [
 
 .quantity,
 .price {
-  color: #6b7280; /* Tailwind's text-gray-500 */
+  color: #6b7280;
   margin-left: 8px;
   width: 60px;
   text-align: end;
@@ -238,7 +214,6 @@ const paymentMethods = [
   padding: 2rem;
   border-radius: 10px;
   flex: 1 1 60%;
-  
 }
 
 .section {
@@ -273,15 +248,22 @@ const paymentMethods = [
   width: 100%;
   padding: 0.5rem;
 }
-.fade-enter-active, .fade-leave-active {
+
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.3s ease;
 }
-.fade-enter-from, .fade-leave-to {
+
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
-.fade-enter-to, .fade-leave-from {
+
+.fade-enter-to,
+.fade-leave-from {
   opacity: 1;
 }
+
 .popup-overlay {
   position: fixed;
   inset: 0;
@@ -290,6 +272,7 @@ const paymentMethods = [
   justify-content: center;
   align-items: center;
 }
+
 .map-container {
   width: 100%;
   height: 250px;
@@ -297,6 +280,7 @@ const paymentMethods = [
   border-radius: 8px;
   overflow: hidden;
 }
+
 .popup-content {
   background: white;
   padding: 20px;
@@ -341,6 +325,7 @@ const paymentMethods = [
   background-color: #f44336;
   color: white;
 }
+
 .payment-methods {
   margin-bottom: 1.5rem;
 }
@@ -358,9 +343,7 @@ const paymentMethods = [
   border-radius: 8px;
   padding: 0.8rem;
   cursor: pointer;
-  transition:
-  border-color 0.3s,
-  background-color 0.3s;
+  transition: border-color 0.3s, background-color 0.3s;
 }
 
 .method-option:hover {
@@ -401,55 +384,85 @@ const paymentMethods = [
 .pay-section button:hover {
   background-color: #5a4b3c;
 }
-.order-summary {
-  background-color: #ffffff;
-  border: 1px solid #ccc;
+
+/* Improved Order Summary Design */
+.cart-summary {
+  background-color: #fff;
   border-radius: 12px;
-  padding: 1.5rem;
-  flex: 1 1 15%;
-  box-sizing: border-box;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  padding: 2rem;
+  width: 320px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.order-summary h3 {
+.cart-summary h3 {
+  font-weight: 700;
+  font-size: 1.6rem;
   margin-bottom: 1rem;
-  font-size: 1.5rem;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 0.5rem;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding: 0.6rem 0;
+  font-size: 1rem;
+  color: #444;
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+}
+
+.item-info {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.item-name {
   font-weight: 600;
 }
-.order-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
+
+.item-quantity {
+  color: #777;
 }
 
-.item-details {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.order-items .item-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-}
-
-.summary-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 1rem;
-  margin-top: 1rem;
+.item-price {
+  font-weight: 600;
+  color: #2c3e50;
 }
 
 .summary-row.total {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-top: 1rem;
+  font-weight: 800;
+  font-size: 1.25rem;
+  padding-top: 1rem;
+  border-top: 2px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  color: #111;
 }
 
-hr {
+.checkout-btn {
+  margin-top: 1.5rem;
+  width: 100%;
+  background: #3b2e1c;
+  color: white;
   border: none;
-  border-top: 2px solid #ddd;
-  margin: 1.5rem 0;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.checkout-btn:hover {
+  background-color: #5a4b3c;
 }
 </style>
