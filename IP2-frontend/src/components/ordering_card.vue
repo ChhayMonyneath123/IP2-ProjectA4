@@ -21,6 +21,11 @@
 
 <script setup>
 const props = defineProps({
+  title: String,
+  description: String,
+  price: Number,
+  image: String,
+  quantity: Number
 })
 const emit = defineEmits(['remove', 'update:quantity'])
 
