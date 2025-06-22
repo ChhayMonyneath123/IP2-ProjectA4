@@ -11,6 +11,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\ProductRatingController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\WishlistController;
 
 Route::get('/products', [ProductController::class, 'index']);
 
@@ -64,3 +65,32 @@ Route::middleware(['auth:api', 'admin'])->group(function () {
 });
 Route::post('/products/{product}/ratings', [ProductRatingController::class, 'store']);
 Route::get('/users/{user}', [UserController::class, 'show']);
+
+
+//wishlist
+//  Route::middleware(['auth:sanctum'])->group(function () {
+//     // Get all wishlist items for the authenticated user
+//     Route::get('wishlist', [WishlistController::class, 'index']);
+
+//     // Add a product to the wishlist
+//     Route::post('wishlist', [WishlistController::class, 'store']); // Added a store route
+
+//     // Update a wishlist item (e.g., quantity).
+//     // IMPORTANT: This route assumes your WishlistController has an `update` method
+//     // and your `wishlists` table has a `quantity` column.
+//     Route::put('wishlist/{id}', [WishlistController::class, 'update']);
+
+//     // Remove an item from the wishlist
+//     Route::delete('wishlist/{id}', [WishlistController::class, 'destroy']);
+// });
+
+Route::middleware('auth:sanctum')->group(function () {
+    // Get wishlist items
+    Route::get('/wishlist', [WishlistController::class, 'index']);
+    
+    // Add to wishlist
+    Route::post('/wishlist/{product}', [WishlistController::class, 'store']);
+    
+    // Remove from wishlist
+    Route::delete('/wishlist/{product}', [WishlistController::class, 'destroy']);
+});
