@@ -89,11 +89,97 @@ class DashboardController extends Controller
     public function getTopFood()
     {
         try {
-            return response()->json([
-                ["name" => "Pizza", "percentage" => 45, "color" => "#4A5568"],
-                ["name" => "Burger", "percentage" => 35, "color" => "#48BB78"],
-                ["name" => "Pasta", "percentage" => 20, "color" => "#805AD5"]
-            ]);
+            $startOfWeek = Carbon::now()->startOfWeek();
+            $endOfWeek = Carbon::now()->endOfWeek();
+            
+            // Get top food items based on order_items table
+            $topFoodItems = DB::table("order_items")
+                ->join("orders", "order_items.order_id", "=", "orders.order_id")
+                ->join("products", "order_items.product_id", "=", "products.product_id")
+                ->join("categories", "products.category_id", "=", "categories.category_id")
+                ->select(
+                    "products.title as name",
+                    DB::raw("SUM(order_items.quantity) as total_quantity"),
+                    DB::raw("COUNT(DISTINCT orders.order_id) as order_count")
+                )
+                ->where("categories.name", "LIKE", "%food%") // Assuming food category contains 'food'
+                ->orWhere("categories.name", "IN", ["Main Course", "Appetizers", "Desserts", "Snacks"])
+                ->whereBetween("orders.order_date", [$startOfWeek, $endOfWeek])
+                ->groupBy("products.product_id", "products.title")
+                ->orderBy("total_quantity", "desc")
+                ->limit(3)
+                ->get();
+
+            // If no food category found, try with common food product names
+            if ($topFoodItems->isEmpty()) {
+                $topFoodItems = DB::table("order_items")
+                    ->join("orders", "order_items.order_id", "=", "orders.order_id")
+                    ->join("products", "order_items.product_id", "=", "products.product_id")
+                    ->select(
+                        "products.title as name",
+                        DB::raw("SUM(order_items.quantity) as total_quantity"),
+                        DB::raw("COUNT(DISTINCT orders.order_id) as order_count")
+                    )
+                    ->where(function($query) {
+                        $query->where("products.title", "LIKE", "%pizza%")
+                              ->orWhere("products.title", "LIKE", "%burger%")
+                              ->orWhere("products.title", "LIKE", "%pasta%")
+                              ->orWhere("products.title", "LIKE", "%sandwich%")
+                              ->orWhere("products.title", "LIKE", "%salad%")
+                              ->orWhere("products.title", "LIKE", "%soup%")
+                              ->orWhere("products.title", "LIKE", "%chicken%")
+                              ->orWhere("products.title", "LIKE", "%beef%")
+                              ->orWhere("products.title", "LIKE", "%fish%")
+                              ->orWhere("products.title", "LIKE", "%rice%");
+                    })
+                    ->whereBetween("orders.order_date", [$startOfWeek, $endOfWeek])
+                    ->groupBy("products.product_id", "products.title")
+                    ->orderBy("total_quantity", "desc")
+                    ->limit(3)
+                    ->get();
+            }
+
+            // If still no results, get top 3 products by quantity this week (excluding drinks)
+            if ($topFoodItems->isEmpty()) {
+                $topFoodItems = DB::table("order_items")
+                    ->join("orders", "order_items.order_id", "=", "orders.order_id")
+                    ->join("products", "order_items.product_id", "=", "products.product_id")
+                    ->select(
+                        "products.title as name",
+                        DB::raw("SUM(order_items.quantity) as total_quantity"),
+                        DB::raw("COUNT(DISTINCT orders.order_id) as order_count")
+                    )
+                    ->where("products.title", "NOT LIKE", "%coffee%")
+                    ->where("products.title", "NOT LIKE", "%tea%")
+                    ->where("products.title", "NOT LIKE", "%juice%")
+                    ->where("products.title", "NOT LIKE", "%soda%")
+                    ->where("products.title", "NOT LIKE", "%water%")
+                    ->where("products.title", "NOT LIKE", "%drink%")
+                    ->whereBetween("orders.order_date", [$startOfWeek, $endOfWeek])
+                    ->groupBy("products.product_id", "products.title")
+                    ->orderBy("total_quantity", "desc")
+                    ->limit(3)
+                    ->get();
+            }
+
+            // Calculate percentages and add colors
+            $totalQuantity = $topFoodItems->sum('total_quantity');
+            $colors = ["#4A5568", "#48BB78", "#805AD5"];
+            $result = [];
+            
+            foreach ($topFoodItems as $index => $item) {
+                $percentage = $totalQuantity > 0 ? 
+                    round(($item->total_quantity / $totalQuantity) * 100) : 0;
+                
+                $result[] = [
+                    "name" => $item->name,
+                    "percentage" => max($percentage, 1), // Minimum 1%
+                    "color" => $colors[$index % count($colors)]
+                ];
+            }
+
+            return response()->json($result);
+
         } catch (\Exception $e) {
             return response()->json([
                 "error" => "Failed to fetch top food items",
@@ -108,14 +194,103 @@ class DashboardController extends Controller
     public function getTopDrinks()
     {
         try {
-            return response()->json([
-                ["name" => "Coffee", "percentage" => 50, "color" => "#805AD5"],
-                ["name" => "Tea", "percentage" => 30, "color" => "#48BB78"],
-                ["name" => "Soda", "percentage" => 20, "color" => "#4299E1"]
-            ]);
+            $startOfWeek = Carbon::now()->startOfWeek();
+            $endOfWeek = Carbon::now()->endOfWeek();
+            
+            // Get top drink items based on order_items table
+            $topDrinkItems = DB::table("order_items")
+                ->join("orders", "order_items.order_id", "=", "orders.order_id")
+                ->join("products", "order_items.product_id", "=", "products.product_id")
+                ->join("categories", "products.category_id", "=", "categories.category_id")
+                ->select(
+                    "products.title as name",
+                    DB::raw("SUM(order_items.quantity) as total_quantity"),
+                    DB::raw("COUNT(DISTINCT orders.order_id) as order_count")
+                )
+                ->where("categories.name", "LIKE", "%drink%") // Assuming drink category contains 'drink'
+                ->orWhere("categories.name", "LIKE", "%beverage%")
+                ->orWhere("categories.name", "IN", ["Drinks", "Beverages", "Coffee", "Tea"])
+                ->whereBetween("orders.order_date", [$startOfWeek, $endOfWeek])
+                ->groupBy("products.product_id", "products.title")
+                ->orderBy("total_quantity", "desc")
+                ->limit(3)
+                ->get();
+
+            // If no drink category found, try with common drink product names
+            if ($topDrinkItems->isEmpty()) {
+                $topDrinkItems = DB::table("order_items")
+                    ->join("orders", "order_items.order_id", "=", "orders.order_id")
+                    ->join("products", "order_items.product_id", "=", "products.product_id")
+                    ->select(
+                        "products.title as name",
+                        DB::raw("SUM(order_items.quantity) as total_quantity"),
+                        DB::raw("COUNT(DISTINCT orders.order_id) as order_count")
+                    )
+                    ->where(function($query) {
+                        $query->where("products.title", "LIKE", "%coffee%")
+                              ->orWhere("products.title", "LIKE", "%tea%")
+                              ->orWhere("products.title", "LIKE", "%juice%")
+                              ->orWhere("products.title", "LIKE", "%soda%")
+                              ->orWhere("products.title", "LIKE", "%water%")
+                              ->orWhere("products.title", "LIKE", "%smoothie%")
+                              ->orWhere("products.title", "LIKE", "%latte%")
+                              ->orWhere("products.title", "LIKE", "%cappuccino%")
+                              ->orWhere("products.title", "LIKE", "%espresso%")
+                              ->orWhere("products.title", "LIKE", "%drink%");
+                    })
+                    ->whereBetween("orders.order_date", [$startOfWeek, $endOfWeek])
+                    ->groupBy("products.product_id", "products.title")
+                    ->orderBy("total_quantity", "desc")
+                    ->limit(3)
+                    ->get();
+            }
+
+            // If still no results, get any products that might be drinks
+            if ($topDrinkItems->isEmpty()) {
+                $topDrinkItems = DB::table("order_items")
+                    ->join("orders", "order_items.order_id", "=", "orders.order_id")
+                    ->join("products", "order_items.product_id", "=", "products.product_id")
+                    ->select(
+                        "products.title as name",
+                        DB::raw("SUM(order_items.quantity) as total_quantity"),
+                        DB::raw("COUNT(DISTINCT orders.order_id) as order_count")
+                    )
+                    ->where(function($query) {
+                        $query->where("products.title", "LIKE", "%coffee%")
+                              ->orWhere("products.title", "LIKE", "%tea%")
+                              ->orWhere("products.title", "LIKE", "%juice%")
+                              ->orWhere("products.title", "LIKE", "%soda%")
+                              ->orWhere("products.title", "LIKE", "%water%")
+                              ->orWhere("products.title", "LIKE", "%drink%");
+                    })
+                    ->whereBetween("orders.order_date", [$startOfWeek, $endOfWeek])
+                    ->groupBy("products.product_id", "products.title")
+                    ->orderBy("total_quantity", "desc")
+                    ->limit(3)
+                    ->get();
+            }
+
+            // Calculate percentages and add colors
+            $totalQuantity = $topDrinkItems->sum('total_quantity');
+            $colors = ["#805AD5", "#48BB78", "#4299E1"];
+            $result = [];
+            
+            foreach ($topDrinkItems as $index => $item) {
+                $percentage = $totalQuantity > 0 ? 
+                    round(($item->total_quantity / $totalQuantity) * 100) : 0;
+                
+                $result[] = [
+                    "name" => $item->name,
+                    "percentage" => max($percentage, 1), // Minimum 1%
+                    "color" => $colors[$index % count($colors)]
+                ];
+            }
+
+            return response()->json($result);
+
         } catch (\Exception $e) {
             return response()->json([
-                "error" => "Failed to fetch top drinks",
+                "error" => "Failed to fetch top drink items",
                 "message" => $e->getMessage()
             ], 500);
         }
@@ -129,11 +304,19 @@ class DashboardController extends Controller
         try {
             $orders = DB::table("orders")->limit(3)->get();
             $products = DB::table("products")->limit(3)->get();
+            $orderItems = DB::table("order_items")->limit(3)->get();
+            $categories = DB::table("categories")->get();
             
             return response()->json([
                 "message" => "Debug working!",
                 "orders_count" => DB::table("orders")->count(),
-                // ...rest of your code
+                "products_count" => DB::table("products")->count(),
+                "order_items_count" => DB::table("order_items")->count(),
+                "categories_count" => DB::table("categories")->count(),
+                "sample_orders" => $orders,
+                "sample_products" => $products,
+                "sample_order_items" => $orderItems,
+                "categories" => $categories
             ]);
         } catch (\Exception $e) {
             return response()->json([
