@@ -45,10 +45,14 @@
         <transition v-else name="fade" mode="out-in">
           <div v-if="filteredProducts.length > 0" class="menu-card">
             <div class="contain-menu">
-              <all_product_card v-for="product in filteredProducts" :key="product.id" :price="product.price"
-                :title="product.title" :rating="product.rating" :deliveryTime="product.delivery_time + ' mins'"
-                :image="getImageUrl(product.image)" @click="goToProductDetail(product.id)" />
-
+              <all_product_card v-for="product in filteredProducts" 
+                :key="product.id" 
+                :price="product.price"
+                :title="product.title" 
+                :rating="product.rating" 
+                :deliveryTime="product.delivery_time + ' mins'"
+                :image="getImageUrl(product.image)" 
+                @image-click="goToProductDetail(product.id)" />
             </div>
           </div>
           <div v-else class="no-items-message">

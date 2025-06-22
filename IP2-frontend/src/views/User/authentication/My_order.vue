@@ -1,4 +1,5 @@
 <template>
+<div class="myorder">
   <Nav_bar />
   <div class="order-page">
     <div class="product-list">
@@ -15,6 +16,7 @@
     </div>
   </div>
   <Footer_bar />
+</div>
 </template>
 
 <script setup>
@@ -31,18 +33,7 @@ const items = ref([
     price: 3.2,
     image: 'https://i.pinimg.com/736x/87/38/4a/87384ae90057fc7f1ad80e51a4d58c33.jpg',
   },
-  {
-    title: 'Strawberry Smoothie',
-    description: 'Cambodian dish',
-    price: 3.1,
-    image: 'https://i.pinimg.com/736x/fd/5b/3a/fd5b3a26a73653481f01ed4c55fc199d.jpg',
-  },
-  {
-    title: 'Chocolate Frappe',
-    description: 'Cambodian dish',
-    price: 3.1,
-    image: 'https://i.pinimg.com/736x/15/80/4e/15804e381f8e4aca5742f0c17de6a66d.jpg',
-  },
+
 ])
 
 const removeItem = (index) => {

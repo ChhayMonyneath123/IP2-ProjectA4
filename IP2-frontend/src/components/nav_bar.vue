@@ -18,7 +18,10 @@
     </div>
 
     <div class="icon-buttons">
-      <i class="fas fa-shopping-cart icon" aria-label="Cart"></i>
+      <div class="cart-icon-container">
+        <i class="fas fa-shopping-cart icon" aria-label="Cart" @click="goToCart"></i>
+        <span class="cart-count" v-if="cartCount > 0">{{ cartCount }}</span>
+      </div>
       <i class="fas fa-heart icon" aria-label="Wishlist" @click="goToWishlist"></i>
 
       <!-- Conditionally render based on login state -->
@@ -38,9 +41,16 @@
 </template>
 
 <script setup>
+import {useCartStore} from '@/stores/cart'
 import { computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
+
+
+// add to cart 
+const cartStore = useCartStore()
+const cartCount = computed(() => cartStore.count)  // make sure cartItems is reactive in your store
+
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -53,6 +63,9 @@ const firstLetter = computed(() => {
 
 function goToWishlist() {
   router.push('/wishlist')
+}
+function goToCart() {
+  router.push('/my-order')
 }
 
 function handleLogout() {
@@ -191,5 +204,27 @@ function handleLogout() {
 
 .logout-btn:hover {
   background-color: #8d7a65;
+}
+
+
+.cart-icon-container {
+  position: relative;
+  display: inline-block;
+}
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #ff4757;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
 }
 </style>

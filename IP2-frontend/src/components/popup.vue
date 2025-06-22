@@ -23,9 +23,10 @@
 
 <script setup>
 import { getBakongQR } from '@/api/payway/BakongPay';
+// .ts extension is optional in Vite
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import QRCode from 'qrcode';
+import QRCode from 'qrcode'
 import axios from 'axios';
 
 // Add your imports for getUser, checkout, ChangeBoughtStatus, getCurrentDateTime, sendTelegramMessage, updateCouponQTY, sharedState, etc.

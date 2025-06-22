@@ -1,39 +1,30 @@
 <?php
 
+// app/Http/Controllers/WishlistController.php
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
 
 class WishlistController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $user = $request->user();
-        return response()->json($user->wishlistItems()->with('product')->get());
+        return auth()->user()->wishlistProducts()
+            ->select('id', 'name', 'price', 'image_url')
+            ->get();
     }
 
-    public function store(Request $request)
+    public function store(Product $product)
     {
-        $user = $request->user();
-        
-        $validated = $request->validate([
-            'product_id' => 'required|exists:products,product_id'
-        ]);
-
-        $wishlistItem = Wishlist::firstOrCreate([
-            'user_id' => $user->user_id,
-            'product_id' => $validated['product_id']
-        ]);
-
-        return response()->json($wishlistItem->load('product'), 201);
+        auth()->user()->wishlistProducts()->syncWithoutDetaching([$product->id]);
+        return response()->json(['success' => true]);
     }
 
-    public function destroy(Wishlist $wishlist)
+    public function destroy(Product $product)
     {
-        $this->authorize('delete', $wishlist);
-        
-        $wishlist->delete();
-        return response()->json(null, 204);
+        auth()->user()->wishlistProducts()->detach($product->id);
+        return response()->json(['success' => true]);
     }
 }
