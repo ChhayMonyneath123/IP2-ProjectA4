@@ -120,7 +120,9 @@ body {
     margin: 2rem;
     font-family: 'Instrument Sans', sans-serif;
     position: relative;
+    position: relative;
 }
+
 
 .product-image {
     width: 100%;
@@ -129,13 +131,58 @@ body {
     overflow: hidden;
     position: relative;
     cursor: pointer;
+    position: relative;
+    cursor: pointer;
 }
+
+.product-image img {
 
 .product-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: all 0.3s ease;
 }
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 2rem;
+}
+
+.product-image:hover .image-overlay {
+    opacity: 1;
+}
+
+.product-image:hover img {
+    transform: scale(1.05);
+}
+
+.detail-button {
+    background-color: #3a2e26;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.detail-button:hover {
+    background-color: #5a4a3d;
+    transform: scale(1.05);
+}
+
 .product-info {
     display: flex;
     padding: 10px;
