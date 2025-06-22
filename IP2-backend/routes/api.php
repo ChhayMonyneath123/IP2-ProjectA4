@@ -100,3 +100,4 @@ Route::prefix('cart')->group(function () {
     Route::put('/update/{cartId}', [CartController::class, 'updateCartItem']);
 
 });
+//ss

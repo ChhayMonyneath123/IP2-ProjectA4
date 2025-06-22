@@ -43,7 +43,7 @@
         messages: [
           {
             id: 1, // Changed sid to id for consistency
-            text: "Hello! I was wondering what your operating hours are today. I'm planning to visit with my family, and I want to make sure you're open before heading over. Also, do you have any special offers or promotions today? Thanks.",
+            text: "Hello!Mary I was wondering what your operating hours are today. I'm planning to visit with my family, and I want to make sure you're open before heading over. Also, do you have any special offers or promotions today? Thanks.",
             time: "7:15 pm",
             type: "sent",
           },
