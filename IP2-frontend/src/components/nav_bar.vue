@@ -18,10 +18,7 @@
     </div>
 
     <div class="icon-buttons">
-      <div class="cart-icon-container">
-        <i class="fas fa-shopping-cart icon" aria-label="Cart" @click="goToCart"></i>
-        <span class="cart-count" v-if="cartCount > 0">{{ cartCount }}</span>
-      </div>
+      <i class="fas fa-shopping-cart icon" aria-label="Cart" @click="goToCart"></i>
       <i class="fas fa-heart icon" aria-label="Wishlist" @click="goToWishlist"></i>
 
       <!-- Conditionally render based on login state -->
@@ -87,6 +84,10 @@ const userAvatar = computed(() => {
 function goToWishlist() {
   router.push('/wishlist')
 }
+function goToCart() {
+  router.push('/my-order')
+}
+
 function goToCart() {
   router.push('/my-order')
 }

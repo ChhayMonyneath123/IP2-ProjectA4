@@ -77,9 +77,10 @@ const routes = [
     // },
     //my order 
     {
-        path: '/my-order',  // ADD THIS ROUTE
-        name: 'My_order',
-        component: () => import('@/components/My_order.vue')
+        path: '/my-order',
+        name: 'my-order',
+        component: () => import('@/views/User/authentication/My_order.vue'),
+        // meta: { requiresAuth: true }
     },
     {
 
@@ -121,17 +122,6 @@ const routes = [
             },
 
             {
-                path: 'orders',
-                name: 'orders',
-                component: () => import('@/views/Admin/authentication/Order.vue')
-            },
-            {
-                path: 'stocks',
-                name: 'Stocks',
-                component: () => import('@/views/Admin/authentication/Stocks.vue')
-            },
-
-            {
                 path: 'delivery',
                 name: 'Delivery',
                 component: () => import('@/views/Admin/authentication/DeliveryPage.vue')
@@ -147,28 +137,15 @@ const routes = [
                 component: () => import('@/views/Admin/authentication/Chat_Page.vue')
             },
             {
-                path: 'reviews',
-                name: 'AdminReviews',
-                component: () => import('@/views/Admin/authentication/Review_Page.vue')
+                path: 'manage-account',
+                name: 'ManageAccount',
+                component: () => import('@/views/Admin/authentication/ManageAccountPage.vue')
             },
             {
-                path: 'chats',
-                name: 'ChatPage',
-                component: () => import('@/views/Admin/authentication/Chat_Page.vue')
-            },
-            {
-                path: 'users',
-                name: 'AdminUsersPage',
-                component: () => import('@/views/Admin/authentication/User.vue')
-            },
-            {
-                path: 'reviews',
-                name: 'ReviewPage',
-                component: () => import('@/views/Admin/authentication/Review_Page.vue')
-            },
-            // {
-                
-            // }
+                path: '/mange-account/edit',
+                name: 'EditAccount',
+                component: () => import('@/views/Admin/authentication/EditAccount.vue')
+            }
         ]
     }
 ]
