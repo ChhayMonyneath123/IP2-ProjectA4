@@ -71,7 +71,7 @@ const routes = [
         path: '/my-order',
         name: 'my-order',
         component: () => import('@/views/User/authentication/My_order.vue'),
-        meta: { requiresAuth: true }
+        // meta: { requiresAuth: true }
     },
     {
         path: '/menu/detail/:id',
