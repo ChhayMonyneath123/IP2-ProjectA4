@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class ProductRatingController extends Controller
 {
+    // POST /products/{productId}/ratings
     public function store(Request $request, $productId)
     {
         $validated = $request->validate([
@@ -23,5 +24,15 @@ class ProductRatingController extends Controller
         ]);
 
         return response()->json(['status' => 'success', 'data' => $rating], 201);
+    }
+
+    // GET /products/{productId}/ratings
+    public function index($productId)
+    {
+        $ratings = ProductRating::where('product_id', $productId)
+            ->with('user:id,name') // include user name only
+            ->get();
+
+        return response()->json(['status' => 'success', 'data' => $ratings]);
     }
 }

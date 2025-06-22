@@ -30,8 +30,13 @@ Route::put('/user/profile', [UserController::class, 'updateProfile']);
 //     return $request->user();
 // });
 
-Route::get('/product-ratings', [ProductRatingController::class, 'index']);
-Route::get('/product-ratings/{productRating}', [ProductRatingController::class, 'show']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/products/{productId}/ratings', [ProductRatingController::class, 'store']);
+    Route::get('/products/{productId}/ratings', [ProductRatingController::class, 'index']);
+});
+
+
 
 // Products
 Route::prefix('products')->group(function () {
