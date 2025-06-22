@@ -3,7 +3,6 @@ import { useAuthStore } from '@/stores/auth'
 
 import axios from 'axios'
 
-import My_order from '@/components/My_order.vue'
 
 const routes = [
     // User routes
@@ -84,12 +83,7 @@ const routes = [
     },
     {
 
-      path: "/payment",
-      name: "Payment",
-      component: () => import('@/views/User/authentication/Payment.vue'),
-    },
-    {
-        path: '/menu/detail/:id',
+        path: '/menu/food/detail/:id',
         name: 'detail',
         component: () => import('@/views/User/categories/Food&Dessert_detail.vue'),
         meta: { requiresAuth: false }
@@ -100,7 +94,6 @@ const routes = [
         component: () => import('@/views/User/categories/Drink_detail.vue'),
         meta: { requiresAuth: false }
     },
-    
 // Admin routes
     {
         path: '/admin',
@@ -116,16 +109,10 @@ const routes = [
                 component: () => import('@/views/Admin/authentication/DashboardPage.vue')
             },
             {
-                path: 'orders',
-                name: 'orders',
-                component: () => import('@/views/Admin/authentication/Order.vue')
-            },
-            {
                 path: 'stocks',
                 name: 'Stocks',
                 component: () => import('@/views/Admin/authentication/Stocks.vue')
             },
-
             {
                 path: 'delivery',
                 name: 'Delivery',
@@ -134,10 +121,6 @@ const routes = [
             {
                 path: 'reviews',
                 name: 'AdminReviews',
-                component: () => import('@/views/Admin/authentication/Review_Page.vue')
-            },
-            {
-                path: 'chats',
                 name: 'ChatPage',
                 component: () => import('@/views/Admin/authentication/Chat_Page.vue')
             },

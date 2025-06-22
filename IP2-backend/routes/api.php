@@ -8,10 +8,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\ProductRatingController;
 use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\AdminDeliveryController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\WishlistController;
 
 Route::get('/products', [ProductController::class, 'index']);
 
@@ -79,25 +76,34 @@ Route::prefix('reviews')->group(function () {
     Route::post('/{review}/reply', [ReviewController::class, 'reply']);
     Route::get('/stats', [ReviewController::class, 'stats']);
 });
+Route::post('/products/{product}/ratings', [ProductRatingController::class, 'store']);
+Route::get('/users/{user}', [UserController::class, 'show']);
 
-// Admin deliveries
-Route::get('/admin/deliveries', [AdminDeliveryController::class, 'index']);
-Route::patch('/admin/deliveries/{id}/status', [AdminDeliveryController::class, 'updateStatus']);
 
-// Dashboard API routes
-Route::get('/api/dashboard/stats', [DashboardController::class, 'getStats']);
-Route::get('/api/dashboard/order-summary', [DashboardController::class, 'getOrderSummary']);
-Route::get('/api/dashboard/top-food', [DashboardController::class, 'getTopFood']);
-Route::get('/api/dashboard/top-drinks', [DashboardController::class, 'getTopDrinks']);
-Route::get('/api/dashboard/debug', [DashboardController::class, 'debugData']);
+//wishlist
+//  Route::middleware(['auth:sanctum'])->group(function () {
+//     // Get all wishlist items for the authenticated user
+//     Route::get('wishlist', [WishlistController::class, 'index']);
 
-//card
-Route::prefix('cart')->group(function () {
-    Route::post('/add', [CartController::class, 'addToCart']);
-    Route::get('/items', [CartController::class, 'getCartItems']);
-    Route::delete('/remove/{cartId}', [CartController::class, 'removeFromCart']);
-    Route::get('/test', [CartController::class, 'test']); // Test endpoint
-    Route::put('/update/{cartId}', [CartController::class, 'updateCartItem']);
+//     // Add a product to the wishlist
+//     Route::post('wishlist', [WishlistController::class, 'store']); // Added a store route
 
+//     // Update a wishlist item (e.g., quantity).
+//     // IMPORTANT: This route assumes your WishlistController has an `update` method
+//     // and your `wishlists` table has a `quantity` column.
+//     Route::put('wishlist/{id}', [WishlistController::class, 'update']);
+
+//     // Remove an item from the wishlist
+//     Route::delete('wishlist/{id}', [WishlistController::class, 'destroy']);
+// });
+
+Route::middleware('auth:sanctum')->group(function () {
+    // Get wishlist items
+    Route::get('/wishlist', [WishlistController::class, 'index']);
+
+    // Add to wishlist
+    Route::post('/wishlist/{product}', [WishlistController::class, 'store']);
+
+    // Remove from wishlist
+    Route::delete('/wishlist/{product}', [WishlistController::class, 'destroy']);
 });
-//ss
