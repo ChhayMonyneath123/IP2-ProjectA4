@@ -9,19 +9,12 @@ use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\ProductRatingController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\WishlistController;
-
+use App\Http\Controllers\AdminDeliveryController;
+use App\Http\Controllers\DashboardController;
 Route::get('/products', [ProductController::class, 'index']);
 
-Route::post('/register', [UserController::class, 'register']);
-Route::post('/login', [UserController::class, 'login']);
-Route::post('/password/email', [UserController::class, 'sendResetLinkEmail']);
-Route::post('/password/reset', [UserController::class, 'resetPassword']);
-Route::get('/users', [UserController::class, 'index']); // Get all users
-Route::get('/users/{id}', [UserController::class, 'show']); // Get user by ID
-Route::put('/users/{id}', [UserController::class, 'update']);   // Update user info
-Route::delete('/users/{id}', [UserController::class, 'destroy']); // Delete user
-Route::get('/user', [UserController::class, 'profile']);
-Route::put('/user/profile', [UserController::class, 'updateProfile']);
+Route::post('/login', [LoginController::class, 'check']);
+Route::post('/register', [RegisterController::class, 'store']);
 
 
 
@@ -29,14 +22,8 @@ Route::put('/user/profile', [UserController::class, 'updateProfile']);
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
-
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/products/{productId}/ratings', [ProductRatingController::class, 'store']);
-    Route::get('/products/{productId}/ratings', [ProductRatingController::class, 'index']);
-});
-
-
+Route::get('/product-ratings', [ProductRatingController::class, 'index']);
+Route::get('/product-ratings/{productRating}', [ProductRatingController::class, 'show']);
 
 // Products
 Route::prefix('products')->group(function () {
@@ -76,27 +63,13 @@ Route::prefix('reviews')->group(function () {
     Route::post('/{review}/reply', [ReviewController::class, 'reply']);
     Route::get('/stats', [ReviewController::class, 'stats']);
 });
+
 Route::post('/products/{product}/ratings', [ProductRatingController::class, 'store']);
-Route::get('/users/{user}', [UserController::class, 'show']);
 
+// REMOVED: Route::get('/users/{user}', [UserController::class, 'show']);
+// UserController doesn't exist - commented out to prevent 500 errors
 
-//wishlist
-//  Route::middleware(['auth:sanctum'])->group(function () {
-//     // Get all wishlist items for the authenticated user
-//     Route::get('wishlist', [WishlistController::class, 'index']);
-
-//     // Add a product to the wishlist
-//     Route::post('wishlist', [WishlistController::class, 'store']); // Added a store route
-
-//     // Update a wishlist item (e.g., quantity).
-//     // IMPORTANT: This route assumes your WishlistController has an `update` method
-//     // and your `wishlists` table has a `quantity` column.
-//     Route::put('wishlist/{id}', [WishlistController::class, 'update']);
-
-//     // Remove an item from the wishlist
-//     Route::delete('wishlist/{id}', [WishlistController::class, 'destroy']);
-// });
-
+// Wishlist routes
 Route::middleware('auth:sanctum')->group(function () {
     // Get wishlist items
     Route::get('/wishlist', [WishlistController::class, 'index']);
