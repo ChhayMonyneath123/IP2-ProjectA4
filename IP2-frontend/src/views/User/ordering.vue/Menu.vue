@@ -46,7 +46,8 @@
           <div v-if="filteredProducts.length > 0" class="menu-card">
             <div class="contain-menu">
               <all_product_card v-for="product in filteredProducts" 
-                :key="product.id" 
+                :key="product.id"
+                :id="product.id"
                 :price="product.price"
                 :title="product.title" 
                 :rating="product.rating" 

@@ -3,6 +3,7 @@ import { useAuthStore } from '@/stores/auth'
 
 import axios from 'axios'
 
+import My_order from '@/components/My_order.vue'
 
 const routes = [
     // User routes
@@ -76,10 +77,9 @@ const routes = [
     // },
     //my order 
     {
-        path: '/my-order',
-        name: 'my-order',
-        component: () => import('@/views/User/authentication/My_order.vue'),
-        // meta: { requiresAuth: true }
+        path: '/my-order',  // ADD THIS ROUTE
+        name: 'My_order',
+        component: () => import('@/components/My_order.vue')
     },
     {
 
@@ -94,6 +94,7 @@ const routes = [
         component: () => import('@/views/User/categories/Drink_detail.vue'),
         meta: { requiresAuth: false }
     },
+    
 // Admin routes
     {
         path: '/admin',

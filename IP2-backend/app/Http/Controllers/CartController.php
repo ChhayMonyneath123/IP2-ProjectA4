@@ -116,7 +116,7 @@ class CartController extends Controller
     {
         try {
             $userId = $request->get('user_id');
-            
+
             if (!$userId) {
                 return response()->json([
                     'success' => false,
@@ -197,7 +197,7 @@ class CartController extends Controller
     /**
      * Update cart item quantity
      */
-    
+
     public function updateCartItem(Request $request, $cartId)
 {
     try {

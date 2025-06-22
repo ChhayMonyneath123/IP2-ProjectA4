@@ -11,6 +11,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AdminDeliveryController;
 use App\Http\Controllers\DashboardController;
+Route::get('/products', [ProductController::class, 'index']);
 
 Route::post('/login', [LoginController::class, 'check']);
 Route::post('/register', [RegisterController::class, 'store']);
@@ -87,3 +88,14 @@ Route::middleware('auth:sanctum')->group(function () {
     // Remove from wishlist
     Route::delete('/wishlist/{product}', [WishlistController::class, 'destroy']);
 });
+
+// Admin deliveries
+Route::get('/admin/deliveries', [AdminDeliveryController::class, 'index']);
+Route::patch('/admin/deliveries/{id}/status', [AdminDeliveryController::class, 'updateStatus']);
+
+// Dashboard API routes
+Route::get('/api/dashboard/stats', [DashboardController::class, 'getStats']);
+Route::get('/api/dashboard/order-summary', [DashboardController::class, 'getOrderSummary']);
+Route::get('/api/dashboard/top-food', [DashboardController::class, 'getTopFood']);
+Route::get('/api/dashboard/top-drinks', [DashboardController::class, 'getTopDrinks']);
+Route::get('/api/dashboard/debug', [DashboardController::class, 'debugData']);

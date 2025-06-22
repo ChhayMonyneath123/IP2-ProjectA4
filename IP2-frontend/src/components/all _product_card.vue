@@ -18,8 +18,20 @@
                 </div>
                 <p class="product-delivery">Delivery: {{ deliveryTime }} mins</p>
                 <div class="button-container">
-                    <button class="add-to-cart"><i class="fa-solid fa-plus"></i></button>
-                    <button class="add-to-cart-heart"><i class="fa-solid fa-heart"></i></button>
+                    <button 
+                        class="add-to-cart" 
+                        @click="handleAddToCart"
+                        :disabled="cartStore.loading"
+                        :class="{ 
+                            'loading': cartStore.loading
+                        }"
+                    >
+                        <i class="fa-solid fa-plus" v-if="!cartStore.loading"></i>
+                        <i class="fa-solid fa-spinner fa-spin" v-else></i>
+                    </button>
+                    <button class="add-to-cart-heart" @click="addToWishlist">
+                        <i class="fa-solid fa-heart"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -27,6 +39,10 @@
 </template>
 
 <script>
+import { useCartStore } from "@/stores/cart";
+import { useAuthStore } from "@/stores/auth";
+import { useRouter } from 'vue-router';
+
 export default {
     name: "all_product_card",
     props: {
@@ -37,6 +53,47 @@ export default {
         image: String,
         rating: Number,
     },
+    emits: ['image-click'],
+    setup(props) {
+        const cartStore = useCartStore();
+        const authStore = useAuthStore();
+        const router = useRouter();
+
+        const handleAddToCart = async () => {
+            try {
+                // Debug: Log the product ID being sent
+                console.log('Product ID being sent:', props.id);
+                console.log('All props:', props);
+                
+                // Check if product ID exists
+                if (!props.id) {
+                    console.error('Product ID is missing!');
+                    alert('Product ID is missing. Please check the product data.');
+                    return;
+                }
+
+                // Add to cart with the product ID
+                await cartStore.addToCart(props.id, 1);
+                
+                console.log('Item added to cart successfully!');
+                
+            } catch (error) {
+                console.error('Failed to add item to cart:', error);
+            }
+        };
+
+        const addToWishlist = () => {
+            // Implement wishlist functionality
+            console.log('Added to wishlist:', props.id);
+        };
+
+        return {
+            cartStore,
+            authStore,
+            handleAddToCart,
+            addToWishlist
+        };
+    }
 };
 </script>
 
@@ -74,6 +131,7 @@ body {
     height: 100%;
     object-fit: cover;
 }
+
 .product-info {
     display: flex;
     padding: 10px;
