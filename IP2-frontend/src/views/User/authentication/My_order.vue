@@ -1,4 +1,5 @@
 <template>
+<div class="myorder">
   <Nav_bar />
   <div class="order-page">
     <div class="product-list">
@@ -20,6 +21,7 @@
     </div>
   </div>
   <Footer_bar />
+</div>
 </template>
 
 <script setup>
@@ -37,6 +39,7 @@ const items = ref([
     price: 3.2,
     image: 'https://i.pinimg.com/736x/87/38/4a/87384ae90057fc7f1ad80e51a4d58c33.jpg',
   },
+
   {
     id: 2,
     title: 'Strawberry Smoothie',
