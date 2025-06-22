@@ -46,7 +46,8 @@
           <div v-if="filteredProducts.length > 0" class="menu-card">
             <div class="contain-menu">
               <all_product_card v-for="product in filteredProducts" 
-                :key="product.id" 
+                :key="product.id"
+                :id="product.id"
                 :price="product.price"
                 :title="product.title" 
                 :rating="product.rating" 
@@ -120,48 +121,50 @@ export default {
   },
   methods: {
     async fetchData() {
-  this.isLoading = true;
-  this.error = null;
+      this.isLoading = true;
+      this.error = null;
 
-  try {
-    // Fetch categories, subcategories, and products
-    const [categoriesRes, subcategoriesRes, productsRes] = await Promise.all([
-      axios.get('http://127.0.0.1:8000/api/categories'),
-      axios.get('http://127.0.0.1:8000/api/subcategories'),
-      axios.get('http://127.0.0.1:8000/api/products')
-    ]);
+      try {
+        // Fetch categories, subcategories, and products
+        const [categoriesRes, subcategoriesRes, productsRes] = await Promise.all([
+          axios.get('http://127.0.0.1:8000/api/categories'),
+          axios.get('http://127.0.0.1:8000/api/subcategories'),
+          axios.get('http://127.0.0.1:8000/api/products')
+        ]);
 
-    const categories = categoriesRes.data;
-    const subcategories = subcategoriesRes.data;
+        const categories = categoriesRes.data;
+        const subcategories = subcategoriesRes.data;
 
-    // Add subcategories to each category
-    const categoryMap = categories.map(cat => {
-      return {
-        ...cat,
-        subcategories: subcategories.filter(sub => sub.category_id === cat.category_id)
-      };
-    });
+        // Add subcategories to each category
+        const categoryMap = categories.map(cat => {
+          return {
+            ...cat,
+            subcategories: subcategories.filter(sub => sub.category_id === cat.category_id)
+          };
+        });
 
-    this.categories = categoryMap;
+        this.categories = categoryMap;
 
-    // Normalize product data
-    this.products = productsRes.data.data.map(product => ({
-      id: product.product_id,
-      title: product.title,
-      price: product.price,
-      image: product.image,
-      delivery_time: product.estimated_delivery_minutes || 30,
-      rating: product.average_rating || 0,
-      category: product.category_name,
-      subcategory: product.subcategory_name
-    }));
-  } catch (err) {
-    console.error("Error fetching data:", err);
-    this.error = "Failed to load menu. Please try again later.";
-  } finally {
-    this.isLoading = false;
-  }
-},
+        // Normalize product data
+        this.products = productsRes.data.data.map(product => ({
+          id: product.product_id,
+          title: product.title,
+          price: product.price,
+          image: product.image,
+          delivery_time: product.estimated_delivery_minutes || 30,
+          rating: product.average_rating || 0,
+          category: product.category_name,
+          subcategory: product.subcategory_name
+        }));
+
+        console.log('Products loaded:', this.products); // Debug log
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        this.error = "Failed to load menu. Please try again later.";
+      } finally {
+        this.isLoading = false;
+      }
+    },
 
     getImageUrl(imagePath) {
       if (!imagePath) return require('@/assets/default-product.png');
@@ -200,6 +203,7 @@ export default {
   }
 };
 </script>
+
 <style scoped>
 .menu {
   width: 100%;
@@ -333,5 +337,45 @@ export default {
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
+}
+
+.loading-spinner {
+  text-align: center;
+  padding: 2rem;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3a2e26;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-message {
+  text-align: center;
+  padding: 2rem;
+  color: #d32f2f;
+}
+
+.retry-button {
+  background: #3a2e26;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.retry-button:hover {
+  background: #2d1f17;
 }
 </style>

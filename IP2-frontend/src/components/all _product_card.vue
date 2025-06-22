@@ -18,10 +18,20 @@
                 </div>
                 <p class="product-delivery">Delivery: {{ deliveryTime }} mins</p>
                 <div class="button-container">
-                    <button class="add-to-cart" @click="addToCart">
-                        <i class="fa-solid fa-plus"></i>
+                    <button 
+                        class="add-to-cart" 
+                        @click="handleAddToCart"
+                        :disabled="cartStore.loading"
+                        :class="{ 
+                            'loading': cartStore.loading
+                        }"
+                    >
+                        <i class="fa-solid fa-plus" v-if="!cartStore.loading"></i>
+                        <i class="fa-solid fa-spinner fa-spin" v-else></i>
                     </button>
-                    <button class="add-to-cart-heart"><i class="fa-solid fa-heart"></i></button>
+                    <button class="add-to-cart-heart" @click="addToWishlist">
+                        <i class="fa-solid fa-heart"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -29,7 +39,10 @@
 </template>
 
 <script>
-import {useCartStore} from "@/stores/cart";
+import { useCartStore } from "@/stores/cart";
+import { useAuthStore } from "@/stores/auth";
+import { useRouter } from 'vue-router';
+
 export default {
     name: "all_product_card",
     props: {
@@ -40,14 +53,45 @@ export default {
         image: String,
         rating: Number,
     },
-    emits: ['image-click'] ,// Declare the emitted event
-    setup(pros){
+    emits: ['image-click'],
+    setup(props) {
         const cartStore = useCartStore();
-        const addToCart = () => {
-            cartStore.addToCart(pros.id)
-        }
+        const authStore = useAuthStore();
+        const router = useRouter();
+
+        const handleAddToCart = async () => {
+            try {
+                // Debug: Log the product ID being sent
+                console.log('Product ID being sent:', props.id);
+                console.log('All props:', props);
+                
+                // Check if product ID exists
+                if (!props.id) {
+                    console.error('Product ID is missing!');
+                    alert('Product ID is missing. Please check the product data.');
+                    return;
+                }
+
+                // Add to cart with the product ID
+                await cartStore.addToCart(props.id, 1);
+                
+                console.log('Item added to cart successfully!');
+                
+            } catch (error) {
+                console.error('Failed to add item to cart:', error);
+            }
+        };
+
+        const addToWishlist = () => {
+            // Implement wishlist functionality
+            console.log('Added to wishlist:', props.id);
+        };
+
         return {
-            addToCart,
+            cartStore,
+            authStore,
+            handleAddToCart,
+            addToWishlist
         };
     }
 };
@@ -127,41 +171,50 @@ body {
     background-color: #5a4a3d;
     transform: scale(1.05);
 }
+
 .product-info {
     display: flex;
     padding: 10px;
     margin-top: 1rem;
 }
+
 .card-left {
     width: 50%;
     height: 100%;
 }
+
 .card-right {
     width: 50%;
     height: 100%;
     padding: 0 0px 5px 25px;
 }
+
 .product-title {
     font-size: 22px;
     font-weight: bold;
     margin: 0;
 }
+
 .product-price {
     font-size: 16px;
     color: black;
     margin: 0;
 }
+
 .product-delivery {
     font-size: 12px;
     margin-top: 5px;
 }
+
 .ratings {
     font-size: 25px;
     margin: 0;
 }
+
 .star {
     color: #ddd;
 }
+
 .star.filled {
     color: #f39c12;
 }
@@ -170,6 +223,7 @@ body {
     display: flex;
     margin-top: 3px;
 }
+
 .add-to-cart,
 .add-to-cart-heart {
     background-color: #31261b;
@@ -187,17 +241,33 @@ body {
     justify-content: center;
     margin-left: 10px;
 }
+
 .add-to-cart-heart {
     background-color: #5a5244;
 }
+
 .product-review {
     color: #777;
     margin-top: 5px;
 }
-.add-to-cart:hover {
+
+.add-to-cart:hover:not(:disabled) {
     background-color: #4a1f17;
 }
+
 .add-to-cart-heart:hover {
     background-color: #4c3e36;
+}
+
+.add-to-cart.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.add-to-cart:disabled,
+.add-to-cart.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #666;
 }
 </style>

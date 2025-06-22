@@ -1,15 +1,18 @@
 <template>
   <div class="product-card">
     <img :src="image" alt="product" class="product-image" />
+
     <div class="product-info">
       <h4>{{ title }}</h4>
       <p>{{ description }}</p>
     </div>
+
     <div class="quantity-controls">
       <button @click="decrease">-</button>
       <span>{{ quantity }}</span>
       <button @click="increase">+</button>
     </div>
+
     <div class="price">${{ price.toFixed(2) }}</div>
     <button class="remove-btn" @click="$emit('remove')">
       <i class="fas fa-trash-alt"></i>
@@ -25,9 +28,13 @@ defineEmits(['remove', 'updateQuantity'])
 const quantity = ref(1)
 const increase = () => quantity.value++
 const decrease = () => {
-  if (quantity.value > 1) quantity.value--
+  if (props.quantity > 1) {
+    emit('update:quantity', props.quantity - 1)
+  }
 }
 </script>
+
+
 
 <style scoped>
 .product-card {
@@ -53,7 +60,15 @@ const decrease = () => {
 .quantity-controls {
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 10px;
+}
+.quantity-controls button {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+  font-size: 16px;
 }
 .price {
   margin-left: 16px;
@@ -65,7 +80,6 @@ const decrease = () => {
   color: red;
   font-size: 18px;
   cursor: pointer;
-  margin-left: 50px;
-  margin-right: 20px;
+  margin-left: 20px;
 }
 </style>

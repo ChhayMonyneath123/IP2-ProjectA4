@@ -14,6 +14,9 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AdminDeliveryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CartController;  
+
+Route::get('/products', [ProductController::class, 'index']);
 
 Route::post('/login', [LoginController::class, 'check']);
 Route::post('/register', [RegisterController::class, 'store']);
@@ -95,3 +98,13 @@ Route::get('/api/dashboard/order-summary', [DashboardController::class, 'getOrde
 Route::get('/api/dashboard/top-food', [DashboardController::class, 'getTopFood']);
 Route::get('/api/dashboard/top-drinks', [DashboardController::class, 'getTopDrinks']);
 Route::get('/api/dashboard/debug', [DashboardController::class, 'debugData']);
+
+//card
+Route::prefix('cart')->group(function () {
+    Route::post('/add', [CartController::class, 'addToCart']);
+    Route::get('/items', [CartController::class, 'getCartItems']);
+    Route::delete('/remove/{cartId}', [CartController::class, 'removeFromCart']);
+    Route::get('/test', [CartController::class, 'test']); // Test endpoint
+    Route::put('/update/{cartId}', [CartController::class, 'updateCartItem']);
+
+});
