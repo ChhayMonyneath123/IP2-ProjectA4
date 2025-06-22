@@ -18,6 +18,10 @@ Route::post('/password/email', [UserController::class, 'sendResetLinkEmail']);
 Route::post('/password/reset', [UserController::class, 'resetPassword']);
 Route::get('/users', [UserController::class, 'index']); // Get all users
 Route::get('/users/{id}', [UserController::class, 'show']); // Get user by ID
+Route::put('/users/{id}', [UserController::class, 'update']);   // Update user info
+Route::delete('/users/{id}', [UserController::class, 'destroy']); // Delete user
+Route::get('/user', [UserController::class, 'profile']);
+Route::put('/user/profile', [UserController::class, 'updateProfile']);
 
 
 

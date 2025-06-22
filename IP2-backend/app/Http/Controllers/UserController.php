@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;  // <-- Add this import
+use Illuminate\Support\Facades\Auth;      // <-- Import Auth facade
 use App\Models\User;
 
 class UserController extends Controller
@@ -87,7 +88,12 @@ class UserController extends Controller
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
                 $user->password = Hash::make($password);
-                $user->save();
+                if ($user instanceof \App\Models\User) {
+                    $user->password = Hash::make($password);
+                    $user->save();
+                } else {
+                    return response()->json(['message' => 'Authenticated user not found or invalid'], 404);
+                }
             }
         );
 
@@ -99,12 +105,75 @@ class UserController extends Controller
     }
     // Add this method inside your UserController class
 
-public function index()
-{
-    // Get all users with selected fields you want to expose
-    $users = User::all();
+    public function index()
+    {
+        // Get all users with selected fields you want to expose
+        $users = User::all();
 
-    return response()->json($users);
-}
+        return response()->json($users);
+    }
+    // Update user info
+    public function update(Request $request, $user_id)
+    {
+        $user = User::find($user_id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|unique:users,email,' . $user_id . ',user_id',
+            'role' => 'required|in:user,admin',
+        ]);
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'role' => $request->role,
+        ]);
+
+        return response()->json(['message' => 'User updated successfully']);
+    }
+
+    public function destroy($user_id)
+    {
+        $user = User::find($user_id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user->delete();
+
+        return response()->json(['message' => 'User deleted successfully']);
+    }
+    public function profile()
+    {
+        return response()->json(Auth::user());
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+
+        $data = $request->validate([
+            'username' => 'required|string|max:255',
+            'birthday' => 'nullable|date',
+            'email' => 'required|email',
+            'phone' => 'nullable|string|max:20',
+            'bio' => 'nullable|string|max:1000',
+            // Add validation if updating password or photo
+        ]);
+
+        $user->name = $data['username'];
+        $user->birthday = $data['birthday'];
+        $user->email = $data['email'];
+        $user->phone = $data['phone'];
+        $user->bio = $data['bio'];
+        //$user->save();
+
+        return response()->json(['message' => 'Profile updated successfully']);
+    }
 
 }

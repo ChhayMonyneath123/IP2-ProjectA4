@@ -71,10 +71,10 @@ const routes = [
         meta: { guestOnly: true }
     },
     {
-        path: '/manage_Account',
+        path: '/manage_account',
         name: 'manage_Account',
         component: () => import('@/views/User/authentication/Manage_acc.vue'),
-        meta: { requiresAuth: true }
+        
     },
     {
         path: '/my_review',
@@ -151,7 +151,9 @@ const routes = [
                 name: 'ReviewPage',
                 component: () => import('@/views/Admin/authentication/Review_Page.vue')
             },
-            
+            // {
+                
+            // }
         ]
     }
 ]
