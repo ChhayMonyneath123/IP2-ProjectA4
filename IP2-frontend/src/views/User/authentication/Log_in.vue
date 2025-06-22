@@ -24,10 +24,7 @@
           />
         </div>
 
-        <!-- Error Message -->
-        <div v-if="errorMessage" class="error-message">
-          {{ errorMessage }}
-        </div>
+        <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
 
         <button type="submit" class="login-button">Login</button>
       </form>
@@ -41,7 +38,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from 'axios';
 
 export default {
   name: 'LoginSection',
@@ -50,63 +47,58 @@ export default {
       email: '',
       password: '',
       errorMessage: ''
-    }
+    };
   },
   methods: {
     async handleLogin() {
-  this.errorMessage = ''
+      this.errorMessage = '';
 
-  if (!this.email || !this.password) {
-    this.errorMessage = 'Both fields are required.'
-    return
-  }
-
-  try {
-    const response = await axios.post('http://localhost:8000/api/login', {
-      email: this.email,
-      password: this.password
-    })
-
-    const user = response.data.user
-    localStorage.setItem('auth_token', response.data.token || '')
-    localStorage.setItem('user', JSON.stringify(user))
-
-    // ✅ Redirect based on email
-    if (user.email === 'admin@gmail.com') {
-      this.$router.push('/admin')
-    } else {
-      this.$router.push('/')
-    }
-
-  } catch (error) {
-    if (error.response) {
-      if (error.response.status === 401) {
-        this.errorMessage = 'Invalid email or password.'
-      } else if (error.response.data.message) {
-        this.errorMessage = error.response.data.message
-      } else {
-        this.errorMessage = 'Login failed. Please try again.'
+      if (!this.email || !this.password) {
+        this.errorMessage = 'Both fields are required.';
+        return;
       }
-    } else {
-      this.errorMessage = 'Network error. Please check your connection.'
-    }
-    console.error('Login error:', error)
-  }
-},
 
-    forgotPassword() {
-      this.$router.push('/forgot-password')
+      try {
+        const response = await axios.post('http://localhost:8000/api/login', {
+          email: this.email,
+          password: this.password
+        });
+
+        const user = response.data.user;
+
+        if (!user) {
+          throw new Error('Login failed: no user data in response');
+        }
+
+        // Store user info in localStorage (no token)
+        localStorage.setItem('user', JSON.stringify(user));
+
+        // Redirect based on email
+        if (user.email === 'admin@gmail.com') {
+          this.$router.push('/admin');
+        } else {
+          this.$router.push('/');
+        }
+      } catch (error) {
+        if (error.response) {
+          this.errorMessage =
+            error.response.status === 401
+              ? 'Invalid email or password.'
+              : error.response.data.message || 'Login failed. Please try again.';
+        } else {
+          this.errorMessage = 'Network error. Please check your connection.';
+        }
+        console.error('Login error:', error);
+      }
     },
-
+    forgotPassword() {
+      this.$router.push('/forgot-password');
+    },
     createAccount() {
-      this.$router.push('/register')
+      this.$router.push('/register');
     }
-  },
-  mounted() {
-    // Clear any previous error messages on mount
-    this.errorMessage = ''
   }
-}
+};
 </script>
 
 <style scoped>
@@ -119,12 +111,12 @@ export default {
 }
 
 .login-box {
-  background: 
-linear-gradient(
-  rgba(255, 255, 255, 0.3),
-  rgba(255, 255, 255, 0)
-),
-rgba(255, 255, 255, 1);
+  background:
+    linear-gradient(
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0)
+    ),
+    rgba(255, 255, 255, 1);
   padding: 40px 50px;
   border-radius: 15px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);

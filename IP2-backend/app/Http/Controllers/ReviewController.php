@@ -2,112 +2,145 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use App\Models\Review;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
 class ReviewController extends Controller
 {
-    // List all reviews
-    public function index()
+    /**
+     * Display a listing of reviews
+     */
+    public function index(Request $request)
     {
-        // Get all reviews with replies (assuming replies are stored in the same table or related)
-        $reviews = Review::with('replies')->get();
+        $request->validate([
+            'sort_by' => 'sometimes|in:created_at,rating,user.name',
+            'order' => 'sometimes|in:asc,desc',
+            'per_page' => 'sometimes|integer|min:1|max:100',
+            'search' => 'sometimes|string|max:255'
+        ]);
 
-        return response()->json($reviews);
+        $query = Review::with(['user:user_id,name,email', 'product:product_id,title'])
+            ->when($request->search, function ($q) use ($request) {
+                $q->where('message', 'like', '%' . $request->search . '%')
+                    ->orWhereHas('user', function ($q) use ($request) {
+                        $q->where('name', 'like', '%' . $request->search . '%');
+                    })
+                    ->orWhereHas('product', function ($q) use ($request) {
+                        $q->where('title', 'like', '%' . $request->search . '%');
+                    });
+            });
+
+        // Sorting
+        switch ($request->sort_by) {
+            case 'user.name':
+                $query->join('users', 'reviews.user_id', '=', 'users.user_id')
+                    ->orderBy('users.name', $request->order ?? 'asc')
+                    ->select('reviews.*');
+                break;
+            default:
+                $query->orderBy(
+                    $request->sort_by ?? 'created_at',
+                    $request->order ?? 'desc'
+                );
+        }
+
+        return $query->paginate($request->per_page ?? 10);
     }
 
-    // Create a new review
+    /**
+     * Store a newly created review
+     */
     public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'product_id' => 'required|integer|exists:products,id',
-            'user_id' => 'required|integer|exists:users,id', // or get from auth()->id()
+{
+    try {
+        $request->validate([
+            'product_id' => 'required|exists:products,product_id', // ✅ fixed
+            'user_id' => 'required|exists:users,user_id',
             'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'nullable|string|max:1000',
+            'message' => 'required|string|max:1000'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
+        $review = Review::create($request->only([
+            'product_id',
+            'user_id',
+            'rating',
+            'message'
+        ]));
 
-        $review = Review::create([
-            'product_id' => $request->product_id,
-            'user_id' => $request->user_id,
-            'rating' => $request->rating,
-            'comment' => $request->comment,
+        return response()->json([
+            'message' => 'Review created successfully',
+            'review' => $review->load(['user', 'product']), // ✅ include relations
+        ], 201);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+}
+
+
+
+    /**
+     * Update the specified review
+     */
+    public function update(Request $request, Review $review)
+    {
+        $request->validate([
+            'message' => 'required|string|max:1000',
+            'rating' => 'sometimes|integer|min:1|max:5'
         ]);
 
-        return response()->json(['message' => 'Review created', 'review' => $review], 201);
+        $review->update($request->only(['message', 'rating']));
+
+        return response()->json([
+            'message' => 'Review updated successfully',
+            'review' => $review->load(['user:user_id,name,email', 'product:product_id,title']),
+
+        ]);
     }
 
-    // Update a review
-    public function update(Request $request, $id)
+    /**
+     * Remove the specified review
+     */
+    public function destroy(Review $review)
     {
-        $review = Review::find($id);
-
-        if (!$review) {
-            return response()->json(['error' => 'Review not found'], 404);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'rating' => 'sometimes|integer|min:1|max:5',
-            'comment' => 'sometimes|string|max:1000',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $review->update($request->only(['rating', 'comment']));
-
-        return response()->json(['message' => 'Review updated', 'review' => $review]);
-    }
-
-    // Delete a review
-    public function destroy($id)
-    {
-        $review = Review::find($id);
-
-        if (!$review) {
-            return response()->json(['error' => 'Review not found'], 404);
-        }
-
         $review->delete();
 
-        return response()->json(['message' => 'Review deleted']);
+        return response()->json([
+            'message' => 'Review deleted successfully'
+        ]);
     }
 
-    // Admin reply to a review
-    public function reply(Request $request, $id)
+    /**
+     * Add/update reply to a review
+     */
+    public function reply(Request $request, Review $review)
     {
-        $review = Review::find($id);
-
-        if (!$review) {
-            return response()->json(['error' => 'Review not found'], 404);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'reply' => 'required|string|max:1000',
+        $request->validate([
+            'reply' => 'required|string|max:1000'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
+        $review->update(['reply' => $request->reply]);
 
-        // Assuming your replies are stored in a related model like ReviewReply
-        // or you have a 'reply' field on Review model, adjust accordingly.
-
-        // Option 1: If replies are a separate model with a relationship
-        // $review->replies()->create([
-        //     'admin_id' => auth()->id(),
-        //     'reply' => $request->reply,
-        // ]);
-
-        // Option 2: If you just store a single reply in the review table
-        $review->reply = $request->reply;
-        $review->save();
-
-        return response()->json(['message' => 'Reply added', 'review' => $review]);
+        return response()->json([
+            'message' => 'Reply saved successfully',
+            'review' => $review->load(['user', 'product'])
+        ]);
     }
+
+    /**
+     * Get review statistics
+     */
+    public function stats()
+    {
+        return response()->json([
+            'total_reviews' => Review::count(),
+            'average_rating' => round(Review::avg('rating'), 1),
+            'reviews_without_reply' => Review::whereNull('reply')->count(),
+            'rating_distribution' => Review::selectRaw('rating, count(*) as count')
+                ->groupBy('rating')
+                ->orderBy('rating', 'desc')
+                ->get()
+        ]);
+    }
+
 }

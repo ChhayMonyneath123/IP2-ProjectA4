@@ -3,9 +3,6 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\LoginController;
-use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SubcategoryController;
@@ -15,19 +12,27 @@ use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AdminDeliveryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CartController;  
+use App\Http\Controllers\UserController;
 
 Route::get('/products', [ProductController::class, 'index']);
 
 Route::post('/login', [LoginController::class, 'check']);
 Route::post('/register', [RegisterController::class, 'store']);
 
+
+
 // Optional: user route if using Sanctum
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
 
-Route::get('/product-ratings', [ProductRatingController::class, 'index']);
-Route::get('/product-ratings/{productRating}', [ProductRatingController::class, 'show']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/products/{productId}/ratings', [ProductRatingController::class, 'store']);
+    Route::get('/products/{productId}/ratings', [ProductRatingController::class, 'index']);
+});
+
+
 
 // Products
 Route::prefix('products')->group(function () {
@@ -48,7 +53,7 @@ Route::prefix('categories')->group(function () {
     Route::get('/{category}/products', [CategoryController::class, 'products']); // optional
 });
 
-// Subcategories
+//  Subcategories
 Route::prefix('subcategories')->group(function () {
     Route::get('/', [SubcategoryController::class, 'index']);
     Route::post('/', [SubcategoryController::class, 'store']);
@@ -58,29 +63,14 @@ Route::prefix('subcategories')->group(function () {
     Route::get('/{subcategory}/products', [SubcategoryController::class, 'products']); // optional
 });
 
-Route::middleware(['auth:api', 'admin'])->group(function () {
-    Route::get('/reviews', [ReviewController::class, 'index']);        // list all reviews
-    Route::post('/reviews', [ReviewController::class, 'store']);       // create a review
-    Route::put('/reviews/{id}', [ReviewController::class, 'update']);  // update a review
-    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']); // delete a review
-    Route::post('/reviews/{id}/reply', [ReviewController::class, 'reply']); // admin reply to review
-});
-
-Route::post('/products/{product}/ratings', [ProductRatingController::class, 'store']);
-
-// REMOVED: Route::get('/users/{user}', [UserController::class, 'show']); 
-// UserController doesn't exist - commented out to prevent 500 errors
-
-// Wishlist routes
-Route::middleware('auth:sanctum')->group(function () {
-    // Get wishlist items
-    Route::get('/wishlist', [WishlistController::class, 'index']);
-    
-    // Add to wishlist
-    Route::post('/wishlist/{product}', [WishlistController::class, 'store']);
-    
-    // Remove from wishlist
-    Route::delete('/wishlist/{product}', [WishlistController::class, 'destroy']);
+// routes/api.php
+Route::prefix('reviews')->group(function () {
+    Route::get('/', [ReviewController::class, 'index']);
+    Route::post('/', [ReviewController::class, 'store']);
+    Route::put('/{review}', [ReviewController::class, 'update']);
+    Route::delete('/{review}', [ReviewController::class, 'destroy']);
+    Route::post('/{review}/reply', [ReviewController::class, 'reply']);
+    Route::get('/stats', [ReviewController::class, 'stats']);
 });
 
 // Admin deliveries

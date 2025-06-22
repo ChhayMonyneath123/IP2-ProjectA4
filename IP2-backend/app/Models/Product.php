@@ -6,7 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Factories\HasFactory; // Add HasFactory if needed
+use App\Models\Category;
+use App\Models\Subcategory;
+use App\Models\ProductRating;
+use App\Models\OrderItem;
+use App\Models\Cart;
+use App\Models\Wishlist;
+use App\Models\Stocking;
+use App\Models\Review;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
@@ -128,5 +136,9 @@ class Product extends Model
     public function getRatingCountAttribute()
     {
         return $this->ratings()->count();
+    }
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class, 'product_id');
     }
 }

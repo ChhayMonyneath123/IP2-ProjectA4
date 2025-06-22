@@ -167,6 +167,7 @@ const paymentMethods = [
   {
     id: 1,
     name: 'Pay on cash',
+    name: 'Pay on cash',
     logo: 'https://cdn.iconscout.com/icon/premium/png-512-thumb/cash-on-delivery-11983829-9923960.png?f=webp&w=256',
   },
   {
@@ -219,14 +220,20 @@ const proceedToCheckout = () => {
 .section {
   margin-bottom: 1.5rem;
   font-size: 20px;
+  font-size: 20px;
 }
 
 .style-input {
   width: 100%;
   padding: 10px;
   font-size: 16px;
+  padding: 10px;
+  font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 6px;
+  box-sizing: border-box;
+  appearance: none;
+  background-color: white;
   box-sizing: border-box;
   appearance: none;
   background-color: white;
