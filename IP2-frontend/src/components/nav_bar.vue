@@ -67,9 +67,6 @@ function goToCart() {
 function goToWishlist() {
   router.push('/wishlist')
 }
-function goToCart() {
-  router.push('/my-order')
-}
 
 function handleLogout() {
   authStore.logout()
