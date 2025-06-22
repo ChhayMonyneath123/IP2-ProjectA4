@@ -1,7 +1,11 @@
 <template>
     <div class="product-card">
         <div class="product-image" @click="$emit('image-click')">
+        <div class="product-image" @click="$emit('image-click')">
             <img :src="image" alt="Product Image" />
+            <div class="image-overlay">
+                <button class="detail-button">View Details</button>
+            </div>
             <div class="image-overlay">
                 <button class="detail-button">View Details</button>
             </div>
@@ -102,6 +106,7 @@ body {
   font-family: 'Instrument Sans', sans-serif;
 }
 
+
 .product-card {
     background-color: #f8f8f8;
     border-radius: 2rem;
@@ -130,48 +135,7 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: all 0.3s ease;
 }
-
-.image-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    border-radius: 2rem;
-}
-
-.product-image:hover .image-overlay {
-    opacity: 1;
-}
-
-.product-image:hover img {
-    transform: scale(1.05);
-}
-
-.detail-button {
-    background-color: #3a2e26;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.detail-button:hover {
-    background-color: #5a4a3d;
-    transform: scale(1.05);
-}
-
 .product-info {
     display: flex;
     padding: 10px;

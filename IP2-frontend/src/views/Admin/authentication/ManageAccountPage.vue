@@ -1,66 +1,178 @@
 <template>
-    <div class="card">
+  <div class="Manage-Account">
+    <Nav_bar />
+    <Breadcrumb />
+    <div class="account-settings">
+      <aside class="sidebar">
+        <button class="btn btn-primary">My Profile</button>
+        <button class="btn btn-secondary" @click="logout">
+          <span>⏎</span> Logout
+        </button>
+      </aside>
 
-        <div class="profile">
-          <div class="class-image">
-            <img :src="profile.avatar" class="avatar" alt="User" />
+      <section class="form-section">
+        <h2>Manage My Account</h2>
+
+        <form @submit.prevent="isEditing ? saveChanges() : null">
+          <div class="form-grid">
+            <div class="form-left">
+              <label>User Name
+                <input :readonly="!isEditing" v-model="form.username" type="text" />
+              </label>
+              <label>Birthday
+                <input :readonly="!isEditing" v-model="form.birthday" type="date" />
+              </label>
+              <label>Email Address
+                <input :readonly="!isEditing" v-model="form.email" type="email" />
+              </label>
+              <label>Phone Number
+                <input :readonly="!isEditing" v-model="form.phone" placeholder="Ex:012 345 567" type="text" />
+              </label>
+              <label>Bio
+                <textarea :readonly="!isEditing" v-model="form.bio" placeholder="Type something about you" />
+              </label>
+            </div>
+
+            <div class="form-right">
+              <div class="photo-section">
+                <img :src="form.photo || defaultPhoto" class="profile-pic" />
+                <input type="file" @change="onPhotoChange" hidden ref="photoInput" :disabled="!isEditing" />
+                <button type="button" @click="$refs.photoInput.click()" v-if="isEditing">Change your photo</button>
+                <button type="button" class="danger" @click="removePhoto" v-if="isEditing">Delete your photo</button>
+              </div>
+
+              <label>Old Password
+                <input :readonly="!isEditing" v-model="form.oldPassword" type="password" />
+              </label>
+              <label>New Password
+                <input :readonly="!isEditing" v-model="form.newPassword" type="password" />
+              </label>
+              <label>Confirm Password
+                <input :readonly="!isEditing" v-model="form.confirmPassword" type="password" />
+              </label>
+            </div>
           </div>
-          <div class="class-text">
-            <h2>{{ profile.name }}</h2>
-            <p>Administrator</p>
-            <button @click="goToEdit">Edit</button>
+
+          <div class="button-row">
+            <button v-if="!isEditing" type="button" class="edit-button" @click="toggleEdit">
+              ✏️ Edit Info
+            </button>
+            <button v-if="isEditing" type="button" class="cancel-button" @click="cancelEdit">
+              ✖ Cancel
+            </button>
+            <button v-if="isEditing" type="submit" class="save-button">
+              💾 Save Change
+            </button>
           </div>
-        </div>
-
-        <div class="info">
-          <h3>Personal Information</h3>
-          <p>Email: <a :href="'mailto:' + profile.email">{{ profile.email }}</a></p>
-          <p>Contact: {{ profile.phone }}</p>
-
-          <hr class="line" />
-
-          <h3>Account Restriction</h3>
-          <div class="toggles">
-            <label><input type="checkbox" /> Allow resetting password</label>
-            <label><input type="checkbox" /> Allow user create new account</label>
-          </div>
-        </div>
-
-        <button class="logout">Log Out</button>
+        </form>
+      </section>
     </div>
+    <Footer_bar />
+  </div>
 </template>
 
-<script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { eventBus } from '@/eventBus';
+<script>
+import axios from 'axios';
+import Nav_bar from '@/components/nav_bar.vue';
+import Footer_bar from '@/components/footer_bar.vue';
+import Breadcrumb from '@/components/breadcrumb.vue';
 
-const router = useRouter();
-function goToEdit() {
-  router.push({ name: 'EditAccount' });
-}
-
-const profile = ref({
-  name: 'Jonh Smith',
-  email: 'jonhSmith123@gmail.com',
-  phone: '+855 12 336 992',
-  avatar: '/src/assets/logofood_station.png',
-});
-
-function handleAccountUpdate(data) {
-  profile.value = {
-    ...profile.value,
-    ...data,
-  };
-}
-
-onMounted(() => {
-  eventBus.on('accountUpdated', handleAccountUpdate);
-});
-onUnmounted(() => {
-  eventBus.off('accountUpdated', handleAccountUpdate);
-});
+export default {
+  name: 'manage_acc',
+  components: {
+    Nav_bar,
+    Footer_bar,
+    Breadcrumb
+  },
+  data() {
+    return {
+      isEditing: false,
+      defaultPhoto: 'https://via.placeholder.com/120',
+      form: {
+        username: '',
+        birthday: '',
+        email: '',
+        phone: '',
+        bio: '',
+        photo: '',
+        oldPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      },
+      originalForm: null
+    };
+  },
+  methods: {
+    toggleEdit() {
+      this.originalForm = JSON.parse(JSON.stringify(this.form));
+      this.isEditing = true;
+    },
+    async saveChanges() {
+      try {
+        const token = localStorage.getItem('authToken');
+        const response = await axios.put(
+          'http://localhost:8000/api/user/profile',
+          this.form,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+        alert('Changes saved successfully!');
+        console.log(response.data);
+        this.isEditing = false;
+        this.originalForm = null;
+      } catch (error) {
+        alert('Failed to save changes.');
+        console.error(error);
+      }
+    },
+    cancelEdit() {
+      if (this.originalForm) {
+        this.form = JSON.parse(JSON.stringify(this.originalForm));
+      }
+      this.isEditing = false;
+      this.originalForm = null;
+    },
+    async loadUser() {
+      try {
+        const token = localStorage.getItem('authToken');
+        const response = await axios.get('http://localhost:8000/api/userss', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        const user = response.data;
+        this.form.username = user.name;
+        this.form.email = user.email;
+      } catch (error) {
+        alert('Failed to load user data.');
+        console.error(error);
+      }
+    },
+    onPhotoChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.form.photo = URL.createObjectURL(file);
+        // In real app: handle file upload to backend
+      }
+    },
+    removePhoto() {
+      this.form.photo = '';
+    },
+    logout() {
+      localStorage.removeItem('authToken');
+      this.$router.push('/login');
+    }
+  },
+  created() {
+    this.loadUser();
+  }
+};
 </script>
+
 
 <style scoped>
 .card {
