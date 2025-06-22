@@ -138,8 +138,8 @@ const routes = [
 
             {
                 path: 'delivery',
-                name: 'Delivery',
-                component: () => import('@/views/Admin/authentication/Delivery.vue')
+                name: 'DeliveryPage',
+                component: () => import('@/views/Admin/authentication/DeliveryPage.vue')
             },
             {
                 path: 'reviews',
