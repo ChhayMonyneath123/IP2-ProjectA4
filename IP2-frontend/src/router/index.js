@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
+import axios from 'axios'
+
+
 const routes = [
     // User routes
     {
@@ -72,28 +75,21 @@ const routes = [
     },
     {
 
-      path: "/payment",
-      name: "Payment",
-      component: () => import('@/views/User/authentication/Payment.vue'),
-    },
-    {
-        path: '/menu/detail/:id',
+        path: '/menu/food/detail/:id',
         name: 'detail',
         component: () => import('@/views/User/categories/Food&Dessert_detail.vue'),
         meta: { requiresAuth: false }
     },
     {
-        path: '/menu/detail/:id',
+        path: '/menu/drink/detail/:id',
         name: 'drink-detail',
         component: () => import('@/views/User/categories/Drink_detail.vue'),
         meta: { requiresAuth: false }
     },
-
-    // Admin routes
+// Admin routes
     {
         path: '/admin',
         component: () => import('@/components/Admin_Component/admin_layout.vue'),
-        // meta: { requiresAuth: true, requiresAdmin: true },
         children: [
             {
                 path: '',
