@@ -119,9 +119,30 @@ const routes = [
                 component: () => import('@/views/Admin/authentication/Stocks.vue')
             },
             {
+                path: 'orders',
+                name: 'orders',
+                component: () => import('@/views/Admin/authentication/Order.vue')
+            },
+            {
+                path: 'stocks',
+                name: 'Stocks',
+                component: () => import('@/views/Admin/authentication/Stocks.vue')
+            },
+
+            {
                 path: 'delivery',
                 name: 'Delivery',
-                component: () => import('@/views/Admin/authentication/DeliveryPage.vue')
+                component: () => import('@/views/Admin/authentication/Delivery.vue')
+            },
+            {
+                path: 'reviews',
+                name: 'AdminReviews',
+                component: () => import('@/views/Admin/authentication/Review_Page.vue')
+            },
+            {
+                path: 'chats',
+                name: 'ChatPage',
+                component: () => import('@/views/Admin/authentication/Chat_Page.vue')
             },
             {
                 path: 'chat',
