@@ -8,9 +8,6 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\ProductRatingController;
 use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\AdminDeliveryController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishlistController;
 
@@ -97,11 +94,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/admin/deliveries/{id}/status', [AdminDeliveryController::class, 'updateStatus']);
 
 // Dashboard API routes
-    Route::get('/api/dashboard/stats', [DashboardController::class, 'getStats']);
-    Route::get('/api/dashboard/order-summary', [DashboardController::class, 'getOrderSummary']);
-    Route::get('/api/dashboard/top-food', [DashboardController::class, 'getTopFood']);
-    Route::get('/api/dashboard/top-drinks', [DashboardController::class, 'getTopDrinks']);
-    Route::get('/api/dashboard/debug', [DashboardController::class, 'debugData']);
+Route::get('/api/dashboard/stats', [DashboardController::class, 'getStats']);
+Route::get('/api/dashboard/order-summary', [DashboardController::class, 'getOrderSummary']);
+Route::get('/api/dashboard/top-food', [DashboardController::class, 'getTopFood']);
+Route::get('/api/dashboard/top-drinks', [DashboardController::class, 'getTopDrinks']);
+Route::get('/api/dashboard/debug', [DashboardController::class, 'debugData']);
 
 //card
 Route::prefix('cart')->group(function () {
@@ -111,14 +108,4 @@ Route::prefix('cart')->group(function () {
     Route::get('/test', [CartController::class, 'test']); // Test endpoint
     Route::put('/update/{cartId}', [CartController::class, 'updateCartItem']);
 
-});
-
-// Wishlist
-
-Route::prefix('wishlist')->group(function () {
-    Route::get('/test', [WishlistController::class, 'test']);
-    Route::post('/add', [WishlistController::class, 'addToWishlist']);
-    Route::get('/items', [WishlistController::class, 'getWishlistItems']);
-    Route::delete('/remove/{wishlistId}', [WishlistController::class, 'removeFromWishlist']);
-    Route::get('/check', [WishlistController::class, 'checkWishlistStatus']);
 });

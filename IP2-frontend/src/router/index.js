@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import axios from 'axios'
+
 import My_order from '@/components/My_order.vue'
 
 const routes = [
@@ -84,15 +85,18 @@ const routes = [
         component: () => import('@/views/User/authentication/My_review.vue'),
         meta: { requiresAuth: true }
     },
-
-    // ==========================================
-    // SHOPPING & ORDERS (Authentication Required)
-    // ==========================================
+    //add to card
+    // {
+    //     path: '/cart',
+    //     name: 'Cart',
+    //     component: () => import('@/components/My_order.vue')
+    //     // meta: { requiresAuth: true }
+    // },
+    //my order 
     {
-        path: '/wishlist',
-        name: 'Wishlist',
-        component: () => import('@/components/Wishlist.vue'),
-        meta: { requiresAuth: true }
+        path: '/my-order',  // ADD THIS ROUTE
+        name: 'My_order',
+        component: () => import('@/components/My_order.vue')
     },
     // Cart - Commented Out
     // {
@@ -102,19 +106,13 @@ const routes = [
     //     // meta: { requiresAuth: true }
     // },
     {
-        path: '/my-order',
-        name: 'My_order',
-        component: () => import('@/components/My_order.vue')
+        path: '/menu/drink/detail/:id',
+        name: 'drink-detail',
+        component: () => import('@/views/User/categories/Drink_detail.vue'),
+        meta: { requiresAuth: false }
     },
-    {
-        path: "/payment",
-        name: "Payment",
-        component: () => import('@/views/User/authentication/Payment.vue'),
-    },
-
-    // ==========================================
-    // ADMIN SECTION
-    // ==========================================
+    
+// Admin routes
     {
         path: '/admin',
         component: () => import('@/components/Admin_Component/admin_layout.vue'),

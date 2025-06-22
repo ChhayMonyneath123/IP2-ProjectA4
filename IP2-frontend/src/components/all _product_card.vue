@@ -29,14 +29,8 @@
                         <i class="fa-solid fa-plus" v-if="!cartStore.loading"></i>
                         <i class="fa-solid fa-spinner fa-spin" v-else></i>
                     </button>
-                    <button 
-                        class="add-to-cart-heart" 
-                        @click="addToWishlist"
-                        :disabled="wishlistStore.loading"
-                        :class="{ 'loading': wishlistStore.loading }"
-                    >
-                        <i class="fa-solid fa-heart" v-if="!wishlistStore.loading"></i>
-                        <i class="fa-solid fa-spinner fa-spin" v-else></i>
+                    <button class="add-to-cart-heart" @click="addToWishlist">
+                        <i class="fa-solid fa-heart"></i>
                     </button>
                 </div>
             </div>
@@ -48,7 +42,6 @@
 import { useCartStore } from "@/stores/cart";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from 'vue-router';
-import { useWishlistStore } from "@/stores/wishlist";
 
 export default {
     name: "all_product_card",
@@ -65,7 +58,6 @@ export default {
         const cartStore = useCartStore();
         const authStore = useAuthStore();
         const router = useRouter();
-        const wishlistStore = useWishlistStore(); // ADD THIS LINE
 
         const handleAddToCart = async () => {
             try {
@@ -90,28 +82,14 @@ export default {
             }
         };
 
-        const addToWishlist = async () => {
-            try {
-                console.log('Adding to wishlist - Product ID:', props.id);
-                
-                if (!props.id) {
-                    console.error('Product ID is missing for wishlist!');
-                    alert('Product ID is missing for wishlist!');
-                    return;
-                }
-
-                await wishlistStore.addToWishlist(props.id);
-                console.log('Added to wishlist:', props.id);
-                
-            } catch (error) {
-                console.error('Failed to add to wishlist:', error);
-            }
+        const addToWishlist = () => {
+            // Implement wishlist functionality
+            console.log('Added to wishlist:', props.id);
         };
 
         return {
             cartStore,
             authStore,
-            wishlistStore, // ADD THIS LINE
             handleAddToCart,
             addToWishlist
         };
@@ -277,19 +255,17 @@ body {
     background-color: #4a1f17;
 }
 
-.add-to-cart-heart:hover:not(:disabled) {
+.add-to-cart-heart:hover {
     background-color: #4c3e36;
 }
 
-.add-to-cart.loading,
-.add-to-cart-heart.loading {
+.add-to-cart.loading {
     opacity: 0.7;
     cursor: not-allowed;
 }
 
 .add-to-cart:disabled,
-.add-to-cart.disabled,
-.add-to-cart-heart:disabled {
+.add-to-cart.disabled {
     opacity: 0.5;
     cursor: not-allowed;
     background-color: #666;
