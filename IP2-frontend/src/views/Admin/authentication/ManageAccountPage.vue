@@ -139,7 +139,7 @@ export default {
     async loadUser() {
       try {
         const token = localStorage.getItem('authToken');
-        const response = await axios.get('http://localhost:8000/api/users', {
+        const response = await axios.get('http://localhost:8000/api/userss', {
           headers: {
             Authorization: `Bearer ${token}`
           }
