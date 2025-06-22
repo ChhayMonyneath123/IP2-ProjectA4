@@ -17,8 +17,26 @@
         <!-- Location Selection -->
         <div class="section">
           <label for="location">Choose Location:</label>
-          <input type="text" placeholder="Please select" id="location" class="style-input" />
+          <input type="text" placeholder="Please select" id="location" class="style-input" readonly @click="showPopup = true" :value="selectedLocationDisplay"/>
         </div>
+
+        <!-- Location Popup -->
+         <Transition name="fade">
+          <div v-if="showPopup" class="popup-overlay">
+            <div class="popup-content">
+            <h3>Input Your Location</h3>
+              <input v-model="form.name" type="text" placeholder="Full Name" class="popup-input" />
+              <input v-model="form.phone" type="text" placeholder="Phone Number" class="popup-input" />      
+
+              <div id="map" class="map-container"></div>
+
+              <div class="popup-actions">              
+                <button @click="confirmLocation">Confirm</button>             
+                <button @click="showPopup = false">Cancel</button>            
+              </div>          
+            </div>       
+          </div>
+         </Transition>
 
         <!-- Payment Method -->
         <div class="payment-methods">
@@ -39,7 +57,7 @@
         <!-- Cost and Pay Button -->
         <div class="pay-section">
           <p>Total Cost <strong>$ 20.20</strong></p>
-          <Popup />
+          <Popup :selectedMethod="selectedMethod"/>
         </div>
       </div>
 
@@ -114,11 +132,61 @@
 </template>
 
 <script setup>
+import { ref,computed, onMounted, watch } from 'vue'
+import L from 'leaflet'
 import Popup from '@/components/popup.vue'
-import { ref } from 'vue'
 import Footer_bar from '@/components/footer_bar.vue'
 import Nav_bar from '@/components/nav_bar.vue'
 
+const showPopup = ref(false)
+const form = ref({
+  name: '',
+  phone: '',
+  location: '',
+})
+const selectedLocationDisplay = computed(() => {
+  if (!form.value.name && !form.value.phone && !form.value.location) return ''
+  return `${form.value.name}, ${form.value.phone}, ${form.value.location}`
+})
+
+let map = null
+let marker = null
+
+const initMap = () => {
+  map = L.map('map').setView([11.5564, 104.9282], 13) // Default to Phnom Penh
+  setTimeout(() => map.invalidateSize(), 300)
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map)
+
+  map.on('click', e => {
+    const { lat, lng } = e.latlng
+    form.value.location = `${lat.toFixed(5)}, ${lng.toFixed(5)}`
+
+    if (marker) {
+      marker.setLatLng(e.latlng)
+    } else {
+      marker = L.marker(e.latlng).addTo(map)
+    }
+  })
+}
+
+watch(showPopup, (newVal) => {
+  if (newVal) {
+    // Wait for DOM render, then initialize
+    setTimeout(() => {
+      if (!map) {
+        initMap()
+      } else {
+        map.invalidateSize() // <-- Important to fix white/cut area
+      }
+    }, 100)
+  }
+})
+
+const confirmLocation = () => {
+  showPopup.value = false
+}
 // Selected payment method
 const selectedMethod = ref(null)
 
@@ -126,7 +194,7 @@ const selectedMethod = ref(null)
 const paymentMethods = [
   {
     id: 1,
-    name: 'Cash on Delivery',
+    name: 'Pay on cash',
     logo: 'https://cdn.iconscout.com/icon/premium/png-512-thumb/cash-on-delivery-11983829-9923960.png?f=webp&w=256',
   },
   {
@@ -134,16 +202,6 @@ const paymentMethods = [
     name: 'KHQR',
     logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwG-Zx92YNnU6BuabALnRRwBqX_5USd3AJJw&s',
   },
-  // {
-  //   id: 3,
-  //   name: 'ABA',
-  //   logo: 'https://cdn.brandfetch.io/iduTsrn35q/w/284/h/354/theme/dark/logo.png?c=1dxbfHSJFAPEGdCLU4o5B',
-  // },
-  // {
-  //   id: 4,
-  //   name: 'Aceleda',
-  //   logo: 'https://acledabank.com.kh/kh/assets/download_image/download-logo-blue.jpg',
-  // },
 ]
 </script>
 
@@ -185,16 +243,18 @@ const paymentMethods = [
 
 .section {
   margin-bottom: 1.5rem;
-  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: 20px;
 }
 
 .style-input {
   width: 100%;
-  padding: 8px 12px;
+  padding: 10px;
+  font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 16px;
-  background-color: #fff;
+  box-sizing: border-box;
+  appearance: none;
+  background-color: white;
 }
 
 .style-input:focus {
@@ -213,10 +273,76 @@ const paymentMethods = [
   width: 100%;
   padding: 0.5rem;
 }
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+.fade-enter-to, .fade-leave-from {
+  opacity: 1;
+}
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.map-container {
+  width: 100%;
+  height: 250px;
+  margin-top: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: auto;
+  max-width: 500px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
 
+.popup-content h3 {
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.popup-input {
+  width: 90%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.popup-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.popup-actions button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.popup-actions button:first-child {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.popup-actions button:last-child {
+  background-color: #f44336;
+  color: white;
+}
 .payment-methods {
   margin-bottom: 1.5rem;
-  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
 .method-list {
@@ -261,7 +387,6 @@ const paymentMethods = [
   justify-content: space-between;
   align-items: center;
   font-size: 20px;
-  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
 .pay-section button {
