@@ -11,14 +11,16 @@
       <button @click="increase">+</button>
     </div>
     <div class="price">${{ price.toFixed(2) }}</div>
-    <button class="remove-btn" @click="$emit('remove')">🗑️</button>
+    <button class="remove-btn" @click="$emit('remove')">
+      <i class="fas fa-trash-alt"></i>
+    </button>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-defineProps(['title', 'description', 'price', 'image'])
-defineEmits(['remove'])
+defineProps(['title', 'description', 'price', 'image', 'quantity'])
+defineEmits(['remove', 'updateQuantity'])
 
 const quantity = ref(1)
 const increase = () => quantity.value++
