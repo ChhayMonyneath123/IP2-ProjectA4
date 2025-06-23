@@ -13,8 +13,8 @@ use App\Http\Controllers\AdminDeliveryController;
 use App\Http\Controllers\DashboardController;
 Route::get('/products', [ProductController::class, 'index']);
 
-Route::post('/login', [LoginController::class, 'check']);
-Route::post('/register', [RegisterController::class, 'store']);
+Route::post('/login', [UserController::class, 'login']);
+Route::post('/register', [UserController::class, 'register']);
 
 
 
