@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-
 import axios from 'axios'
-
 import My_order from '@/components/My_order.vue'
 
 const routes = [
-    // User routes
+    // ==========================================
+    // PUBLIC PAGES (No Authentication Required)
+    // ==========================================
     {
         path: '/',
         name: 'Home',
@@ -20,12 +20,6 @@ const routes = [
         meta: { requiresAuth: false }
     },
     {
-        path: '/wishlist',
-        name: 'wishlist',
-        component: () => import('@/views/User/authentication/Wishlist.vue'),
-        meta: { requiresAuth: true }
-    },
-    {
         path: '/contact',
         name: 'contact',
         component: () => import('@/views/User/ordering.vue/Contact.vue'),
@@ -37,25 +31,47 @@ const routes = [
         component: () => import('@/views/User/ordering.vue/AboutUs.vue'),
         meta: { requiresAuth: false }
     },
+
+    // ==========================================
+    // PRODUCT DETAIL PAGES
+    // ==========================================
+    {
+        path: '/menu/detail/:id',
+        name: 'detail',
+        component: () => import('@/views/User/categories/Food&Dessert_detail.vue'),
+        meta: { requiresAuth: false }
+    },
+    {
+        path: '/menu/drink/detail/:id',
+        name: 'drink-detail',
+        component: () => import('@/views/User/categories/Drink_detail.vue'),
+        meta: { requiresAuth: false }
+    },
+
+    // ==========================================
+    // AUTHENTICATION PAGES (Guest Only)
+    // ==========================================
     {
         path: '/login',
         name: 'login',
         component: () => import('@/views/User/authentication/Log_in.vue'),
-       
-      },
-      {
+    },
+    {
         path: '/register',
         name: 'register',
         component: () => import('@/views/User/authentication/Create_account.vue'),
         meta: { guestOnly: true }
-      }
-,      
+    },
     {
         path: '/forgot-password',
         name: 'forgot-password',
         component: () => import('@/views/User/authentication/Forget_password.vue'),
         meta: { guestOnly: true }
     },
+
+    // ==========================================
+    // USER ACCOUNT PAGES (Authentication Required)
+    // ==========================================
     {
         path: '/manage_Account',
         name: 'manage_Account',
@@ -68,34 +84,37 @@ const routes = [
         component: () => import('@/views/User/authentication/My_review.vue'),
         meta: { requiresAuth: true }
     },
-    //add to card
+
+    // ==========================================
+    // SHOPPING & ORDERS (Authentication Required)
+    // ==========================================
+    {
+        path: '/wishlist',
+        name: 'Wishlist',
+        component: () => import('@/components/Wishlist.vue'),
+        meta: { requiresAuth: true }
+    },
+    // Cart - Commented Out
     // {
     //     path: '/cart',
     //     name: 'Cart',
     //     component: () => import('@/components/My_order.vue')
     //     // meta: { requiresAuth: true }
     // },
-    //my order 
     {
-        path: '/my-order',  // ADD THIS ROUTE
+        path: '/my-order',
         name: 'My_order',
         component: () => import('@/components/My_order.vue')
     },
     {
+        path: "/payment",
+        name: "Payment",
+        component: () => import('@/views/User/authentication/Payment.vue'),
+    },
 
-        path: '/menu/food/detail/:id',
-        name: 'detail',
-        component: () => import('@/views/User/categories/Food&Dessert_detail.vue'),
-        meta: { requiresAuth: false }
-    },
-    {
-        path: '/menu/drink/detail/:id',
-        name: 'drink-detail',
-        component: () => import('@/views/User/categories/Drink_detail.vue'),
-        meta: { requiresAuth: false }
-    },
-    
-// Admin routes
+    // ==========================================
+    // ADMIN SECTION
+    // ==========================================
     {
         path: '/admin',
         component: () => import('@/components/Admin_Component/admin_layout.vue'),
@@ -104,11 +123,13 @@ const routes = [
                 path: '',
                 redirect: '/admin/dashboard'
             },
+            // Admin Dashboard
             {
                 path: 'dashboard',
                 name: 'DashboardPage',
                 component: () => import('@/views/Admin/authentication/DashboardPage.vue')
             },
+            // Admin Management Pages
             {
                 path: 'orders',
                 name: 'OrdersPage',
@@ -125,15 +146,15 @@ const routes = [
                 component: () => import('@/views/Admin/authentication/DeliveryPage.vue')
             },
             {
-                path: 'chat',
-                component: () => import('@/views/Admin/authentication/ManageAccountPage.vue')
-            },
-            {
-                path: '/mange-account/edit',
-                name: 'EditAccount',
-                component: () => import('@/views/Admin/authentication/EditAccount.vue')
-
+                path: 'reviews',
+                name: 'AdminReviews',
                 component: () => import('@/views/Admin/authentication/Review_Page.vue')
+            },
+            // Admin Communication
+            {
+                path: 'chat',
+                name: 'ChatPage',
+                component: () => import('@/views/Admin/authentication/Chat_Page.vue')
             }
         ]
     }
@@ -144,8 +165,10 @@ const router = createRouter({
     routes
 })
 
+// ==========================================
+// ROUTE GUARDS (Currently Commented Out)
+// ==========================================
 // router.beforeEach(async (to) => {
-
 //     axios.defaults.baseURL = 'http://localhost:8000/api';
 //     axios.defaults.withCredentials = true; // if needed for cookies
     

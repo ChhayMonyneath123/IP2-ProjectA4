@@ -1,5 +1,7 @@
 <template>
     <div class="cart-page">
+        <Nav_bar />
+        <Breadcrumb />
         <h1>My Orders</h1>
         
         <div v-if="cartStore.loading" class="loading">
@@ -59,16 +61,26 @@
             </div>
 
         </div>
+        
     </div>
+    <Footer_bar />
 </template>
 
 <script>
 import { useCartStore } from "@/stores/cart";
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import Nav_bar from "./nav_bar.vue";
+import Footer_bar from './footer_bar.vue';
+import Breadcrumb from './breadcrumb.vue';
 
 export default {
     name: "My_order",
+    components: {
+    Footer_bar,
+    Nav_bar,
+    Breadcrumb
+  },
     setup() {
         const cartStore = useCartStore();
         const router = useRouter();
@@ -110,8 +122,8 @@ export default {
 
 <style scoped>
 .cart-page {
-    max-width: 1200px;
-    margin: 0 auto;
+    width: 100%;
+    min-height: 75vh;
     padding: 20px;
 }
 
@@ -139,6 +151,8 @@ export default {
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: 40px;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .cart-item {
