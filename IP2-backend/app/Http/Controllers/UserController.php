@@ -28,7 +28,7 @@ class UserController extends Controller
         return response()->json([
             'message' => 'User registered successfully',
             'user' => [
-                'id' => $user->id,
+                'user_id' => $user->user_id,
                 'name' => $user->name,
                 'email' => $user->email,
             ],
@@ -54,7 +54,7 @@ class UserController extends Controller
         return response()->json([
             'message' => 'User logged in successfully',
             'user' => [
-                'id' => $user->id,
+                'user_id' => $user->user_id,
                 'name' => $user->name,
                 'email' => $user->email,
             ],
@@ -113,28 +113,58 @@ class UserController extends Controller
         return response()->json($users);
     }
     // Update user info
-    public function update(Request $request, $user_id)
-    {
-        $user = User::find($user_id);
 
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
+public function update(Request $request)
+{
+    try {
+        // Find user by ID from form data (from localStorage in frontend)
+        $user = User::findOrFail($request->input('user_id'));
+
+        // Assign raw fields (no validation)
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->phone_number = $request->input('phone');
+        $user->address = $request->input('address');
+        $user->bio = $request->input('bio');
+        $user->birthday = $request->input('birthday');
+
+        // Handle photo upload (optional)
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('avatars', 'public');
+            $user->photo_url = Storage::url($photoPath);
         }
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|unique:users,email,' . $user_id . ',user_id',
-            'role' => 'required|in:user,admin',
-        ]);
+        // Update password if requested
+        $oldPassword = $request->input('old_password');
+        $newPassword = $request->input('new_password');
+        $confirmPassword = $request->input('confirm_password');
 
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'role' => $request->role,
-        ]);
+        if ($oldPassword && $newPassword && $confirmPassword) {
+            if (!Hash::check($oldPassword, $user->password)) {
+                return response()->json(['message' => 'Old password is incorrect'], 403);
+            }
 
-        return response()->json(['message' => 'User updated successfully']);
+            if ($newPassword !== $confirmPassword) {
+                return response()->json(['message' => 'Passwords do not match'], 422);
+            }
+
+            $user->password = Hash::make($newPassword);
+        }
+
+        $user->save();
+
+        return response()->json([
+            'message' => 'User profile updated successfully.',
+            'user' => $user,
+        ]);
+    } catch (\Throwable $e) {
+        \Log::error('Update error: ' . $e->getMessage());
+        return response()->json([
+            'message' => 'Something went wrong.',
+            'error' => $e->getMessage()
+        ], 500);
     }
+}
 
     public function destroy($user_id)
     {
@@ -175,5 +205,10 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Profile updated successfully']);
     }
+    // GET /api/users/{id}
+    public function show($user_id)
+{
+    return User::findOrFail($user_id);
+}
 
 }

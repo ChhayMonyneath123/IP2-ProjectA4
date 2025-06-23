@@ -12,13 +12,8 @@
           <div class="wrapper">
             <p class="label">Your Rating:</p>
             <div class="stars">
-              <i
-                v-for="n in 5"
-                :key="n"
-                class="fas fa-star"
-                :class="{ selected: n <= form.rating }"
-                @click="form.rating = n"
-              ></i>
+              <i v-for="n in 5" :key="n" class="fas fa-star" :class="{ selected: n <= form.rating }"
+                @click="form.rating = n"></i>
             </div>
           </div>
         </div>
@@ -57,13 +52,13 @@ export default {
   },
   mounted() {
     // Fetch logged-in user info on mount
-    axios.get('http://localhost:8000/api/user', { withCredentials: true })
+    axios.get('http://localhost:8000/api/users')
       .then((response) => {
-        const userData = response.data;
+        const userData = response.data.data;
         this.user = {
-          id: userData.id,
+          user_id: userData.user_id,
           name: userData.name,
-          avatar: userData.avatar || 'https://randomuser.me/api/portraits/lego/1.jpg',
+          avatar: userData.avatar,
           date: new Date().toLocaleDateString()
         };
       })
@@ -86,25 +81,27 @@ export default {
           user_id: this.user.id
         };
 
-        axios.post(`http://localhost:8000/api/products/${this.productId}/ratings`, payload, {
-          withCredentials: true
+        axios.post(`/api/products/${productId}/ratings`, {
+          rating: this.form.rating,
+          comment: this.form.comment,
+          user_id: this.user.id // required because no session/auth
         })
-        .then(res => {
-          this.$emit('submit', {
-            ...this.form,
-            name: this.user.name,
-            date: this.user.date,
-            avatar: this.user.avatar,
-            id: res.data.data.id
-          });
+          .then(res => {
+            this.$emit('submit', {
+              ...this.form,
+              name: this.user.name,
+              date: this.user.date,
+              avatar: this.user.avatar,
+              id: res.data.data.id
+            });
 
-          this.form.rating = 0;
-          this.form.comment = '';
-        })
-        .catch(err => {
-          const message = err.response?.data?.message || 'Failed to submit review.';
-          alert(message);
-        });
+            this.form.rating = 0;
+            this.form.comment = '';
+          })
+          .catch(err => {
+            const message = err.response?.data?.message || 'Failed to submit review.';
+            alert(message);
+          });
       } else {
         alert('Please complete all fields.');
       }
@@ -117,7 +114,8 @@ export default {
 <style scoped>
 /* Global container match (same as Rating Overview) */
 .container {
-  max-width: 100vw; /* match other sections */
+  max-width: 100vw;
+  /* match other sections */
   margin: 0 auto;
   padding: 0 20px;
   box-sizing: border-box;
@@ -182,7 +180,8 @@ p {
 .wrapper {
   display: flex;
   align-items: center;
-  gap: 4px; /* reduced from 8px to 4px */
+  gap: 4px;
+  /* reduced from 8px to 4px */
   line-height: 1;
   margin-top: 6px;
 }
@@ -197,7 +196,8 @@ p {
 .stars {
   display: flex;
   align-items: center;
-  gap: 2px; /* reduced from 4px to 2px */
+  gap: 2px;
+  /* reduced from 4px to 2px */
   font-size: 17px;
   color: #ccc;
 }
@@ -266,5 +266,4 @@ button:hover {
     justify-content: center;
   }
 }
-
 </style>

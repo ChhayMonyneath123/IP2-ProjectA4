@@ -1,10 +1,13 @@
 <template>
   <div class="review-card">
     <div class="review-header">
-      <img :src="review.avatar" class="avatar" alt="Avatar" />
+      <img :src="review.user.avatar || fallback" class="profile-pic" />
       <div>
-        <strong>{{ review.name }}</strong>
-        <p class="date">{{ formattedDate }}</p>
+        <p class="review-name">{{ review.user.name }}</p>
+        <p class="review-date">
+  {{ new Date(review.created_at).toLocaleDateString() }}
+</p>
+
         <div class="wrapper">
           <p class="label">Rating:</p>
           <div class="stars">

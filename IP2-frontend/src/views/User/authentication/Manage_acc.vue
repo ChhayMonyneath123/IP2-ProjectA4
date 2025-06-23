@@ -1,114 +1,92 @@
 <template>
-    <div class="Manage-Account">
-        <Nav_bar />
-        <Breadcrumb />
-        <div class="account-settings">
-            <!-- Sidebar -->
-            <aside class="sidebar">
-                <button class="btn btn-primary">My Profile</button>
-                <button class="btn btn-secondary">
-                    <span>⏎</span> Logout
-                </button>
-            </aside>
+  <div class="Manage-Account">
+    <Nav_bar />
+    <Breadcrumb />
+    <div class="account-settings">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <button class="btn btn-primary">My Profile</button>
+        <button class="btn btn-secondary" @click="logout">
+          <span>⏎</span> Logout
+        </button>
+      </aside>
 
-            <!-- Main Content -->
-            <section class="form-section">
-                <h2>Manage My Account</h2>
+      <!-- Main Content -->
+      <section class="form-section">
+        <h2>Manage My Account</h2>
+        <form @submit.prevent="isEditing ? saveChanges() : null">
+          <div class="form-grid">
+            <!-- Left Column -->
+            <div class="form-left">
+              <label>User Name
+                <input :readonly="!isEditing" v-model="form.username" type="text" />
+              </label>
+              <label>Birthday
+                <input :readonly="!isEditing" v-model="form.birthday" type="date" />
+              </label>
+              <label>Email Address
+                <input :readonly="!isEditing" v-model="form.email" type="email" />
+              </label>
+              <label>Phone Number
+                <input :readonly="!isEditing" v-model="form.phone" placeholder="Ex:012 345 567" type="text" />
+              </label>
+              <label>Bio
+                <textarea :readonly="!isEditing" v-model="form.bio" placeholder="Type something about you" />
+              </label>
+            </div>
 
-                <form @submit.prevent="isEditing ? saveChanges() : null">
-                    <div class="form-grid">
-                        <!-- Left Column -->
-                        <div class="form-left">
-                            <label>User Name
-                                <input :readonly="!isEditing" v-model="form.username" type="text" />
-                            </label>
+            <!-- Right Column -->
+            <div class="form-right">
+              <div class="photo-section">
+                <img :src="form.photo || defaultPhoto" class="profile-pic" />
+                <input type="file" @change="onPhotoChange" hidden ref="photoInput" :disabled="!isEditing" />
+                <button type="button" @click="$refs.photoInput.click()" v-if="isEditing">Change your photo</button>
+                <button type="button" class="danger" @click="removePhoto" v-if="isEditing">Delete your photo</button>
+              </div>
 
-                            <label>Birthday
-                                <input :readonly="!isEditing" v-model="form.birthday" type="date" />
-                            </label>
+              <label>Old Password
+                <input :readonly="!isEditing" v-model="form.oldPassword" type="password" />
+              </label>
+              <label>New Password
+                <input :readonly="!isEditing" v-model="form.newPassword" type="password" />
+              </label>
+              <label>Confirm Password
+                <input :readonly="!isEditing" v-model="form.confirmPassword" type="password" />
+              </label>
+            </div>
+          </div>
 
-                            <label>Email Address
-                                <input :readonly="!isEditing" v-model="form.email" type="email" />
-                            </label>
-
-                            <label>Phone Number
-                                <input :readonly="!isEditing" v-model="form.phone" placeholder="Ex:012 345 567"
-                                    type="text" />
-                            </label>
-
-                            <label>Bio
-                                <textarea :readonly="!isEditing" v-model="form.bio"
-                                    placeholder="Type something about you" />
-                            </label>
-                        </div>
-
-                        <!-- Right Column -->
-                        <div class="form-right">
-                            <div class="photo-section">
-                                <img :src="form.photo || defaultPhoto" class="profile-pic" />
-                                <input type="file" @change="onPhotoChange" hidden ref="photoInput"
-                                    :disabled="!isEditing" />
-                                <button type="button" @click="$refs.photoInput.click()" v-if="isEditing">Change your
-                                    photo</button>
-                                <button type="button" class="danger" @click="removePhoto" v-if="isEditing">Delete your
-                                    photo</button>
-                            </div>
-
-
-                            <label>Old Password
-                                <input :readonly="!isEditing" v-model="form.oldPassword" type="password" />
-                            </label>
-                            <label>New Password
-                                <input :readonly="!isEditing" v-model="form.newPassword" type="password" />
-                            </label>
-                            <label>Confirm Password
-                                <input :readonly="!isEditing" v-model="form.confirmPassword" type="password" />
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Button Area -->
-                    <div class="button-row">
-                        <button v-if="!isEditing" type="button" class="edit-button" @click="toggleEdit">
-                            ✏️ Edit Info
-                        </button>
-
-                        <button v-if="isEditing" type="button" class="cancel-button" @click="cancelEdit">
-                            ✖ Cancel
-                        </button>
-
-                        <button v-if="isEditing" type="submit" class="save-button">
-                            💾 Save Change
-                        </button>
-                    </div>
-
-                </form>
-            </section>
-        </div>
-        <Footer_bar />
+          <!-- Button Area -->
+          <div class="button-row">
+            <button v-if="!isEditing" type="button" class="edit-button" @click="toggleEdit">✏️ Edit Info</button>
+            <button v-if="isEditing" type="button" class="cancel-button" @click="cancelEdit">✖ Cancel</button>
+            <button v-if="isEditing" type="submit" class="save-button">💾 Save Change</button>
+          </div>
+        </form>
+      </section>
     </div>
+    <Footer_bar />
+  </div>
 </template>
 
 <script>
+import axios from 'axios';
 import Nav_bar from '@/components/nav_bar.vue';
 import Footer_bar from '@/components/footer_bar.vue';
 import Breadcrumb from '@/components/breadcrumb.vue';
 
 export default {
   name: "manage_acc",
-  components: {
-    Footer_bar,
-    Nav_bar,
-    Breadcrumb
-  },
+  components: { Footer_bar, Nav_bar, Breadcrumb },
   data() {
     return {
       isEditing: false,
       defaultPhoto: 'https://via.placeholder.com/120',
+      photoFile: null,
       form: {
-        username: 'Mary123',
-        birthday: '2000-01-01',
-        email: 'mary123@gmail.com',
+        username: '',
+        birthday: '',
+        email: '',
         phone: '',
         bio: '',
         photo: '',
@@ -116,36 +94,99 @@ export default {
         newPassword: '',
         confirmPassword: ''
       },
-      originalForm: null // <--- stores a copy for cancel
+      originalForm: null
     };
   },
+  created() {
+    this.fetchUserData();
+  },
   methods: {
+    async fetchUserData() {
+  try {
+    const userId = JSON.parse(localStorage.getItem('user'))?.user_id;
+    const response = await axios.get(`/api/users/${userId}`); // correct endpoint
+    const user = response.data;
+
+    this.form.username = user.name || '';
+    this.form.email = user.email || '';
+    this.form.phone = user.phone_number || '';
+    this.form.bio = user.bio || '';
+    this.form.birthday = user.birthday || '';
+    this.form.photo = user.photo_url || '';
+  } catch (error) {
+    console.error('Error fetching user:', error);
+  }
+},
+
+    async saveChanges() {
+  try {
+    const formData = new FormData();
+    const userId = JSON.parse(localStorage.getItem('user'))?.user_id;
+    formData.append('user_id', userId);
+    formData.append('name', this.form.username);
+    formData.append('email', this.form.email);
+    formData.append('phone', this.form.phone);
+    formData.append('bio', this.form.bio);
+    formData.append('birthday', this.form.birthday);
+    
+    if (this.photoFile) {
+      formData.append('photo', this.photoFile);
+    }
+
+    if (this.form.oldPassword) {
+      formData.append('old_password', this.form.oldPassword);
+      formData.append('new_password', this.form.newPassword);
+      formData.append('confirm_password', this.form.confirmPassword);
+    }
+
+    await axios.post('/api/users/update', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+
+    alert('Profile updated!');
+    this.isEditing = false;
+    this.originalForm = null;
+    this.fetchUserData();
+  } catch (error) {
+    alert('Update failed: ' + (error.response?.data?.message || error.message));
+    console.error(error);
+  }
+},
+
     toggleEdit() {
-      // Deep copy current form into originalForm
       this.originalForm = JSON.parse(JSON.stringify(this.form));
       this.isEditing = true;
     },
+
+    cancelEdit() {
+      if (this.originalForm) {
+        this.form = JSON.parse(JSON.stringify(this.originalForm));
+        this.photoFile = null;
+      }
+      this.isEditing = false;
+    },
+
     onPhotoChange(event) {
       const file = event.target.files[0];
       if (file) {
-        this.form.photo = URL.createObjectURL(file);
+        this.photoFile = file;
+        this.form.photo = URL.createObjectURL(file); // preview
       }
     },
+
     removePhoto() {
       this.form.photo = '';
+      this.photoFile = null;
     },
-    saveChanges() {
-      console.log('Form submitted:', this.form);
-      alert('Changes saved!');
-      this.isEditing = false;
-      this.originalForm = null; // clear backup after saving
-    },
-    cancelEdit() {
-      if (this.originalForm) {
-        this.form = JSON.parse(JSON.stringify(this.originalForm)); // restore from copy
+
+    async logout() {
+      try {
+        await axios.post('/api/logout');
+        localStorage.removeItem('user');
+        location.reload();
+      } catch (e) {
+        console.error('Logout error:', e);
       }
-      this.isEditing = false;
-      this.originalForm = null;
     }
   }
 };
