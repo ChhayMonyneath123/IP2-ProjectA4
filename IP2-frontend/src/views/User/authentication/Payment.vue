@@ -185,8 +185,8 @@ const proceedToCheckout = () => {
 <style scoped>
 .page-wrapper {
   display: flex;
-  height: auto;
-  justify-content: center;
+  height: 70vh;
+
 }
 
 .quantity,
@@ -207,7 +207,6 @@ const proceedToCheckout = () => {
   flex-wrap: wrap;
   flex-direction: row;
   gap: 1rem;
-  margin: 0 auto;
 }
 
 .payment-container {
