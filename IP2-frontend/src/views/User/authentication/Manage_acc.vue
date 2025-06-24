@@ -103,7 +103,7 @@ export default {
   methods: {
     async fetchUserData() {
   try {
-    const userId = JSON.parse(localStorage.getItem('user'))?.user_id;
+    const userId = JSON.parse(localStorage.getItem('users'))?.user_id;
     const response = await axios.get(`/api/users/${userId}`); // correct endpoint
     const user = response.data;
 

@@ -92,7 +92,7 @@ export default {
               name: this.user.name,
               date: this.user.date,
               avatar: this.user.avatar,
-              id: res.data.data.id
+              id: res.data.data.id,
             });
 
             this.form.rating = 0;
