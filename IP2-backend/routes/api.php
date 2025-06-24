@@ -21,17 +21,16 @@ Route::post('/register', [UserController::class, 'register']);
 
 
 
-// Optional: user route if using Sanctum
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
 
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/products/{productId}/ratings', [ProductRatingController::class, 'store']);
-    Route::get('/products/{productId}/ratings', [ProductRatingController::class, 'index']);
-});
 
+Route::post('/products/{product}/ratings', [ProductRatingController::class, 'store']); // No middleware
+Route::get('/products/{product}/ratings', [ProductRatingController::class, 'index']);
+
+
+Route::get('/users', [UserController::class, 'index']);
+Route::get('/users/{user_id}', [UserController::class, 'show']);
+Route::post('/users/update', [UserController::class, 'update']);
 
 
 // Products

@@ -36,8 +36,8 @@
     <!-- Comment Submission -->
     <div class="comment-form-container">
       <Commentinfo
-        :productId="product.id"
-        :userId="user.id"
+        :productId="product.product_id"
+        :userId="user.user_id"
         @submit="addReview"
       />
     </div>
