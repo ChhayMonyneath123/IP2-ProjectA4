@@ -26,103 +26,113 @@
 
     <!-- Individual Reviews -->
     <div class="review-list">
-      <Review_card
-        v-for="review in reviews"
-        :key="review.id"
-        :review="review"
-      />
+      <!-- Show message when reviews are loading -->
+      <div v-if="loading">
+        <p>Loading reviews...</p>
+      </div>
+
+      <!-- Show message when there are no reviews -->
+      <div v-if="reviews.length === 0 && !loading">
+        <p>No reviews yet. Be the first to leave a review!</p>
+      </div>
+
+      <!-- Display reviews -->
+      <Review_card v-for="review in reviews" :key="review.id" :review="review"/>
+
     </div>
 
     <!-- Comment Submission -->
     <div class="comment-form-container">
-      <Commentinfo
-        :productId="product.product_id"
-        :userId="user.user_id"
-        @submit="addReview"
-      />
+      <Commentinfo :productId="product.product_id" @submit="addReview" />
     </div>
   </section>
 </template>
 
 
 <script>
-import axios from 'axios'
-import Review_card from './review_card.vue'
-import Commentinfo from './comment_info.vue'
+import axios from 'axios';
+import Review_card from './review_card.vue';
+import Commentinfo from './comment_info.vue';
 
 export default {
   name: 'RatingSection',
   components: { Review_card, Commentinfo },
   props: {
     product: { type: Object, required: true },
-    user: { type: Object, required: true }
   },
   data() {
     return {
-      reviews: []
-    }
+      reviews: [],
+      loading: true,
+      error: null,
+    };
   },
   computed: {
     averageRating() {
-      if (this.reviews.length === 0) return '0.0'
-      const total = this.reviews.reduce((sum, r) => sum + r.rating, 0)
-      return (total / this.reviews.length).toFixed(1)
+      if (this.reviews.length === 0) return '0.0';
+      const total = this.reviews.reduce((sum, r) => sum + r.rating, 0);
+      return (total / this.reviews.length).toFixed(1);
     },
     ratingDistribution() {
-      const total = this.reviews.length
-      const counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
-      this.reviews.forEach(r => counts[r.rating]++)
-      const percentages = {}
-      Object.keys(counts).forEach(star => {
-        percentages[star] = total ? (counts[star] / total * 100).toFixed(0) : 0
-      })
-      return percentages
+      const total = this.reviews.length;
+      const counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+      this.reviews.forEach((r) => counts[r.rating]++);
+      const percentages = {};
+      Object.keys(counts).forEach((star) => {
+        percentages[star] = total ? ((counts[star] / total) * 100).toFixed(0) : 0;
+      });
+      return percentages;
     },
     starVisualArray() {
-      const avg = parseFloat(this.averageRating)
-      const stars = []
+      const avg = parseFloat(this.averageRating);
+      const stars = [];
       for (let i = 1; i <= 5; i++) {
         if (i <= avg) {
-          stars.push('fa-solid fa-star')
+          stars.push('fa-solid fa-star');
         } else if (i - avg <= 0.5) {
-          stars.push('fa-solid fa-star-half-stroke')
+          stars.push('fa-solid fa-star-half-stroke');
         } else {
-          stars.push('fa-regular fa-star')
+          stars.push('fa-regular fa-star');
         }
       }
-      return stars
-    }
+      return stars;
+    },
   },
   methods: {
     addReview(newReview) {
-      this.reviews.unshift({ ...newReview, id: Date.now() }) // or use backend response ID
+      axios
+        .post(`http://localhost:8000/api/products/${this.product.product_id}/ratings`, newReview) // Corrected endpoint
+        .then((response) => {
+          this.reviews.unshift({ ...newReview, id: response.data.data.id }); // Add new review to the list
+        })
+        .catch((error) => {
+          console.error('Error submitting review:', error.response || error);
+          this.error = 'Failed to submit your review. Please check the backend and API route configuration.';
+        });
     },
     getBarWidth(star) {
-      return this.ratingDistribution[star] || 0
+      return this.ratingDistribution[star] || 0;
     },
     fetchReviews() {
-      axios.get(`http://localhost:8000/api/products/${this.product.id}`)
-        .then(res => {
-          const product = res.data.data
-          this.reviews = product.ratings.map(r => ({
-            id: r.id,
-            rating: r.rating,
-            comment: r.comment,
-            date: r.created_at,
-            name: r.user?.name || `User ${r.user_id}`,
-            avatar: r.user?.avatar || 'https://randomuser.me/api/portraits/lego/1.jpg'
-          }))
+      axios
+        .get(`http://localhost:8000/api/products/${this.product.product_id}/ratings`) // Corrected endpoint
+        .then((res) => {
+          this.reviews = res.data.data; // Assuming the response contains reviews in `data` field
         })
-        .catch(err => {
-          console.error('Failed to fetch reviews', err)
+        .catch((err) => {
+          console.error('Failed to fetch reviews', err);
+          this.error = 'Failed to load reviews.';
         })
-    }
-
+        .finally(() => {
+          this.loading = false;
+        });
+    },
   },
+
   mounted() {
-    this.fetchReviews()
-  }
-}
+    this.fetchReviews(); // Fetch reviews when the component is mounted
+  },
+};
 </script>
 
 <style scoped>
@@ -240,5 +250,4 @@ export default {
   margin-top: 20px;
   padding: 1%;
 }
-
 </style>
