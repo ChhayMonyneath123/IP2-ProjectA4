@@ -1,38 +1,41 @@
 <template>
-  <div class="container">
-    <div class="comment-form">
-      <h3>Leave a Comment</h3>
-      <p>Please feel free to give us a feedback!</p>
+  <div class="comment-form">
+    <h3>Leave a Comment</h3>
+    <p class="subheading">Please feel free to give us your feedback!</p>
 
-      <div class="user-info">
-        <img :src="user.avatar" class="avatar" />
-        <div class="user-meta">
-          <strong>{{ user.name }}</strong>
-          <p class="date">{{ user.date }}</p>
-          <div class="wrapper">
-            <p class="label">Your Rating:</p>
-            <div class="stars">
-              <i v-for="n in 5" :key="n" class="fas fa-star" :class="{ selected: n <= form.rating }"
-                @click="form.rating = n"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <textarea v-model="form.comment" placeholder="Your Message" />
-      <div class="button-wrapper">
-        <button @click="submit">Submit Comment</button>
+    <!-- Rating section -->
+    <div class="rating-section">
+      <p>Your Rating:</p>
+      <div class="stars">
+        <i v-for="n in 5" :key="n" class="fas fa-star"
+           :class="{ selected: n <= form.rating }"
+           @click="form.rating = n"
+           @mouseover="hoverRating(n)"
+           @mouseleave="hoverRating(0)">
+        </i>
       </div>
     </div>
+
+    <!-- Review comment -->
+    <textarea v-model="form.comment" placeholder="Your Message" rows="3"></textarea>
+
+    <!-- Submit button with loading state -->
+    <button :disabled="loading" @click.prevent="submit">
+      <span v-if="loading" class="spinner"></span>
+      {{ loading ? 'Submitting...' : 'Submit Comment' }}
+    </button>
+
+    <!-- Success or error message -->
+    <p v-if="submitStatus" :class="{'success-message': submitStatus === 'success', 'error-message': submitStatus === 'error'}">
+      {{ submitMessage }}
+    </p>
   </div>
 </template>
-
 
 <script>
 import axios from 'axios';
 
 export default {
-  name: 'Commentinfo',
   props: {
     productId: { type: Number, required: true }
   },
@@ -42,228 +45,157 @@ export default {
         rating: 0,
         comment: ''
       },
-      user: {
-        id: null,
-        name: '',
-        date: '',
-        avatar: ''
-      }
+      loading: false,
+      submitStatus: null,  // Track submission status
+      submitMessage: '',    // Track the success/error message
+      hoveredRating: 0,     // Track the hovered rating for hover effects
     };
-  },
-  mounted() {
-    // Fetch logged-in user info on mount
-    axios.get('http://localhost:8000/api/users')
-      .then((response) => {
-        const userData = response.data.data;
-        this.user = {
-          user_id: userData.user_id,
-          name: userData.name,
-          avatar: userData.avatar,
-          date: new Date().toLocaleDateString()
-        };
-      })
-      .catch((error) => {
-        console.error('Failed to load user', error);
-        this.user = {
-          id: 0,
-          name: "Guest",
-          avatar: "https://randomuser.me/api/portraits/lego/1.jpg",
-          date: new Date().toLocaleDateString()
-        };
-      });
   },
   methods: {
     submit() {
+      // Check if all fields are completed
       if (this.form.rating && this.form.comment) {
-        const payload = {
+        const newReview = {
+          product_id: this.productId, // Use the correct prop to pass productId
           rating: this.form.rating,
           comment: this.form.comment,
-          user_id: this.user.id
         };
 
-        axios.post(`/api/products/${productId}/ratings`, {
-          rating: this.form.rating,
-          comment: this.form.comment,
-          user_id: this.user.id // required because no session/auth
-        })
-          .then(res => {
-            this.$emit('submit', {
-              ...this.form,
-              name: this.user.name,
-              date: this.user.date,
-              avatar: this.user.avatar,
-              id: res.data.data.id,
-            });
-
-            this.form.rating = 0;
+        this.loading = true;  // Set loading state to true
+        // Ensure the URL corresponds to the backend route
+        axios.post(`http://localhost:8000/api/products/${this.productId}/ratings`, newReview)
+          .then((response) => {
+            this.submitStatus = 'success';
+            this.submitMessage = 'Review submitted successfully!';
+            this.$emit('submit', newReview);  // Emit the review data to parent
+            this.form.rating = 0;  // Reset the form
             this.form.comment = '';
           })
-          .catch(err => {
-            const message = err.response?.data?.message || 'Failed to submit review.';
-            alert(message);
+          .catch((error) => {
+            console.error('Error submitting review:', error);
+            this.submitStatus = 'error';
+            this.submitMessage = 'Failed to submit your review. Please try again.';
+          })
+          .finally(() => {
+            this.loading = false;  // Set loading state to false after request is complete
           });
       } else {
-        alert('Please complete all fields.');
+        this.submitStatus = 'error';
+        this.submitMessage = 'Please complete all fields before submitting.';
       }
-    }
+    },
+
+    // Method to track hover on rating stars
+    hoverRating(rating) {
+      this.hoveredRating = rating;
+    },
   }
-};
+}
 </script>
 
-
 <style scoped>
-/* Global container match (same as Rating Overview) */
-.container {
-  max-width: 100vw;
-  /* match other sections */
-  margin: 0 auto;
-  padding: 0 20px;
-  box-sizing: border-box;
-}
-
-/* Comment form itself */
 .comment-form {
-  width: 100%;
-  padding: 20px 30px;
-  background-color: #ffffff;
-  border: 1px solid #e0dcd5;
-  border-radius: 14px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-  box-sizing: border-box;
-  margin-top: 40px;
   display: flex;
-  justify-content: center;
   flex-direction: column;
+  gap: 5px; /* Reduced gap between elements */
+  padding: 15px; /* Reduced padding */
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
 
-/* Headings */
 h3 {
-  font-size: 26px;
-  margin-bottom: 6px;
-  color: #402e2e;
-  font-weight: 600;
-}
-
-p {
-  margin: 0 0 16px 0;
-  font-size: 15px;
-  color: #555;
-}
-
-/* User section */
-.user-info {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 24px;
-
-}
-
-.avatar {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.user-meta {
-  flex: 1;
-}
-
-.date {
-  font-size: 12px;
-  color: #999;
-  margin-top: 2px;
-}
-
-/* Rating stars */
-.wrapper {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  /* reduced from 8px to 4px */
-  line-height: 1;
-  margin-top: 6px;
-}
-
-.label {
-  font-size: 14px;
+  font-size: 22px; /* Reduced font size */
   color: #333;
-  margin: 0;
-  line-height: 1;
+  margin-bottom: 5px; /* Reduced margin */
+}
+
+.subheading {
+  font-size: 13px; /* Reduced font size */
+  color: #777;
+  margin-bottom: 10px; /* Reduced margin */
+}
+
+.rating-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .stars {
   display: flex;
-  align-items: center;
-  gap: 2px;
-  /* reduced from 4px to 2px */
-  font-size: 17px;
+  gap: 5px; /* Reduced gap between stars */
+  font-size: 28px; /* Slightly reduced font size for stars */
   color: #ccc;
+  cursor: pointer;
 }
 
 .stars .selected {
   color: #f7b400;
-  cursor: pointer;
 }
 
+.stars i:hover {
+  transform: scale(1.2);
+  transition: transform 0.2s ease;
+}
 
-/* Textarea */
 textarea {
-  width: 98%;
-  min-height: 120px;
-  padding: 14px;
-  font-size: 15px;
+  padding: 10px; /* Reduced padding */
+  font-size: 14px; /* Reduced font size */
+  border: 1px solid #ddd;
   border-radius: 6px;
-  border: 1px solid #31261b;
-  resize: vertical;
-  font-family: inherit;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  resize: none;
+  font-family: 'Arial', sans-serif;
+  transition: border-color 0.3s;
 }
 
 textarea:focus {
-  outline: none;
-  border-color: #31261b;
-  box-shadow: 0 0 6px rgba(56, 53, 43, 0.35);
-  background-color: #fffef5;
-}
-
-/* Button wrapper and alignment */
-.button-wrapper {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 24px;
+  border-color: #007BFF;
 }
 
 button {
-  padding: 12px 24px;
-  background-color: #31261b;
+  background-color: #564c3b;
   color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: 500;
-  font-size: 14px;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  border: none;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+button:disabled {
+  background-color: #cccccc;
 }
 
 button:hover {
-  background-color: #2c241f;
+  background-color: #2e281f;
+  transform: translateY(-2px);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .comment-form {
-    padding: 24px;
-  }
+button .spinner {
+  border: 2px solid #fff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+  margin-right: 10px;
+}
 
-  .wrapper {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
-  .button-wrapper {
-    justify-content: center;
-  }
+.success-message {
+  color: #4CAF50;
+  font-size: 16px;
+}
+
+.error-message {
+  color: #f44336;
+  font-size: 16px;
 }
 </style>

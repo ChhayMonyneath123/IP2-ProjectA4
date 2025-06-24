@@ -24,8 +24,8 @@ Route::post('/register', [UserController::class, 'register']);
 
 
 
-Route::post('/products/{product}/ratings', [ProductRatingController::class, 'store']); // No middleware
-Route::get('/products/{product}/ratings', [ProductRatingController::class, 'index']);
+Route::post('/products/{productId}/ratings', [ProductRatingController::class, 'store']); // No middleware
+Route::get('/products/{productId}/ratings', [ProductRatingController::class, 'index']);
 
 
 Route::get('/users', [UserController::class, 'index']);

@@ -15,9 +15,8 @@
       :cooking="`${Math.max(product.estimated_delivery_minutes - 10, 0)} mins`"
       :delivery="`${product.estimated_delivery_minutes} mins`" @update-cart="handleCartUpdate" />
 
-    <Rating v-if="product && user" :product="product" :user="user" />
-
-
+    <!-- Display the Rating component even without user -->
+    <Rating v-if="product" :product="product" />
 
     <Footer_bar />
   </div>
@@ -44,7 +43,6 @@ export default {
   data() {
     return {
       product: null,
-      user: null,
       quantity: 1,
       loading: true,
       error: null,
@@ -56,7 +54,8 @@ export default {
   },
   mounted() {
     const id = this.route.params.id;
-    // Fetch product
+
+    // Fetch product data
     axios.get(`http://localhost:8000/api/products/${id}`)
       .then((response) => {
         this.product = response.data.data;
@@ -67,29 +66,14 @@ export default {
         this.error = "Failed to load product data.";
         this.loading = false;
       });
-
-    // Fetch user (adjust URL to match your real user endpoint)
-    axios.get('http://localhost:8000/api/users')
-      .then((response) => {
-        this.user = response.data.data; // Make sure your backend wraps it in { data: { ... } }
-      })
-      .catch((error) => {
-        console.error('Failed to load user', error);
-        this.user = {
-          id: 1,
-          name: "Fallback User",
-          avatar: "https://randomuser.me/api/portraits/lego/1.jpg"
-        }; // fallback
-      });
   },
   methods: {
     handleCartUpdate(newQuantity) {
       this.quantity = newQuantity;
       console.log(`Updated cart quantity: ${newQuantity}`);
-      // You can now store it in localStorage or a global cart system (like Vuex)
+      // Optionally, you can store it in localStorage or a global cart system (e.g., Vuex)
     },
   },
-
 };
 </script>
 
@@ -121,7 +105,6 @@ export default {
 img {
   width: 40%;
   height: auto;
-
 }
 
 .loading {
@@ -129,7 +112,6 @@ img {
   justify-content: center;
   align-items: center;
   height: 300px;
-  /* Adjust as needed for spacing */
   font-size: 20px;
   font-weight: 500;
   color: #888;

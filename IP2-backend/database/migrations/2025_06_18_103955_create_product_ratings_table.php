@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -8,23 +7,18 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('product_ratings', function (Blueprint $table) {
-            $table->id();
-
-            $table->foreignId('product_id')
-                  ->constrained('products', 'product_id')
-                  ->onDelete('cascade');
-
-            $table->foreignId('user_id')
-                  ->constrained('users', 'user_id')  // fixed here
-                  ->onDelete('cascade');
-
-            $table->decimal('rating', 2, 1)->unsigned();
-            $table->text('comment')->nullable();
-            $table->timestamps();
-
-            $table->unique(['product_id', 'user_id']);
-        });
+        if (!Schema::hasTable('product_ratings')) {
+            Schema::create('product_ratings', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('product_id');
+                $table->foreign('product_id')->references('product_id')->on('products'); // Ensure products table exists
+                $table->unsignedBigInteger('user_id')->nullable();
+                $table->foreign('user_id')->references('id')->on('users'); // Ensure users table exists
+                $table->integer('rating');
+                $table->text('comment');
+                $table->timestamps();
+            });
+        }
     }
 
     public function down()
