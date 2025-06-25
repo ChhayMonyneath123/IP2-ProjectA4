@@ -36,7 +36,7 @@ const increase = () => {
 const decrease = () => {
   if (props.quantity > 1) {
     emit('update:quantity', props.quantity - 1)
-  }
+  }}
 </script>
 
 

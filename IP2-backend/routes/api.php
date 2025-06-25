@@ -12,13 +12,24 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\AdminDeliveryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\WishlistController;
 
 Route::get('/products', [ProductController::class, 'index']);
 
-Route::post('/login', [UserController::class, 'login']);
+
 Route::post('/register', [UserController::class, 'register']);
+Route::post('/login', [UserController::class, 'login']);
+Route::post('/password/email', [UserController::class, 'sendResetLinkEmail']);
+Route::post('/password/reset', [UserController::class, 'resetPassword']);
 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/profile', [UserController::class, 'profile']);
+    Route::put('/profile', [UserController::class, 'updateProfile']);
 
+    Route::get('/users', [UserController::class, 'index']);
+    Route::put('/users/{user_id}', [UserController::class, 'update']);
+    Route::delete('/users/{user_id}', [UserController::class, 'destroy']);
+});
 
 // Optional: user route if using Sanctum
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

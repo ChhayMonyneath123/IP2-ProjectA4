@@ -153,6 +153,10 @@ const routes = [
                 path: 'chat',
                 name: 'ChatPage',
                 component: () => import('@/views/Admin/authentication/Chat_Page.vue')
+            },{
+                path: 'users',
+                name: 'User',
+                component: () => import('@/views/Admin/authentication/User.vue')
             }
         ]
     }

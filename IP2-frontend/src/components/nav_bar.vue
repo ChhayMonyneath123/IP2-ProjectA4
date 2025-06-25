@@ -18,21 +18,22 @@
     </div>
 
     <div class="icon-buttons">
-      <div class="cart-icon-container">
-        <i class="fas fa-shopping-cart icon" aria-label="Cart" @click="goToCart"></i>
+      <div class="cart-icon-container" @click="goToCart">
+        <i class="fas fa-shopping-cart icon" aria-label="Cart"></i>
         <span class="cart-count" v-if="cartCount > 0">{{ cartCount }}</span>
       </div>
       <i class="fas fa-heart icon" aria-label="Wishlist" @click="goToWishlist"></i>
 
-      <!-- Conditionally render based on login state -->
+      <!-- LOGIN / REGISTER -->
       <template v-if="!isLoggedIn">
         <router-link to="/login" class="login-btn">Login</router-link>
         <router-link to="/register" class="register-btn">Register</router-link>
       </template>
 
+      <!-- PROFILE + LOGOUT -->
       <template v-else>
-        <router-link to="/manage_account" class="avatar-circle">
-          {{ firstLetter }}
+        <router-link to="/manage_account" class="avatar-circle" aria-label="Profile">
+          <img :src="userAvatar" class="avatar-img" alt="Avatar" />
         </router-link>
         <button class="logout-btn" @click="handleLogout">Logout</button>
       </template>
@@ -41,23 +42,19 @@
 </template>
 
 <script setup>
-import {useCartStore} from '@/stores/cart'
 import { computed } from 'vue'
-import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
+import { useCartStore } from '@/stores/cart'
+import { useAuthStore } from '@/stores/auth'
 
-
-// add to cart 
-const cartStore = useCartStore()
-const cartCount = computed(() => cartStore.count)  // make sure cartItems is reactive in your store
-
-
-const authStore = useAuthStore()
 const router = useRouter()
+const cartStore = useCartStore()
+const authStore = useAuthStore()
 
+const cartCount = computed(() => cartStore.count)
 const isLoggedIn = computed(() => authStore.isLoggedIn)
 
-// Avatar list
+// Avatar list for fallback/random avatar
 const randomAvatars = [
   'https://i.pravatar.cc/40?img=1',
   'https://i.pravatar.cc/40?img=2',
@@ -66,7 +63,7 @@ const randomAvatars = [
   'https://i.pravatar.cc/40?img=5',
 ]
 
-// Hash function to pick avatar index deterministically
+// Hash function to pick avatar by user email/name
 function hashStringToIndex(str, max) {
   let hash = 0
   for (let i = 0; i < str.length; i++) {
@@ -76,19 +73,18 @@ function hashStringToIndex(str, max) {
   return Math.abs(hash) % max
 }
 
-// Computed avatar URL per user
 const userAvatar = computed(() => {
-  if (!authStore.user) return randomAvatars[0] // fallback avatar if no user data yet
+  if (!authStore.user) return randomAvatars[0]
   const key = authStore.user.email || authStore.user.name || 'default'
   const idx = hashStringToIndex(key, randomAvatars.length)
   return randomAvatars[idx]
 })
 
-function goToWishlist() {
-  router.push('/wishlist')
-}
 function goToCart() {
   router.push('/my-order')
+}
+function goToWishlist() {
+  router.push('/wishlist')
 }
 
 function handleLogout() {
@@ -98,6 +94,7 @@ function handleLogout() {
 </script>
 
 <style scoped>
+/* Your existing styles here */
 .navbar {
   width: 100%;
   background-color: #f8f7f3;
@@ -225,7 +222,6 @@ function handleLogout() {
 .logout-btn:hover {
   background-color: #8d7a65;
 }
-
 
 .cart-icon-container {
   position: relative;

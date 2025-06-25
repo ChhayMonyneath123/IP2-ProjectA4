@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;  // <-- Add this import
-use Illuminate\Support\Facades\Auth;      // <-- Import Auth facade
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 class UserController extends Controller
@@ -16,7 +16,7 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users,email',
-            'password' => 'required|string|confirmed|min:6', // password_confirmation required
+            'password' => 'required|string|confirmed|min:6',
         ]);
 
         $user = User::create([
@@ -27,15 +27,11 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'User registered successfully',
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-            ],
+            'user' => $user->only('id', 'name', 'email'),
         ], 201);
     }
 
-    // Login user (no token, just return user info)
+    // Login user
     public function login(Request $request)
     {
         $request->validate([
@@ -53,11 +49,7 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'User logged in successfully',
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-            ],
+            'user' => $user->only('id', 'name', 'email'),
         ]);
     }
 
@@ -68,11 +60,7 @@ class UserController extends Controller
 
         $status = Password::sendResetLink($request->only('email'));
 
-        if ($status == Password::RESET_LINK_SENT) {
-            return response()->json(['message' => __($status)]);
-        } else {
-            return response()->json(['message' => __($status)], 400);
-        }
+        return response()->json(['message' => __($status)], $status === Password::RESET_LINK_SENT ? 200 : 400);
     }
 
     // Reset password using the token
@@ -88,58 +76,42 @@ class UserController extends Controller
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
                 $user->password = Hash::make($password);
-                if ($user instanceof \App\Models\User) {
-                    $user->password = Hash::make($password);
-                    $user->save();
-                } else {
-                    return response()->json(['message' => 'Authenticated user not found or invalid'], 404);
-                }
+                $user->save();
             }
         );
 
-        if ($status == Password::PASSWORD_RESET) {
-            return response()->json(['message' => __($status)]);
-        } else {
-            return response()->json(['message' => __($status)], 400);
-        }
+        return response()->json(['message' => __($status)], $status === Password::PASSWORD_RESET ? 200 : 400);
     }
-    // Add this method inside your UserController class
 
+    // Get all users
     public function index()
     {
-        // Get all users with selected fields you want to expose
-        $users = User::all();
-
-        return response()->json($users);
+        return response()->json(User::all());
     }
+
     // Update user info
     public function update(Request $request, $user_id)
     {
         $user = User::find($user_id);
-
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|unique:users,email,' . $user_id . ',user_id',
+            'email' => 'required|string|email|unique:users,email,' . $user_id,
             'role' => 'required|in:user,admin',
         ]);
 
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'role' => $request->role,
-        ]);
+        $user->update($request->only('name', 'email', 'role'));
 
         return response()->json(['message' => 'User updated successfully']);
     }
 
+    // Delete user
     public function destroy($user_id)
     {
         $user = User::find($user_id);
-
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
@@ -148,11 +120,14 @@ class UserController extends Controller
 
         return response()->json(['message' => 'User deleted successfully']);
     }
+
+    // Get current user profile
     public function profile()
     {
         return response()->json(Auth::user());
     }
 
+    // Update current user profile
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
@@ -163,17 +138,15 @@ class UserController extends Controller
             'email' => 'required|email',
             'phone' => 'nullable|string|max:20',
             'bio' => 'nullable|string|max:1000',
-            // Add validation if updating password or photo
         ]);
 
         $user->name = $data['username'];
-        $user->birthday = $data['birthday'];
+        $user->birthday = $data['birthday'] ?? null;
         $user->email = $data['email'];
-        $user->phone = $data['phone'];
-        $user->bio = $data['bio'];
-        //$user->save();
+        $user->phone = $data['phone'] ?? null;
+        $user->bio = $data['bio'] ?? null;
+        // $user->save();
 
         return response()->json(['message' => 'Profile updated successfully']);
     }
-
 }

@@ -125,7 +125,8 @@ export default {
 
 <style scoped>
 .user-list {
-  max-width: 1000px;
+  width: 100%;
+  padding: 2%;
   margin: 30px auto;
   font-family: Arial, sans-serif;
 }

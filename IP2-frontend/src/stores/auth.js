@@ -14,15 +14,19 @@ export const useAuthStore = defineStore('auth', {
   },
   actions: {
     async login(credentials, router) {
-      const response = await axios.post('/api/login', credentials)
-      this.user = response.data.user
-      localStorage.setItem('user', JSON.stringify(this.user))
+      try {
+        const response = await axios.post('http://localhost:8000/api/login', credentials)
+        this.user = response.data.user
+        localStorage.setItem('user', JSON.stringify(this.user))
 
-      // Navigate based on role
-      if (this.isAdmin) {
-        router.push('/admin/dashboard')  // Admin dashboard route
-      } else {
-        router.push('/')  // Regular user home
+        // Navigate based on role
+        if (this.isAdmin) {
+          router.push('/admin/dashboard')  // Admin dashboard route
+        } else {
+          router.push('/')  // Regular user home
+        }
+      } catch (error) {
+        throw error  // handle error in component
       }
     },
     logout(router) {
